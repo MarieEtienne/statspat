@@ -1,0 +1,42 @@
+---
+title: "Statistique Spatiale"
+author: "MP Etienne"
+format: html
+toc: true
+date: last-modified
+css: mpe_pres_revealjs.css
+execute: 
+  freeze: auto
+---
+
+# Description du cours
+
+Ce cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d'une notion de proximité.  On distingue différents type de données spatiales
+
+* des mesures sur un support continu 
+* des mesures associées à des régions géographiques
+* des localisations d'évènement.
+
+Ces différents types de données nécessites des représentations statistique différentes. 
+De plus,  les questions que l'on aborde avec ce type de données sont elles aussi assez spécifiques. 
+
+S'agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l'on traite des données régionales. Lorsque l'on observe des positions d'vènements,  on voudra le plus souvent comprendre la strure responsable de la répartition des points
+
+
+
+# Contenu
+
+-   **Géostastique** les méthodes classiques pour les mesures sur des supports continue
+
+-   **Données sur réseaux** pour représenter les données associées à des régions
+
+-   **Processus ponctuels**  pour modéliser les semis de points
+
+
+Le cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.
+
+À la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.
+
+# Organisation du cours
+
+-   20h de Cours/TP
