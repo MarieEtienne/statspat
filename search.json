@@ -1,0 +1,9 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  }
+]
