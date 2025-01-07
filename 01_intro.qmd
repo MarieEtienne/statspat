@@ -1,0 +1,206 @@
+---
+title: "Statistique Spatiale"
+subtitle: "Introduction"
+author:
+  - name: Marie-Pierre Etienne
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format:
+  revealjs: 
+    slide-number: true
+    show-slide-number: print
+    menu:
+      useTextContentForMissingTitles: false
+    mathjax: true  # Active MathJax
+    self-contained: true
+bibliography: spatstat.bib
+---
+
+```{r setup, include=FALSE, eval = TRUE}
+library(RefManageR)
+library(tidyverse) ## to benefit from the tydiverse coding system
+library(lubridate)
+library(wesanderson)
+
+```{r reference,  include=FALSE, cache=FALSE, eval = TRUE}
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("./spatstat.bib", check = FALSE)
+```
+
+
+
+## Cadre 
+
+{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l'analyse et la modélisation de données localisées géographiquement ou spatialement. 
+
+Elle **prend en compte la localisation des observations et les relations spatiales** entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.
+
+### Pour quelles applications ?
+
+* Sciences de la terre : position des séismes. 
+* Environnement : température, pluie
+* Epdémiologie : nombre de cander par régions administratives
+* Ecologie : localisation des différents arbre d'une espeèce au sein d'une parcelle, 
+* Agrnomie : répartition des pucerons dans une parcelle cultivée
+* Economie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d'une ville
+* Imagerie : Couleur d'un pixel en fonction de sa localisation sur l'image
+
+
+# Trois types de données spatiales
+
+## 1. Données géostatistiques
+
+### Description
+
+- **Observation** : A un point $s$ d'un domaine spatial $D$,  on associe une valeur observée $Z(s)$. La grandeur mesurée est définie partout mais on l'observe seulement en $n$ points $s_1, \ldots, s_n$.
+
+- **Caractéristiques** :
+  - Positions continues.
+  - Généralement irrégulièrement espacées.
+  - Modèles courants : modèles de champs spatiaux
+
+- **Exemples** : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,
+
+### Visualisation
+- Carte avec des points représentant les positions des observations.
+
+
+### Objectifs
+  - Modélisation.
+  - Séparation des variations à différentes échelles.
+  - Prédiction (krigeage).
+
+## 1. Exemple de données géostatistiques 
+
+```{r}
+#| echo: false
+
+library(SpatialExtremes)
+library(sf)
+library(tidyverse)
+rain_df <- read.csv('synop.202412.csv', sep = ";") |> 
+  select(numer_sta,	date, t) |> 
+  mutate(date= as.character(date)) |> 
+  filter(date > 240000000000) |> 
+  filter(t != "mq") |> 
+  mutate(anneemois = parse_date_time(date, orders= "YmdHMS")) |> 
+  filter(hour(anneemois)==12) |> 
+  mutate(t = as.numeric(t)) |> 
+  group_by(numer_sta, anneemois) |> 
+  summarise(temp_moy = mean(t)-273.15)
+
+box = c(xmin = -5, ymin = 20, xmax = 10, ymax = 55)
+  
+
+station <- read.csv('postesSynop.csv') 
+rain_df <- rain_df |> left_join(station, by = join_by(numer_sta == ID)) |>   st_as_sf( coords = c("Longitude", "Latitude"), crs = 4326)  |> # CRS 4326 = WGS84 
+filter(month(anneemois) == 12, day(anneemois)==31)   |> st_crop(box)
+  
+region <- read_sf('france_shp/') |> st_crop(box)
+
+
+
+ggplot() +
+  geom_sf(data = region,  fill = "#f0f2f0",) +
+  geom_sf(data = rain_df, aes(col = temp_moy), size= 2)  +
+  labs(
+    col = "Temp",
+    title = "Temp à 12H le 31/12/2024",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_viridis_c(name = "Température", option = "plasma")
+  
+
+```
+
+
+
+## 2. Données en réseau ou maillage fixe (données lattice)
+
+- **Observation** : pour un réseau donné, on associe à chaque maille $i$ du réseau une valeur $Z_i$. La grandeur mesurée est définie pour l'ensemble de la maille, elle ne varie pas continuement.  Les données sont donc  agrégées sur des zones géographiques définies (polygones).
+
+
+- **Exemples** :
+  - Pourcentage de groupe sanguin par région.
+  - Prix au m2 par arrondissement à Paris.
+  - Pixels dans une image.
+  
+### Visualisation
+- Cartes choroplèthes.
+
+
+### Objectifs
+  - Explicatifs (lien avec des covariables)
+  - Analyse des corrélations spatiales.
+  - Restauration d'images.
+
+## 2. Exemple  de données lattice 
+
+::: {#fig-cancer}
+![Incidence des cancers aux USA](new_cancercases.png){width=60%}
+**Figure 1** : Incidence des cas de cancer aux USA.
+:::
+
+
+## 3. Données ponctuelles
+
+- **Observations** on note la présence d'un évènement en la position $s$. $s_i$ est donc la position du ième évènement d'intérêt
+
+- Exemples : Positions des chênes dans une forêt, position des épicentres de séismes
+
+
+### Visualisation
+- Carte de points.
+
+### Objectifs
+  - Régularité.
+  - Distribution aléatoire (Poisson).
+  - Agrégation.
+
+## 3. Exemple  de données ponctuelles 
+
+::: {#fig-eucalyptus}
+![Présence de Eucalyptus sparsifolia](eucalyptus.png){height=60%, width=40%}
+**Figure 2** : Présence d'Eucalyptus sparsifolia @renner2015point
+:::
+
+## Exercice 
+
+* Sciences de la terre : position des séismes. 
+* Environnement : température, pluie
+* Epdémiologie : nombre de cander par régions administratives
+* Ecologie : localisation des différents arbre d'une espeèce au sein d'une parcelle, 
+* Agrnomie : répartition des pucerons dans une parcelle cultivée
+* Economie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d'une ville
+* Sociologie : Localisation des crimes, des stations de service.
+* Imagerie : Couleur d'un pixel en fonction de sa localisation sur l'image
+
+
+## Cadre du cours
+
+La statistique spatiale analyse des données localisées dans l'espace. 
+
+Ces données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.
+
+- **Champs spatiaux observés en quelques positions**
+- **Valeurs associées à des régions** (données lattice)
+- **Événements géolocalisés** (processus ponctuels)
+
+
