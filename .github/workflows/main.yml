@@ -10,14 +10,14 @@ jobs:
   build:
     name: Build website with quarto
     runs-on: ubuntu-latest
-    container: mpetienne/maf:0.1
+    container: mpetienne/statspat:0.02
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Install R packages
-        run: |
-          Rscript -e "install.packages(c('GGally'))"
+      # - name: Install R packages
+      #   run: |
+      #     Rscript -e "install.packages(c('GGally'))"
       - name: Generate slides
         run: "quarto render"
       - name: GitHub Pages action
