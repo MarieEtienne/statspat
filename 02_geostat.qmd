@@ -1,0 +1,327 @@
+---
+title: "Géostatistique"
+author:
+  - name: Marie-Pierre Etienne
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format:
+  revealjs: 
+    slide-number: true
+    show-slide-number: print
+    menu:
+      useTextContentForMissingTitles: false
+    mathjax: true  # Active MathJax
+    self-contained: true
+bibliography: spatstat.bib
+---
+
+```{r setup, include=FALSE, eval = TRUE}
+library(RefManageR)
+library(tidyverse) ## to benefit from the tydiverse coding system
+library(lubridate)
+library(wesanderson)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("./spatstat.bib", check = FALSE)
+```
+
+::: hidden
+\$\$
+
+\newcommand\E{{\mathbb{E}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Cov{{\mathbb{C}\text{ov}}}
+\newcommand\Var{{\mathbb{V}\text{ar}}}
+
+\$\$
+:::
+
+# Introduction
+
+## Exemple illustratif
+
+La température en France
+
+```{r}
+#| echo: false
+
+library(sf)
+library(tidyverse)
+rain_df <- read.csv('synop.202412.csv', sep = ";") |> 
+  select(numer_sta,	date, t) |> 
+  mutate(date= as.character(date)) |> 
+  filter(date > 240000000000) |> 
+  filter(t != "mq") |> 
+  mutate(anneemois = parse_date_time(date, orders= "YmdHMS")) |> 
+  filter(hour(anneemois)==12) |> 
+  mutate(t = as.numeric(t)) |> 
+  group_by(numer_sta, anneemois) |> 
+  summarise(temp_moy = mean(t)-273.15)
+
+box = c(xmin = -5, ymin = 20, xmax = 10, ymax = 55)
+  
+
+station <- read.csv('postesSynop.csv') 
+rain_df <- rain_df |> left_join(station, by = join_by(numer_sta == ID)) |>   st_as_sf( coords = c("Longitude", "Latitude"), crs = 4326)  |> # CRS 4326 = WGS84 
+filter(month(anneemois) == 12, day(anneemois)==31)   |> st_crop(box)
+  
+region <- read_sf('france_shp/') |> st_crop(box)
+
+
+
+ggplot() +
+  geom_sf(data = region,  fill = "#f0f2f0",) +
+  geom_sf(data = rain_df, aes(col = temp_moy), size= 2)  +
+  labs(
+    col = "Temp",
+    title = "Temp à 12H le 31/12/2024",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_viridis_c(name = "Température", option = "plasma")
+  
+
+```
+
+## Géostatistique
+
+```{r}
+#| label: geostatvisu
+#| echo: false
+#| 
+# Définir les points observés
+points_observes <- data.frame(
+  x = c(2, 3, 4, 5, 3),
+  y = c(3, 4, 2, 5, 6),
+  z = c(1, 2, 5, 7, 3),
+  label = c("Z(s1)", "Z(s2)", "Z(s3)", "Z(s4)", "Z(s_k)")
+)
+
+# Définir le point à prédire
+point_a_predire <- data.frame(
+  x = 4,
+  y = 4,
+  label = "Z(s0)?"
+)
+
+# Définir les limites du domaine
+domaine <- data.frame(
+  x = c(1, 6, 7, 6, 5, 3, 2, 1, 1),
+  y = c(1, 1, 6, 8, 8, 7, 6, 4, 1)
+)
+
+# Créer le graphique
+ggplot() +
+  # Tracer le domaine
+  geom_polygon(data = domaine, aes(x = x, y = y), color = "gray55", fill = NA, size = 1) +
+  # Ajouter les points observés
+  geom_point(data = points_observes, aes(x = x, y = y, col = z), size = 3) +
+  geom_text(data = points_observes, aes(x = x, y = y, label = label, col = z), vjust = -1) +
+  # Ajouter le point à prédire
+  geom_point(data = point_a_predire, aes(x = x, y = y), color = "red", size = 3) +
+  geom_text(data = point_a_predire, aes(x = x, y = y, label = label), color = "red", vjust = -1) +
+  # Personnalisation
+  labs(title = "Géostatistique", x = "X", y = "Y") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_viridis_c(name = "Z", option = "plasma")
+```
+
+- Domaine continu : $D \subset \mathbb{R}^2$.
+- Processus stochastique : $Z = \{Z(s)\}_{s \in D}$
+  - Collection de variables aléatoires indexées par $s \in D$.
+  - Données $Z(s_1), Z(s_2), \ldots, Z(s_n)$ observés.
+
+### Objectifs :
+
+- Prédiction $\widehat{Z}(s_0)$ de $Z(s_0)$ ou intégrale $\int_B Z(s)ds$.
+- Estimation de la loi de $Z(s)$ ou d'une fonctionnelle $\varphi(Z(s))$.
+- Estimation des relations de dépendance entre $Z(s_i)$.
+
+
+## Estimation de la moyenne
+
+### Hypothèses
+
+- $E(Z(s)) = \mu \quad \forall s \in D$
+- $\text{cov}(Z(s_i), Z(s_j)) = c_{ij}$
+
+### Estimation
+
+- Observations : $Z(s_1), Z(s_2), \ldots, Z(s_n)$.
+- Estimation de $E(Z(s)) = \mu$ ?
+
+### Contraintes
+
+- Estimateur linéaire : $\widehat{\mu} = \sum_{i=1}^n \lambda_i Z(s_i)$.
+- Sans biais : $\text{E}(\widehat{\mu}) = \mu$.
+- Variance minimale : $\text{Var}(\widehat{\mu} - \mu)$.
+
+
+## Estimation de la moyenne
+
+- Si $\widehat{\mu}$ est sans biais alors 
+
+- Quelle est la conséquence de l'hypothèse de variance minimale ?
+
+## Solution : Best Linear Unbiased Estimator (BLUE)
+
+- Minimisation :
+  \[
+  \min \sum_{i,j=1}^n \lambda_i \lambda_j c_{ij} \quad ; \quad \sum_{i=1}^n \lambda_i = 1
+  \]
+
+Utiliser la  méthode du multiplicateur de Lagrange et montrer qu'on cherche à  résoudre le système linéaire 
+
+$$\begin{pmatrix}
+  c_{11} & c_{12} & \dots & c_{1n} & 1 \\
+  c_{21} & c_{22} & \dots & c_{2n} & 1 \\
+  \vdots & \vdots & \ddots & \vdots & \vdots \\
+  c_{n1} & c_{n2} & \dots & c_{nn} & 1 \\
+  1 & 1 & \dots & 1 & 0
+  \end{pmatrix}
+  \begin{pmatrix}
+  \lambda_1 \\
+  \lambda_2 \\
+  \vdots \\
+  \lambda_n \\
+  m
+  \end{pmatrix} =
+  \begin{pmatrix}
+  0 \\
+  0 \\
+  \vdots \\
+  0 \\
+  1
+  \end{pmatrix}$$
+
+[Conclusion si $c_{ij}$ connus, on peut estimer la moyenne]{.rouge}
+
+Encore faut il pouvoir estimer la covariance
+
+## Spécificité des données spatiales
+
+- on a souvent une seule réalisation du processus spatial
+
+- Il faut avoir des hypothèses de régularité spatial pour espérer dire des choses à partir d'une réalisation
+
+
+# Processus du second ordre
+
+## Définitions
+
+- $Z$ est un processus du second ordre si $\forall s \in D, \text{E}(Z(s)^2) < \infty$.
+- La moyenne de $Z$ est la fonction 
+   \begin{align}
+    m : D & \to \R \\
+      s & \to m(s) = \E(Z(s)))
+   \end{align}
+- La covariance de $Z$ est la fonction 
+   \begin{align}
+    c : D\times D & \to \R \\
+      (s,t) & \to c(s,t) = \Cov(Z(s), Z(t))
+   \end{align}
+   
+**Propriété** Une fonction de covariance est semi définie positive i.e.
+
+$$\forall a\in \R^n, \sum_{i,j}^n a_i a_j C(s_i, s_j)\geq 0$$
+Idée de preuve : Regarder  $\Var(\sum_{i=1}^n a_i Z(s_i))$
+
+- $Z$ est un  processus gaussien  si pour toute partie finie $S \subset D$
+et toute suite réelle $a = (a_s , s\in S)$, $\sum_{s\in S} a_s Z(s)$ est une variable
+gaussienne.
+
+## Processus stationnaire
+
+### Définition
+
+Un processus de second ordre $Z$ est stationnaire sur $D\subset \R^d$ si 
+
+1. Moyenne constante : $\forall s\in D, \quad m(s) = \mu$.
+2. Covariance invariante par translation :
+   $$\forall (s, t)\in D^2
+   c(s,t) = C(t - s) \quad \text{ou} \forall h; s+h \in D,  \quad c(s,s+h) = C(h)
+   $$
+
+### Isotropie
+
+Un processus est isotrope si $C(h)$ dépend uniquement de $\|h\|$ i.e
+$$C(h) = C(\|h\|)$$
+
+
+## Stationarité des accroissements
+
+$Z$ est un processus à accroissements stationnaires si les
+accroissements de $Z$ sont stationnaires au second ordre, i.e.
+$$\E(Z(s + h) − Z(s)) = 0$$
+$$\Var(Z(s + h) − Z(s)) = 2\gamma(h)$$
+La stationnarité du second ordre implique la stationnarité des
+accroissements.
+
+La classe des processus à accroissement stations est donc plus ..... que la classe des processus de second ordre.
+### Exemple 
+
+Que dire du mouvement Brownien sur $\R$
+
+# Variogramme
+
+## Définition
+
+Le semi-variogramme d'un processus à accroissements stattionnaire est défini comme :
+$$\gamma(h) = \frac{1}{2} \Var(Z(s+h) - Z(s))$$
+
+### Propriétés
+
+- $\gamma(h) \geq 0$, $\gamma(0) = 0$, $\gamma(-h) = \gamma(h)$.
+- Si $Z$ est stationnaire de second ordre :
+   $$\gamma(h) = C(0) - C(h)$$
+- si $lim_{|h|\to \infty} \gamma(h) = \ell < +\infty$  alors le processus est stationnaire du second ordre et $\ell = C(0)$
+
+
+
+# Variogramme
+
+
+## Variogrammes classiques
+1. **Pépitique** : $\gamma(h) = C$
+2. **Exponentiel** : $\gamma(h) = C(1 - \exp(-\|h\|/\rho))$.
+3. **Sphérique** :
+   $$\gamma(h) = \begin{cases}
+   C \left( \frac{3}{2} \frac{\|h\|}{\rho} - \frac{1}{2} \left(\frac{\|h\|}{\rho}\right)^3 \right) & \text{si } \|h\| \leq \rho \\
+   C & \text{si } \|h\| > \rho
+   \end{cases}$$
+4. **Gaussien** : $\gamma(h) = C(1 - \exp(-\|h\|^2/\rho))$.
+
+5. **Puissance** : $\gamma(h) =  C\left | h\right|^\alpha,  \alpha < 2$
+
+## Un variogramme particulier
+
+**Classe de Matèrn** 
+
+$$ \gamma(h) = C\left [ 1 - \frac{1}{2^{\nu -1}\Gamma(\nu)}\left(\frac{\sqrt{2\nu }h}{\rho}\right)K_{\nu}\left(\frac{\sqrt{2\nu }h}{\rho}\right)\right]$$
+$K_{\nu}$ fonction de Bessel modifiée de 3ème espèce, d’ordre $\nu$
+
+$\nu$  paramètre qui règle la régularité en 0.
+
+- $\nu$ = 1/2 : modèle exponentiel
+- $\nu\to \infty$ 
+
+
+
+# Exemple : Pluies suisses
