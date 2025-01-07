@@ -1,9 +1,86 @@
 [
   {
+    "objectID": "references_statspat.html",
+    "href": "references_statspat.html",
+    "title": "References",
+    "section": "",
+    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'statspat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)\n\nNULL"
+  },
+  {
+    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "title": "References",
+    "section": "Pour approfondir ou compléter le cours",
+    "text": "Pour approfondir ou compléter le cours\nYou haven't cited any references in this bibliography yet.\nNULL"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Statistique Spatiale",
     "section": "",
     "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  },
+  {
+    "objectID": "01_intro.html#cadre",
+    "href": "01_intro.html#cadre",
+    "title": "Statistique Spatiale",
+    "section": "Cadre",
+    "text": "Cadre\n{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#données-géostatistiques",
+    "href": "01_intro.html#données-géostatistiques",
+    "title": "Statistique Spatiale",
+    "section": "1. Données géostatistiques",
+    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
+    "href": "01_intro.html#exemple-de-données-géostatistiques",
+    "title": "Statistique Spatiale",
+    "section": "1. Exemple de données géostatistiques",
+    "text": "1. Exemple de données géostatistiques"
+  },
+  {
+    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "title": "Statistique Spatiale",
+    "section": "2. Données en réseau ou maillage fixe (données lattice)",
+    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-lattice",
+    "href": "01_intro.html#exemple-de-données-lattice",
+    "title": "Statistique Spatiale",
+    "section": "2. Exemple de données lattice",
+    "text": "2. Exemple de données lattice\n\n\nFigure 1"
+  },
+  {
+    "objectID": "01_intro.html#données-ponctuelles",
+    "href": "01_intro.html#données-ponctuelles",
+    "title": "Statistique Spatiale",
+    "section": "3. Données ponctuelles",
+    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
+    "href": "01_intro.html#exemple-de-données-ponctuelles",
+    "title": "Statistique Spatiale",
+    "section": "3. Exemple de données ponctuelles",
+    "text": "3. Exemple de données ponctuelles\n\n\nFigure 2"
+  },
+  {
+    "objectID": "01_intro.html#exercice",
+    "href": "01_intro.html#exercice",
+    "title": "Statistique Spatiale",
+    "section": "Exercice",
+    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#cadre-du-cours",
+    "href": "01_intro.html#cadre-du-cours",
+    "title": "Statistique Spatiale",
+    "section": "Cadre du cours",
+    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
   }
 ]
