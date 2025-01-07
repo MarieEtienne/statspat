@@ -1,6 +1,5 @@
 ---
-title: "Statistique Spatiale"
-subtitle: "Introduction"
+title: "Introduction"
 author:
   - name: Marie-Pierre Etienne
     affiliation: 

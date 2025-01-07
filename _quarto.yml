@@ -21,6 +21,7 @@ website:
       - text: "Cours"
         menu: 
           - href: 01_intro.qmd
+          - href: 01_geostat.qmd
 
       - text: "TP"
 
