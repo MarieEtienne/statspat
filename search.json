@@ -4,14 +4,14 @@
     "href": "references_statspat.html",
     "title": "References",
     "section": "",
-    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'statspat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)\n\nNULL"
+    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
   },
   {
     "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
     "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
     "title": "References",
     "section": "Pour approfondir ou compléter le cours",
-    "text": "Pour approfondir ou compléter le cours\nYou haven't cited any references in this bibliography yet.\nNULL"
+    "text": "Pour approfondir ou compléter le cours\nSpatial and spatio-temporal models with R-INLA (2013). “Spatial and spatio-temporal models with R-INLA”. In: Spatial and spatio-temporal epidemiology 4, pp. 33-49.\nBayesian inference with INLA (2020). Bayesian inference with INLA. Chapman and Hall/CRC.\nCressie, N. (2015). Statistics for spatial data. John Wiley & Sons.\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
   },
   {
     "objectID": "index.html",

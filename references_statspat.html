@@ -223,20 +223,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">key1 =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(key1, <span class="at">pattern =</span> <span class="st">','</span>)) </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>statspat_liste <span class="ot">&lt;-</span> liste <span class="sc">%&gt;%</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(key0, <span class="st">'statspat'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(key0, <span class="st">'spatstat'</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(key1) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>()</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">NoCite</span>(<span class="at">bib =</span> myBib, statspat_liste)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
 </div>
 </div>
 <section id="pour-approfondir-ou-compléter-le-cours" class="level2">
 <h2 class="anchored" data-anchor-id="pour-approfondir-ou-compléter-le-cours">Pour approfondir ou compléter le cours</h2>
-<pre><code>You haven't cited any references in this bibliography yet.</code></pre>
-<p>NULL</p>
+<p>Spatial and spatio-temporal models with R-INLA (2013). “Spatial and spatio-temporal models with R-INLA”. In: <em>Spatial and spatio-temporal epidemiology</em> 4, pp.&nbsp;33-49.</p>
+<p>Bayesian inference with INLA (2020). <em>Bayesian inference with INLA</em>. Chapman and Hall/CRC.</p>
+<p>Cressie, N. (2015). <em>Statistics for spatial data</em>. John Wiley &amp; Sons.</p>
+<p>Gaetan, C., X. Guyon, and others (2010). Vol. 90. Springer.</p>
 
 
 </section>
