@@ -1,5 +1,159 @@
 [
   {
+    "objectID": "02_geostat.html#exemple-illustratif",
+    "href": "02_geostat.html#exemple-illustratif",
+    "title": "Géostatistique",
+    "section": "Exemple illustratif",
+    "text": "Exemple illustratif\nLa température en France"
+  },
+  {
+    "objectID": "02_geostat.html#géostatistique",
+    "href": "02_geostat.html#géostatistique",
+    "title": "Géostatistique",
+    "section": "Géostatistique",
+    "text": "Géostatistique\n\n\nDomaine continu : \\(D \\subset \\mathbb{R}^2\\).\nProcessus stochastique : \\(Z = \\{Z(s)\\}_{s \\in D}\\)\n\nCollection de variables aléatoires indexées par \\(s \\in D\\).\nDonnées \\(Z(s_1), Z(s_2), \\ldots, Z(s_n)\\) observés.\n\n\nObjectifs :\n\nPrédiction \\(\\widehat{Z}(s_0)\\) de \\(Z(s_0)\\) ou intégrale \\(\\int_B Z(s)ds\\).\nEstimation de la loi de \\(Z(s)\\) ou d’une fonctionnelle \\(\\varphi(Z(s))\\).\nEstimation des relations de dépendance entre \\(Z(s_i)\\)."
+  },
+  {
+    "objectID": "02_geostat.html#estimation-de-la-moyenne",
+    "href": "02_geostat.html#estimation-de-la-moyenne",
+    "title": "Géostatistique",
+    "section": "Estimation de la moyenne",
+    "text": "Estimation de la moyenne\nHypothèses\n\n\\(E(Z(s)) = \\mu \\quad \\forall s \\in D\\)\n\\(\\text{cov}(Z(s_i), Z(s_j)) = c_{ij}\\)\n\nEstimation\n\nObservations : \\(Z(s_1), Z(s_2), \\ldots, Z(s_n)\\).\nEstimation de \\(E(Z(s)) = \\mu\\) ?\n\nContraintes\n\nEstimateur linéaire : \\(\\widehat{\\mu} = \\sum_{i=1}^n \\lambda_i Z(s_i)\\).\nSans biais : \\(\\text{E}(\\widehat{\\mu}) = \\mu\\).\nVariance minimale : \\(\\text{Var}(\\widehat{\\mu} - \\mu)\\)."
+  },
+  {
+    "objectID": "02_geostat.html#estimation-de-la-moyenne-1",
+    "href": "02_geostat.html#estimation-de-la-moyenne-1",
+    "title": "Géostatistique",
+    "section": "Estimation de la moyenne",
+    "text": "Estimation de la moyenne\n\nSi \\(\\widehat{\\mu}\\) est sans biais alors\nQuelle est la conséquence de l’hypothèse de variance minimale ?"
+  },
+  {
+    "objectID": "02_geostat.html#solution-best-linear-unbiased-estimator-blue",
+    "href": "02_geostat.html#solution-best-linear-unbiased-estimator-blue",
+    "title": "Géostatistique",
+    "section": "Solution : Best Linear Unbiased Estimator (BLUE)",
+    "text": "Solution : Best Linear Unbiased Estimator (BLUE)\n\nMinimisation : [ _{i,j=1}^n i j c{ij} ; {i=1}^n _i = 1 ]\n\nUtiliser la méthode du multiplicateur de Lagrange et montrer qu’on cherche à résoudre le système linéaire\n\\[\\begin{pmatrix}\n  c_{11} & c_{12} & \\dots & c_{1n} & 1 \\\\\n  c_{21} & c_{22} & \\dots & c_{2n} & 1 \\\\\n  \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n  c_{n1} & c_{n2} & \\dots & c_{nn} & 1 \\\\\n  1 & 1 & \\dots & 1 & 0\n  \\end{pmatrix}\n  \\begin{pmatrix}\n  \\lambda_1 \\\\\n  \\lambda_2 \\\\\n  \\vdots \\\\\n  \\lambda_n \\\\\n  m\n  \\end{pmatrix} =\n  \\begin{pmatrix}\n  0 \\\\\n  0 \\\\\n  \\vdots \\\\\n  0 \\\\\n  1\n  \\end{pmatrix}\\]\nConclusion si \\(c_{ij}\\) connus, on peut estimer la moyenne\nEncore faut il pouvoir estimer la covariance"
+  },
+  {
+    "objectID": "02_geostat.html#spécificité-des-données-spatiales",
+    "href": "02_geostat.html#spécificité-des-données-spatiales",
+    "title": "Géostatistique",
+    "section": "Spécificité des données spatiales",
+    "text": "Spécificité des données spatiales\n\non a souvent une seule réalisation du processus spatial\nIl faut avoir des hypothèses de régularité spatial pour espérer dire des choses à partir d’une réalisation"
+  },
+  {
+    "objectID": "02_geostat.html#définitions",
+    "href": "02_geostat.html#définitions",
+    "title": "Géostatistique",
+    "section": "Définitions",
+    "text": "Définitions\n\n\\(Z\\) est un processus du second ordre si \\(\\forall s \\in D, \\text{E}(Z(s)^2) &lt; \\infty\\).\nLa moyenne de \\(Z\\) est la fonction \\[\\begin{align}\n  m : D & \\to {\\mathbb{R}}\\\\\n    s & \\to m(s) = {\\mathbb{E}}(Z(s)))\n\\end{align}\\]\nLa covariance de \\(Z\\) est la fonction \\[\\begin{align}\n  c : D\\times D & \\to {\\mathbb{R}}\\\\\n    (s,t) & \\to c(s,t) = {\\mathbb{C}\\text{ov}}(Z(s), Z(t))\n\\end{align}\\]\n\nPropriété Une fonction de covariance est semi définie positive i.e.\n\\[\\forall a\\in {\\mathbb{R}}^n, \\sum_{i,j}^n a_i a_j C(s_i, s_j)\\geq 0\\] Idée de preuve : Regarder \\({\\mathbb{V}\\text{ar}}(\\sum_{i=1}^n a_i Z(s_i))\\)\n\n\\(Z\\) est un processus gaussien si pour toute partie finie \\(S \\subset D\\) et toute suite réelle \\(a = (a_s , s\\in S)\\), \\(\\sum_{s\\in S} a_s Z(s)\\) est une variable gaussienne."
+  },
+  {
+    "objectID": "02_geostat.html#processus-stationnaire",
+    "href": "02_geostat.html#processus-stationnaire",
+    "title": "Géostatistique",
+    "section": "Processus stationnaire",
+    "text": "Processus stationnaire\nDéfinition\nUn processus de second ordre \\(Z\\) est stationnaire sur \\(D\\subset {\\mathbb{R}}^d\\) si\n\nMoyenne constante : \\(\\forall s\\in D, \\quad m(s) = \\mu\\).\nCovariance invariante par translation : \\[\\forall (s, t)\\in D^2\nc(s,t) = C(t - s) \\quad \\text{ou} \\forall h; s+h \\in D,  \\quad c(s,s+h) = C(h)\n\\]\n\nIsotropie\nUn processus est isotrope si \\(C(h)\\) dépend uniquement de \\(\\|h\\|\\) i.e \\[C(h) = C(\\|h\\|)\\]"
+  },
+  {
+    "objectID": "02_geostat.html#stationarité-des-accroissements",
+    "href": "02_geostat.html#stationarité-des-accroissements",
+    "title": "Géostatistique",
+    "section": "Stationarité des accroissements",
+    "text": "Stationarité des accroissements\n\\(Z\\) est un processus à accroissements stationnaires si les accroissements de \\(Z\\) sont stationnaires au second ordre, i.e. \\[{\\mathbb{E}}(Z(s + h) − Z(s)) = 0\\] \\[{\\mathbb{V}\\text{ar}}(Z(s + h) − Z(s)) = 2\\gamma(h)\\] La stationnarité du second ordre implique la stationnarité des accroissements.\nLa classe des processus à accroissement stations est donc plus ….. que la classe des processus de second ordre. ### Exemple\nQue dire du mouvement Brownien sur \\({\\mathbb{R}}\\)"
+  },
+  {
+    "objectID": "02_geostat.html#définition-1",
+    "href": "02_geostat.html#définition-1",
+    "title": "Géostatistique",
+    "section": "Définition",
+    "text": "Définition\nLe semi-variogramme d’un processus à accroissements stattionnaire est défini comme : \\[\\gamma(h) = \\frac{1}{2} {\\mathbb{V}\\text{ar}}(Z(s+h) - Z(s))\\]\nPropriétés\n\n\\(\\gamma(h) \\geq 0\\), \\(\\gamma(0) = 0\\), \\(\\gamma(-h) = \\gamma(h)\\).\nSi \\(Z\\) est stationnaire de second ordre : \\[\\gamma(h) = C(0) - C(h)\\]\nsi \\(lim_{|h|\\to \\infty} \\gamma(h) = \\ell &lt; +\\infty\\) alors le processus est stationnaire du second ordre et \\(\\ell = C(0)\\)"
+  },
+  {
+    "objectID": "02_geostat.html#variogrammes-classiques",
+    "href": "02_geostat.html#variogrammes-classiques",
+    "title": "Géostatistique",
+    "section": "Variogrammes classiques",
+    "text": "Variogrammes classiques\n\nPépitique : \\(\\gamma(h) = C\\)\nExponentiel : \\(\\gamma(h) = C(1 - \\exp(-\\|h\\|/\\rho))\\).\nSphérique : \\[\\gamma(h) = \\begin{cases}\nC \\left( \\frac{3}{2} \\frac{\\|h\\|}{\\rho} - \\frac{1}{2} \\left(\\frac{\\|h\\|}{\\rho}\\right)^3 \\right) & \\text{si } \\|h\\| \\leq \\rho \\\\\nC & \\text{si } \\|h\\| &gt; \\rho\n\\end{cases}\\]\nGaussien : \\(\\gamma(h) = C(1 - \\exp(-\\|h\\|^2/\\rho))\\).\nPuissance : \\(\\gamma(h) =  C\\left | h\\right|^\\alpha,  \\alpha &lt; 2\\)"
+  },
+  {
+    "objectID": "02_geostat.html#un-variogramme-particulier",
+    "href": "02_geostat.html#un-variogramme-particulier",
+    "title": "Géostatistique",
+    "section": "Un variogramme particulier",
+    "text": "Un variogramme particulier\nClasse de Matèrn\n\\[ \\gamma(h) = C\\left [ 1 - \\frac{1}{2^{\\nu -1}\\Gamma(\\nu)}\\left(\\frac{\\sqrt{2\\nu }h}{\\rho}\\right)K_{\\nu}\\left(\\frac{\\sqrt{2\\nu }h}{\\rho}\\right)\\right]\\] \\(K_{\\nu}\\) fonction de Bessel modifiée de 3ème espèce, d’ordre \\(\\nu\\)\n\\(\\nu\\) paramètre qui règle la régularité en 0.\n\n\\(\\nu\\) = 1/2 : modèle exponentiel\n\\(\\nu\\to \\infty\\)"
+  },
+  {
+    "objectID": "01_intro.html#cadre",
+    "href": "01_intro.html#cadre",
+    "title": "Introduction",
+    "section": "Cadre",
+    "text": "Cadre\n{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#données-géostatistiques",
+    "href": "01_intro.html#données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Données géostatistiques",
+    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
+    "href": "01_intro.html#exemple-de-données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Exemple de données géostatistiques",
+    "text": "1. Exemple de données géostatistiques"
+  },
+  {
+    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "title": "Introduction",
+    "section": "2. Données en réseau ou maillage fixe (données lattice)",
+    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-lattice",
+    "href": "01_intro.html#exemple-de-données-lattice",
+    "title": "Introduction",
+    "section": "2. Exemple de données lattice",
+    "text": "2. Exemple de données lattice\n\n\nFigure 1"
+  },
+  {
+    "objectID": "01_intro.html#données-ponctuelles",
+    "href": "01_intro.html#données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Données ponctuelles",
+    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
+    "href": "01_intro.html#exemple-de-données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Exemple de données ponctuelles",
+    "text": "3. Exemple de données ponctuelles\n\n\nFigure 2"
+  },
+  {
+    "objectID": "01_intro.html#exercice",
+    "href": "01_intro.html#exercice",
+    "title": "Introduction",
+    "section": "Exercice",
+    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#cadre-du-cours",
+    "href": "01_intro.html#cadre-du-cours",
+    "title": "Introduction",
+    "section": "Cadre du cours",
+    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  },
+  {
     "objectID": "references_statspat.html",
     "href": "references_statspat.html",
     "title": "References",
@@ -12,75 +166,5 @@
     "title": "References",
     "section": "Pour approfondir ou compléter le cours",
     "text": "Pour approfondir ou compléter le cours\nSpatial and spatio-temporal models with R-INLA (2013). “Spatial and spatio-temporal models with R-INLA”. In: Spatial and spatio-temporal epidemiology 4, pp. 33-49.\nBayesian inference with INLA (2020). Bayesian inference with INLA. Chapman and Hall/CRC.\nCressie, N. (2015). Statistics for spatial data. John Wiley & Sons.\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistique Spatiale",
-    "section": "",
-    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
-  },
-  {
-    "objectID": "01_intro.html#cadre",
-    "href": "01_intro.html#cadre",
-    "title": "Statistique Spatiale",
-    "section": "Cadre",
-    "text": "Cadre\n{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
-  },
-  {
-    "objectID": "01_intro.html#données-géostatistiques",
-    "href": "01_intro.html#données-géostatistiques",
-    "title": "Statistique Spatiale",
-    "section": "1. Données géostatistiques",
-    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
-    "href": "01_intro.html#exemple-de-données-géostatistiques",
-    "title": "Statistique Spatiale",
-    "section": "1. Exemple de données géostatistiques",
-    "text": "1. Exemple de données géostatistiques"
-  },
-  {
-    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "title": "Statistique Spatiale",
-    "section": "2. Données en réseau ou maillage fixe (données lattice)",
-    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-lattice",
-    "href": "01_intro.html#exemple-de-données-lattice",
-    "title": "Statistique Spatiale",
-    "section": "2. Exemple de données lattice",
-    "text": "2. Exemple de données lattice\n\n\nFigure 1"
-  },
-  {
-    "objectID": "01_intro.html#données-ponctuelles",
-    "href": "01_intro.html#données-ponctuelles",
-    "title": "Statistique Spatiale",
-    "section": "3. Données ponctuelles",
-    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
-    "href": "01_intro.html#exemple-de-données-ponctuelles",
-    "title": "Statistique Spatiale",
-    "section": "3. Exemple de données ponctuelles",
-    "text": "3. Exemple de données ponctuelles\n\n\nFigure 2"
-  },
-  {
-    "objectID": "01_intro.html#exercice",
-    "href": "01_intro.html#exercice",
-    "title": "Statistique Spatiale",
-    "section": "Exercice",
-    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
-  },
-  {
-    "objectID": "01_intro.html#cadre-du-cours",
-    "href": "01_intro.html#cadre-du-cours",
-    "title": "Statistique Spatiale",
-    "section": "Cadre du cours",
-    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
   }
 ]
