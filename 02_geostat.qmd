@@ -154,6 +154,12 @@ ggplot() +
 - Estimation de la loi de $Z(s)$ ou d'une fonctionnelle $\varphi(Z(s))$.
 - Estimation des relations de dépendance entre $Z(s_i)$.
 
+## Intuition
+
+- Que veut on prendre en compte ?
+- Quid des répétitions ?
+- Que peut-on espérer estimer, comprendre ?
+
 
 ## Estimation de la moyenne
 
@@ -323,5 +329,66 @@ $\nu$  paramètre qui règle la régularité en 0.
 - $\nu\to \infty$ 
 
 
+## Effet des paramètres
 
-# Exemple : Pluies suisses
+- palier $C = \lim_{h \to \infty} \gamma(h)$}
+- échelle $\rho$
+- portée $\widetilde{\rho} \mbox{ t.q. } \|h\| \ge \widetilde{\rho} \rightarrow C - \gamma(h) \le \varepsilon$
+- pépite $\tau = \lim_{h \to 0} \gamma(h)$
+
+
+```{r}
+
+# Paramètres du variogramme
+portee <- 1 # Portée
+pepites <- 0 # Pépite
+palier <- 1 # Palier
+
+# Fonction du variogramme sphérique
+h <- seq(0, 1.5, by = 0.01) # Distance (h)
+gamma <- ifelse(h <= portee, pepites + (palier * (1.5 * (h / portee) - 0.5 * (h / portee)^3)), palier) +0.2
+
+# Création des données
+data <- data.frame(h = h, gamma = gamma)
+
+# Tracé du graphique avec ggplot2
+ggplot(data, aes(x = h, y = gamma)) +
+  geom_line(color = "#0c324e", linewidth = 1) +
+  geom_hline(yintercept = palier+ 0.2, linetype = "dashed", color = "#F7A913") +
+  geom_vline(xintercept = portee-0.1, linetype = "solid", color = "#C94326") +
+  labs(title = "Variogramme théorique",
+       x = "h",
+       y = "semi-variogramme") +
+  annotate("text", x=portee, y = -0, label="portée", col  = "#C94326") +
+  annotate("text", x=0, y = palier +0.2, label="palier", col  = "#F7A913") +
+  annotate("text", x=0.05, y = 0.15, label="pepite", col="#398d55") +
+  geom_segment(aes(x=0, y=0, xend=0, yend = 0.2),  col="#398d55") +
+  theme_minimal() +
+    theme(#axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+```
+
+}
+
+## Effet des param\`etres}
+
+- Le palier : S'il est fini, le processus $Z$ est stationnaire du second ordre et
+   $$ C = \mbox{Var}(Z(s))$$
+   
+- L'échelle : Règle la vitesse à laquelle le variogramme rejoint le palier. Donne une idée de l'horizon de dépendance du processus.
+
+- La portée est la distance à partir de laquelle la corrélation est nulle ou négligeable
+
+- La pépite donne la r\'egularit\'e du processus
+   - si $\tau\neq 0$ le processus est très irrégulier (bruit blanc, erreur de mesure)
+   - si $\tau=0$, la régularité du variogramme en 0 (paramètre $\nu$ dans le variogramme de Matern)
+
+## Intuition  
+
+* Quelles données pour le variogramme
+* Comment peut-on s'y prendre
+
+
+<!-- # Exemple : Pluies suisses -->

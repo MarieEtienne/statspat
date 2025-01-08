@@ -30,7 +30,6 @@ library(tidyverse) ## to benefit from the tydiverse coding system
 library(lubridate)
 library(wesanderson)
 
-```{r reference,  include=FALSE, cache=FALSE, eval = TRUE}
 BibOptions(check.entries = FALSE,
            bib.style = "authoryear",
            cite.style = "alphabetic",
@@ -40,24 +39,28 @@ BibOptions(check.entries = FALSE,
 myBib <- ReadBib("./spatstat.bib", check = FALSE)
 ```
 
+## Cadre
 
+{La statistique spatiale}\[.rouge\] est une branche de la statistique
+qui se concentre sur l'analyse et la modélisation de données localisées
+géographiquement ou spatialement.
 
-## Cadre 
-
-{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l'analyse et la modélisation de données localisées géographiquement ou spatialement. 
-
-Elle **prend en compte la localisation des observations et les relations spatiales** entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.
+Elle **prend en compte la localisation des observations et les relations
+spatiales** entre elles, notamment elle permet de lier la dépendance et
+la localisation spatiale.
 
 ### Pour quelles applications ?
 
-* Sciences de la terre : position des séismes. 
-* Environnement : température, pluie
-* Epdémiologie : nombre de cander par régions administratives
-* Ecologie : localisation des différents arbre d'une espeèce au sein d'une parcelle, 
-* Agrnomie : répartition des pucerons dans une parcelle cultivée
-* Economie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d'une ville
-* Imagerie : Couleur d'un pixel en fonction de sa localisation sur l'image
-
+-   Sciences de la terre : position des séismes.
+-   Environnement : température, pluie
+-   Epdémiologie : nombre de cander par régions administratives
+-   Ecologie : localisation des différents arbre d'une espeèce au sein
+    d'une parcelle,
+-   Agrnomie : répartition des pucerons dans une parcelle cultivée
+-   Economie spatiale : taux de chomage par région administrative, prix
+    au m2 des appartements au sein d'une ville
+-   Imagerie : Couleur d'un pixel en fonction de sa localisation sur
+    l'image
 
 # Trois types de données spatiales
 
@@ -65,25 +68,31 @@ Elle **prend en compte la localisation des observations et les relations spatial
 
 ### Description
 
-- **Observation** : A un point $s$ d'un domaine spatial $D$,  on associe une valeur observée $Z(s)$. La grandeur mesurée est définie partout mais on l'observe seulement en $n$ points $s_1, \ldots, s_n$.
+-   **Observation** : A un point $s$ d'un domaine spatial $D$, on
+    associe une valeur observée $Z(s)$. La grandeur mesurée est définie
+    partout mais on l'observe seulement en $n$ points
+    $s_1, \ldots, s_n$.
 
-- **Caractéristiques** :
-  - Positions continues.
-  - Généralement irrégulièrement espacées.
-  - Modèles courants : modèles de champs spatiaux
+-   **Caractéristiques** :
 
-- **Exemples** : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,
+    -   Positions continues.
+    -   Généralement irrégulièrement espacées.
+    -   Modèles courants : modèles de champs spatiaux
+
+-   **Exemples** : Porosité du sol, concentrations de
+    polluants.Températures mesurées à des stations météo,
 
 ### Visualisation
-- Carte avec des points représentant les positions des observations.
 
+-   Carte avec des points représentant les positions des observations.
 
 ### Objectifs
-  - Modélisation.
-  - Séparation des variations à différentes échelles.
-  - Prédiction (krigeage).
 
-## 1. Exemple de données géostatistiques 
+-   Modélisation.
+-   Séparation des variations à différentes échelles.
+-   Prédiction (krigeage).
+
+## 1. Exemple de données géostatistiques
 
 ```{r}
 #| echo: false
@@ -129,77 +138,91 @@ ggplot() +
 
 ```
 
-
-
 ## 2. Données en réseau ou maillage fixe (données lattice)
 
-- **Observation** : pour un réseau donné, on associe à chaque maille $i$ du réseau une valeur $Z_i$. La grandeur mesurée est définie pour l'ensemble de la maille, elle ne varie pas continuement.  Les données sont donc  agrégées sur des zones géographiques définies (polygones).
+-   **Observation** : pour un réseau donné, on associe à chaque maille
+    $i$ du réseau une valeur $Z_i$. La grandeur mesurée est définie pour
+    l'ensemble de la maille, elle ne varie pas continuement. Les données
+    sont donc agrégées sur des zones géographiques définies (polygones).
 
+-   **Exemples** :
 
-- **Exemples** :
-  - Pourcentage de groupe sanguin par région.
-  - Prix au m2 par arrondissement à Paris.
-  - Pixels dans une image.
-  
+    -   Pourcentage de groupe sanguin par région.
+    -   Prix au m2 par arrondissement à Paris.
+    -   Pixels dans une image.
+
 ### Visualisation
-- Cartes choroplèthes.
 
+-   Cartes choroplèthes.
 
 ### Objectifs
-  - Explicatifs (lien avec des covariables)
-  - Analyse des corrélations spatiales.
-  - Restauration d'images.
 
-## 2. Exemple  de données lattice 
+-   Explicatifs (lien avec des covariables)
+-   Analyse des corrélations spatiales.
+-   Restauration d'images.
+
+## 2. Exemple de données lattice
 
 ::: {#fig-cancer}
-![Incidence des cancers aux USA](new_cancercases.png){width=60%}
+![Incidence des cancers aux USA](new_cancercases.png){width="60%"}
 **Figure 1** : Incidence des cas de cancer aux USA.
 :::
 
-
 ## 3. Données ponctuelles
 
-- **Observations** on note la présence d'un évènement en la position $s$. $s_i$ est donc la position du ième évènement d'intérêt
+-   **Observations** on note la présence d'un évènement en la position
+    $s$. $s_i$ est donc la position du ième évènement d'intérêt
 
-- Exemples : Positions des chênes dans une forêt, position des épicentres de séismes
-
+-   Exemples : Positions des chênes dans une forêt, position des
+    épicentres de séismes
 
 ### Visualisation
-- Carte de points.
+
+-   Carte de points.
 
 ### Objectifs
-  - Régularité.
-  - Distribution aléatoire (Poisson).
-  - Agrégation.
 
-## 3. Exemple  de données ponctuelles 
+-   Régularité.
+-   Distribution aléatoire (Poisson).
+-   Agrégation.
+
+## 3. Exemple de données ponctuelles
+
+Figure extraite de @renner2015point
 
 ::: {#fig-eucalyptus}
-![Présence de Eucalyptus sparsifolia](eucalyptus.png){height=60%, width=40%}
+![Présence de Eucalyptus sparsifolia](eucalyptus.png){height="60%",width="40%"} 
 **Figure 2** : Présence d'Eucalyptus sparsifolia @renner2015point
+
 :::
 
-## Exercice 
+## Exercice
 
-* Sciences de la terre : position des séismes. 
-* Environnement : température, pluie
-* Epdémiologie : nombre de cander par régions administratives
-* Ecologie : localisation des différents arbre d'une espeèce au sein d'une parcelle, 
-* Agrnomie : répartition des pucerons dans une parcelle cultivée
-* Economie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d'une ville
-* Sociologie : Localisation des crimes, des stations de service.
-* Imagerie : Couleur d'un pixel en fonction de sa localisation sur l'image
-
+-   Sciences de la terre : position des séismes.
+-   Environnement : température, pluie
+-   Epdémiologie : nombre de cander par régions administratives
+-   Ecologie : localisation des différents arbre d'une espeèce au sein
+    d'une parcelle,
+-   Agrnomie : répartition des pucerons dans une parcelle cultivée
+-   Economie spatiale : taux de chomage par région administrative, prix
+    au m2 des appartements au sein d'une ville
+-   Sociologie : Localisation des crimes, des stations de service.
+-   Imagerie : Couleur d'un pixel en fonction de sa localisation sur
+    l'image
 
 ## Cadre du cours
 
-La statistique spatiale analyse des données localisées dans l'espace. 
+La statistique spatiale analyse des données localisées dans l'espace.
 
-Ces données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.
+Ces données se classent en trois grandes catégories, nous étudierons les
+deux premières dans ce cours.
 
-- **Champs spatiaux observés en quelques positions**
-- **Valeurs associées à des régions** (données lattice)
-- **Événements géolocalisés** (processus ponctuels)
+-   **Champs spatiaux observés en quelques positions**
+-   **Valeurs associées à des régions** (données lattice)
+-   **Événements géolocalisés** (processus ponctuels)
 
+## References
+
+::: {#refs}
+:::
 
