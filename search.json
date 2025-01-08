@@ -14,6 +14,13 @@
     "text": "Géostatistique\n\n\nDomaine continu : \\(D \\subset \\mathbb{R}^2\\).\nProcessus stochastique : \\(Z = \\{Z(s)\\}_{s \\in D}\\)\n\nCollection de variables aléatoires indexées par \\(s \\in D\\).\nDonnées \\(Z(s_1), Z(s_2), \\ldots, Z(s_n)\\) observés.\n\n\nObjectifs :\n\nPrédiction \\(\\widehat{Z}(s_0)\\) de \\(Z(s_0)\\) ou intégrale \\(\\int_B Z(s)ds\\).\nEstimation de la loi de \\(Z(s)\\) ou d’une fonctionnelle \\(\\varphi(Z(s))\\).\nEstimation des relations de dépendance entre \\(Z(s_i)\\)."
   },
   {
+    "objectID": "02_geostat.html#intuition",
+    "href": "02_geostat.html#intuition",
+    "title": "Géostatistique",
+    "section": "Intuition",
+    "text": "Intuition\n\nQue veut on prendre en compte ?\nQuid des répétitions ?\nQue peut-on espérer estimer, comprendre ?"
+  },
+  {
     "objectID": "02_geostat.html#estimation-de-la-moyenne",
     "href": "02_geostat.html#estimation-de-la-moyenne",
     "title": "Géostatistique",
@@ -84,6 +91,27 @@
     "text": "Un variogramme particulier\nClasse de Matèrn\n\\[ \\gamma(h) = C\\left [ 1 - \\frac{1}{2^{\\nu -1}\\Gamma(\\nu)}\\left(\\frac{\\sqrt{2\\nu }h}{\\rho}\\right)K_{\\nu}\\left(\\frac{\\sqrt{2\\nu }h}{\\rho}\\right)\\right]\\] \\(K_{\\nu}\\) fonction de Bessel modifiée de 3ème espèce, d’ordre \\(\\nu\\)\n\\(\\nu\\) paramètre qui règle la régularité en 0.\n\n\\(\\nu\\) = 1/2 : modèle exponentiel\n\\(\\nu\\to \\infty\\)"
   },
   {
+    "objectID": "02_geostat.html#effet-des-paramètres",
+    "href": "02_geostat.html#effet-des-paramètres",
+    "title": "Géostatistique",
+    "section": "Effet des paramètres",
+    "text": "Effet des paramètres\n\npalier \\(C = \\lim_{h \\to \\infty} \\gamma(h)\\)}\néchelle \\(\\rho\\)\nportée \\(\\widetilde{\\rho} \\mbox{ t.q. } \\|h\\| \\ge \\widetilde{\\rho} \\rightarrow C - \\gamma(h) \\le \\varepsilon\\)\npépite \\(\\tau = \\lim_{h \\to 0} \\gamma(h)\\)\n\n\n}"
+  },
+  {
+    "objectID": "02_geostat.html#effet-des-parametres",
+    "href": "02_geostat.html#effet-des-parametres",
+    "title": "Géostatistique",
+    "section": "Effet des param`etres}",
+    "text": "Effet des param`etres}\n\nLe palier : S’il est fini, le processus \\(Z\\) est stationnaire du second ordre et \\[ C = \\mbox{Var}(Z(s))\\]\nL’échelle : Règle la vitesse à laquelle le variogramme rejoint le palier. Donne une idée de l’horizon de dépendance du processus.\nLa portée est la distance à partir de laquelle la corrélation est nulle ou négligeable\nLa pépite donne la r'egularit'e du processus\n\nsi \\(\\tau\\neq 0\\) le processus est très irrégulier (bruit blanc, erreur de mesure)\nsi \\(\\tau=0\\), la régularité du variogramme en 0 (paramètre \\(\\nu\\) dans le variogramme de Matern)"
+  },
+  {
+    "objectID": "02_geostat.html#intuition-1",
+    "href": "02_geostat.html#intuition-1",
+    "title": "Géostatistique",
+    "section": "Intuition",
+    "text": "Intuition\n\nQuelles données pour le variogramme\nComment peut-on s’y prendre"
+  },
+  {
     "objectID": "01_intro.html#cadre",
     "href": "01_intro.html#cadre",
     "title": "Introduction",
@@ -130,7 +158,7 @@
     "href": "01_intro.html#exemple-de-données-ponctuelles",
     "title": "Introduction",
     "section": "3. Exemple de données ponctuelles",
-    "text": "3. Exemple de données ponctuelles\n\n\nFigure 2"
+    "text": "3. Exemple de données ponctuelles\nFigure extraite de Renner et al. (2015)\n\n\nFigure 2"
   },
   {
     "objectID": "01_intro.html#exercice",
@@ -145,6 +173,13 @@
     "title": "Introduction",
     "section": "Cadre du cours",
     "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
+  },
+  {
+    "objectID": "01_intro.html#references",
+    "href": "01_intro.html#references",
+    "title": "Introduction",
+    "section": "References",
+    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
   },
   {
     "objectID": "index.html",
