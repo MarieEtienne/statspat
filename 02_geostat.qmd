@@ -29,6 +29,8 @@ library(RefManageR)
 library(tidyverse) ## to benefit from the tydiverse coding system
 library(lubridate)
 library(wesanderson)
+library(gstat)
+library(sf)
 
 BibOptions(check.entries = FALSE,
            bib.style = "authoryear",
@@ -46,11 +48,19 @@ myBib <- ReadBib("./spatstat.bib", check = FALSE)
 \newcommand\R{{\mathbb{R}}}
 \newcommand\Cov{{\mathbb{C}\text{ov}}}
 \newcommand\Var{{\mathbb{V}\text{ar}}}
+\newcommand\Zchap{\widehat{Z}}
 
 \$\$
 :::
 
 # Introduction
+
+## Sources
+
+Ce cours est construit principalement à partir de celui de Lilane Bel et du livre de @gaetan2010spatial
+
+
+
 
 ## Exemple illustratif
 
@@ -61,7 +71,7 @@ La température en France
 
 library(sf)
 library(tidyverse)
-rain_df <- read.csv('synop.202412.csv', sep = ";") |> 
+temp_df <- read.csv('synop.202412.csv', sep = ";") |> 
   select(numer_sta,	date, t) |> 
   mutate(date= as.character(date)) |> 
   filter(date > 240000000000) |> 
@@ -76,7 +86,7 @@ box = c(xmin = -5, ymin = 20, xmax = 10, ymax = 55)
   
 
 station <- read.csv('postesSynop.csv') 
-rain_df <- rain_df |> left_join(station, by = join_by(numer_sta == ID)) |>   st_as_sf( coords = c("Longitude", "Latitude"), crs = 4326)  |> # CRS 4326 = WGS84 
+temp_df <- temp_df |> left_join(station, by = join_by(numer_sta == ID)) |>   st_as_sf( coords = c("Longitude", "Latitude"), crs = 4326)  |> # CRS 4326 = WGS84 
 filter(month(anneemois) == 12, day(anneemois)==31)   |> st_crop(box)
   
 region <- read_sf('france_shp/') |> st_crop(box)
@@ -85,7 +95,7 @@ region <- read_sf('france_shp/') |> st_crop(box)
 
 ggplot() +
   geom_sf(data = region,  fill = "#f0f2f0",) +
-  geom_sf(data = rain_df, aes(col = temp_moy), size= 2)  +
+  geom_sf(data = temp_df, aes(col = temp_moy), size= 2)  +
   labs(
     col = "Temp",
     title = "Temp à 12H le 31/12/2024",
@@ -370,9 +380,9 @@ ggplot(data, aes(x = h, y = gamma)) +
 
 ```
 
-}
 
-## Effet des param\`etres}
+
+## Effet des paramètres
 
 - Le palier : S'il est fini, le processus $Z$ est stationnaire du second ordre et
    $$ C = \mbox{Var}(Z(s))$$
@@ -381,14 +391,160 @@ ggplot(data, aes(x = h, y = gamma)) +
 
 - La portée est la distance à partir de laquelle la corrélation est nulle ou négligeable
 
-- La pépite donne la r\'egularit\'e du processus
+- La pépite donne la régularité du processus
    - si $\tau\neq 0$ le processus est très irrégulier (bruit blanc, erreur de mesure)
    - si $\tau=0$, la régularité du variogramme en 0 (paramètre $\nu$ dans le variogramme de Matern)
+
+# Estimation du variogramme
 
 ## Intuition  
 
 * Quelles données pour le variogramme
 * Comment peut-on s'y prendre
 
+## Nuée Variographique
 
-<!-- # Exemple : Pluies suisses -->
+$\gamma(h) =\frac{1}{2} \Var(Z(s+h) - Z(s)) = \frac{1}{2} \E( (Z(s+h) - Z(s))^2 )
+
+On cherche donc à associer à chaque $h$ $\E( (Z(s+h) - Z(s))^2 )$, on va approcher cette espérance par $\left (Z(s_i)- Z(s_j) \right^2$
+
+```{r}
+#| label: nuees
+#| echo: true
+#| 
+temp_df <- temp_df |> st_transform(crs = "EPSG:2154" )
+vario.cloud = variogram(temp_moy~1, data = temp_df, cloud = TRUE)
+vario.cloud |> ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle("Nuée variographique") 
+```
+
+
+## Variogramme expérimental
+  $$\widetilde \gamma (d_k) = \frac{1}{2n_c}\sum_{(k-1)\delta \le \|s_i-s_j\| \le k\delta}(Z(s_i)-Z(s_j))^2 $$
+
+```{r}
+#| label: vario_experimental
+#| echo: true
+#| 
+vario.b = variogram(temp_moy~1, data = temp_df
+                    # , alpha=c(0,45,90,135)
+                    )
+ggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point()
+
+```
+
+## Propriétés du variogramme expérimental
+
+    * sans biais,\\
+    * sous des conditions de m\'elange, loi limite gaussienne, 
+    $\quad$ variance en \coul{$\frac{1}{n}$},\\
+    * ne n\'ecessite pas l'estimation de la moyenne, \\
+    * si \coul{$Z$} est gaussien, somme de $\chi^2(1)$\\
+
+### Estimateur robuste
+  $$\widetilde \gamma (d_k) = \left\{\frac{1}{2n_c}\sum_{i,j \in C(k)}(Z(s_i)-Z(s_j))^2\right\}^{1/4}\frac{1}{0.457 + \frac{0.494}{n_c}}$$
+<!-- $$\widetilde \gamma (d_k) = \frac{1}{B(d_k)}\left\{\mbox{med}(|Z(s_i)-Z(s_j)|)^{1/2},(i,j) -->
+<!--      \in C(k)\right\}^{4}\; B(d_k) \to 0.457$$ -->
+     
+
+## Ajustement  du variogramme
+
+$\gamma_{\rho,C,\nu,\tau}$} variogramme admissible, \coul{$(\rho,\nu, C, \tau)$} solution du problème
+   $$\min_{\rho,C,\nu,\tau} \sum_{k=1}^K (\gamma_{\rho,C,\nu,\tau}(d_k) - \widetilde \gamma(d_k))^2$$
+Autres m\'ethodes :\\
+max de vraisemblance, moindres carrés généralisés
+
+# Prédiction : le krigeage
+
+## Objectifs 
+
+   On observe \coul{$z(s_1),z(s_2),\ldots,z(s_n)$} aux sites $s_1,s_2,\ldots,s_n$
+   
+### Prédire $g(Z(s))$, $s\in D$
+
+Par exemple 
+
+* $Z(s_0)$, $s_0$ non observ\'e,
+* $\frac{1}{|B|}\int_B Z(s)ds \quad B \mbox{ région de } D$},
+* $P(Z(s_0)>\zeta)$
+
+## Prédicteur optimal
+
+Prédire $Z(s_0)$ sachant $Z(s_1)=z(s_1),\ldots,Z(s_n)=z(s_n)$
+
+   [Prédicteur optimal]{.rouge}
+   $$p^{opt} = \mbox{E}\big(Z(s_0)/Z(s_1)=z(s_1),\ldots,Z(s_n)=z(s_n)\big)$$
+   minimise le risque quadratique
+   $$\mbox{E}\big((Z(s_0)-\widehat{Z}(s_0))^2\big)$$
+   [Prédicteur linéaire optimal (BLUP)]{.rouge}
+   $$ p^* = \alpha + \sum_{i=1}^n\lambda_i Z(s_i)$$
+   Si $Z$ gaussien, $p^{opt}=p^*$
+   
+   Solution
+   
+\begin{align}
+\lambda &= C^{-1}c \qquad C_{i,j} = \mbox{cov}\big(Z(s_i),Z(s_j)\big)
+                 \quad c_i = \mbox{cov}\big(Z(s_0),Z(s_i)\big)\\
+     \alpha  = & \mbox{E}(Z(s_0)) - \sum_{i=1}^n\lambda_i \mbox{E}(Z(s_i))
+\end{align}
+     
+     
+## Krigeage simple
+
+Supposons 
+   $C$ et $m(s)$ connues
+   $$\widehat{Z(s_0)} = \; c^T C^{-1}(Z-m) + m(s_0)$$
+   Variance de krigeage
+   $$\sigma^2_{SK} = \sigma^2(s_0) - c^TC^{-1}c$$
+   Si $s_0=s_i$, alors
+   $$\widehat{Z(s_i)}=Z(s_i)$$
+   
+   Il faut estimer $C$ et $m(s)$.
+
+
+## Krigeage ordinaire
+
+   Hypothèses : $Z(s) = \mu + \delta(s)$,  à accroissements stationnaires.
+   
+   On cherche  $\Zchap(s_0) = \sum_{i=1}^n\lambda_iZ(s_i)$} avec
+   $$E(\Zchap (s_0)) = E(Z(s_0)) \mbox{ et }  E(\Zchap (s_0) - Z(s_0))^2 \mbox{ minimum}$$
+ 
+   Variogramme : $\gamma(h) = \frac{1}{2}\mbox{Var}(Z(s+h)-Z(s))$
+   $(\lambda_i)_{i=1,n}$} solutions du système
+   \begin{pmatrix}
+        0 & \gamma(s_1 - s_2) & \dots & \gamma(s_1 - s_n) & 1 \\
+        \gamma(s_1 - s_2) & 0 & \dots & \gamma(s_2 - s_n) & 1 \\
+        \cdots &\cdots &\cdots &\cdots &\cdots  \\
+        \gamma(s_1 - s_n) & \gamma(s_1 - s_n) & \dots & 0 & 1 \\
+        1 & 1 & \dots & 1 & 0\\
+     \end{pmatrix}
+     \begin{pmatrix}
+        \lambda_1\\
+        \lambda_2\\
+        \dots\\
+        \lambda_n\\
+        \alpha\\
+     \end{pmatrix}
+     =
+     \begin{pmatrix}
+        \gamma(s_0 - s_1) \\
+        \gamma(s_0 - s_2) \\
+        \dots \\
+        \gamma(s_0 - s_n)\\
+        1\\
+     \end{pmatrix}
+  
+
+## Krigeage Ordinaire
+
+Variance de krigeage 
+$$\sigma_K^2(s_0) = E\big((\Zchap (s_0) - Z(s_0))^2\big) = \alpha + \sum_{i=1}^{n} \lambda_i \gamma(s_i-s_0)$$
+
+[Remarques]{.rouge}
+
+1. On n'a pas forcément $0 \le \lambda_i \le 1$
+2. Si $s_0 \in \{ s_1,\ldots s_n\}$ alors $\lambda_i = 1$, $\lambda_j=0$, $j\neq i$}, et $\sigma_K^2(s_i)=0$
+3. les poids de krigeage $\lambda_i$ dépendent de la disposition des sites de données, de la localisation du site de prédiction,   du nombre de données et de la fonction variogramme.
+
+## Ce que vous pensez qu'il faut retenir
+
+## Références
