@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "02_geostat.html#sources",
+    "href": "02_geostat.html#sources",
+    "title": "Géostatistique",
+    "section": "Sources",
+    "text": "Sources\nCe cours est construit principalement à partir de celui de Lilane Bel et du livre de Gaetan, Guyon, et al. (2010)"
+  },
+  {
     "objectID": "02_geostat.html#exemple-illustratif",
     "href": "02_geostat.html#exemple-illustratif",
     "title": "Géostatistique",
@@ -95,14 +102,14 @@
     "href": "02_geostat.html#effet-des-paramètres",
     "title": "Géostatistique",
     "section": "Effet des paramètres",
-    "text": "Effet des paramètres\n\npalier \\(C = \\lim_{h \\to \\infty} \\gamma(h)\\)}\néchelle \\(\\rho\\)\nportée \\(\\widetilde{\\rho} \\mbox{ t.q. } \\|h\\| \\ge \\widetilde{\\rho} \\rightarrow C - \\gamma(h) \\le \\varepsilon\\)\npépite \\(\\tau = \\lim_{h \\to 0} \\gamma(h)\\)\n\n\n}"
+    "text": "Effet des paramètres\n\npalier \\(C = \\lim_{h \\to \\infty} \\gamma(h)\\)}\néchelle \\(\\rho\\)\nportée \\(\\widetilde{\\rho} \\mbox{ t.q. } \\|h\\| \\ge \\widetilde{\\rho} \\rightarrow C - \\gamma(h) \\le \\varepsilon\\)\npépite \\(\\tau = \\lim_{h \\to 0} \\gamma(h)\\)"
   },
   {
-    "objectID": "02_geostat.html#effet-des-parametres",
-    "href": "02_geostat.html#effet-des-parametres",
+    "objectID": "02_geostat.html#effet-des-paramètres-1",
+    "href": "02_geostat.html#effet-des-paramètres-1",
     "title": "Géostatistique",
-    "section": "Effet des param`etres}",
-    "text": "Effet des param`etres}\n\nLe palier : S’il est fini, le processus \\(Z\\) est stationnaire du second ordre et \\[ C = \\mbox{Var}(Z(s))\\]\nL’échelle : Règle la vitesse à laquelle le variogramme rejoint le palier. Donne une idée de l’horizon de dépendance du processus.\nLa portée est la distance à partir de laquelle la corrélation est nulle ou négligeable\nLa pépite donne la r'egularit'e du processus\n\nsi \\(\\tau\\neq 0\\) le processus est très irrégulier (bruit blanc, erreur de mesure)\nsi \\(\\tau=0\\), la régularité du variogramme en 0 (paramètre \\(\\nu\\) dans le variogramme de Matern)"
+    "section": "Effet des paramètres",
+    "text": "Effet des paramètres\n\nLe palier : S’il est fini, le processus \\(Z\\) est stationnaire du second ordre et \\[ C = \\mbox{Var}(Z(s))\\]\nL’échelle : Règle la vitesse à laquelle le variogramme rejoint le palier. Donne une idée de l’horizon de dépendance du processus.\nLa portée est la distance à partir de laquelle la corrélation est nulle ou négligeable\nLa pépite donne la régularité du processus\n\nsi \\(\\tau\\neq 0\\) le processus est très irrégulier (bruit blanc, erreur de mesure)\nsi \\(\\tau=0\\), la régularité du variogramme en 0 (paramètre \\(\\nu\\) dans le variogramme de Matern)"
   },
   {
     "objectID": "02_geostat.html#intuition-1",
@@ -110,6 +117,83 @@
     "title": "Géostatistique",
     "section": "Intuition",
     "text": "Intuition\n\nQuelles données pour le variogramme\nComment peut-on s’y prendre"
+  },
+  {
+    "objectID": "02_geostat.html#nuée-variographique",
+    "href": "02_geostat.html#nuée-variographique",
+    "title": "Géostatistique",
+    "section": "Nuée Variographique",
+    "text": "Nuée Variographique\n$(h) = (Z(s+h) - Z(s)) = ( (Z(s+h) - Z(s))^2 )\nOn cherche donc à associer à chaque \\(h\\) \\({\\mathbb{E}}( (Z(s+h) - Z(s))^2 )\\), on va approcher cette espérance par \\(\\left (Z(s_i)- Z(s_j) \\right^2\\)\n\ntemp_df &lt;- temp_df |&gt; st_transform(crs = \"EPSG:2154\" )\nvario.cloud = variogram(temp_moy~1, data = temp_df, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle(\"Nuée variographique\")"
+  },
+  {
+    "objectID": "02_geostat.html#variogramme-expérimental",
+    "href": "02_geostat.html#variogramme-expérimental",
+    "title": "Géostatistique",
+    "section": "Variogramme expérimental",
+    "text": "Variogramme expérimental\n\\[\\widetilde \\gamma (d_k) = \\frac{1}{2n_c}\\sum_{(k-1)\\delta \\le \\|s_i-s_j\\| \\le k\\delta}(Z(s_i)-Z(s_j))^2 \\]\n\nvario.b = variogram(temp_moy~1, data = temp_df\n                    # , alpha=c(0,45,90,135)\n                    )\nggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point()"
+  },
+  {
+    "objectID": "02_geostat.html#propriétés-du-variogramme-expérimental",
+    "href": "02_geostat.html#propriétés-du-variogramme-expérimental",
+    "title": "Géostatistique",
+    "section": "Propriétés du variogramme expérimental",
+    "text": "Propriétés du variogramme expérimental\n* sans biais,\\\\\n* sous des conditions de m\\'elange, loi limite gaussienne, \n$\\quad$ variance en \\coul{$\\frac{1}{n}$},\\\\\n* ne n\\'ecessite pas l'estimation de la moyenne, \\\\\n* si \\coul{$Z$} est gaussien, somme de $\\chi^2(1)$\\\\\nEstimateur robuste\n\\[\\widetilde \\gamma (d_k) = \\left\\{\\frac{1}{2n_c}\\sum_{i,j \\in C(k)}(Z(s_i)-Z(s_j))^2\\right\\}^{1/4}\\frac{1}{0.457 + \\frac{0.494}{n_c}}\\]"
+  },
+  {
+    "objectID": "02_geostat.html#ajustement-du-variogramme",
+    "href": "02_geostat.html#ajustement-du-variogramme",
+    "title": "Géostatistique",
+    "section": "Ajustement du variogramme",
+    "text": "Ajustement du variogramme\n\\(\\gamma_{\\rho,C,\\nu,\\tau}\\)} variogramme admissible, solution du problème \\[\\min_{\\rho,C,\\nu,\\tau} \\sum_{k=1}^K (\\gamma_{\\rho,C,\\nu,\\tau}(d_k) - \\widetilde \\gamma(d_k))^2\\] Autres m'ethodes :\\ max de vraisemblance, moindres carrés généralisés"
+  },
+  {
+    "objectID": "02_geostat.html#objectifs-1",
+    "href": "02_geostat.html#objectifs-1",
+    "title": "Géostatistique",
+    "section": "Objectifs",
+    "text": "Objectifs\nOn observe aux sites \\(s_1,s_2,\\ldots,s_n\\)\nPrédire \\(g(Z(s))\\), \\(s\\in D\\)\nPar exemple\n\n\\(Z(s_0)\\), \\(s_0\\) non observ'e,\n\\(\\frac{1}{|B|}\\int_B Z(s)ds \\quad B \\mbox{ région de } D\\)},\n\\(P(Z(s_0)&gt;\\zeta)\\)"
+  },
+  {
+    "objectID": "02_geostat.html#prédicteur-optimal",
+    "href": "02_geostat.html#prédicteur-optimal",
+    "title": "Géostatistique",
+    "section": "Prédicteur optimal",
+    "text": "Prédicteur optimal\nPrédire \\(Z(s_0)\\) sachant \\(Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\)\nPrédicteur optimal \\[p^{opt} = \\mbox{E}\\big(Z(s_0)/Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\big)\\] minimise le risque quadratique \\[\\mbox{E}\\big((Z(s_0)-\\widehat{Z}(s_0))^2\\big)\\] Prédicteur linéaire optimal (BLUP) \\[ p^* = \\alpha + \\sum_{i=1}^n\\lambda_i Z(s_i)\\] Si \\(Z\\) gaussien, \\(p^{opt}=p^*\\)\nSolution\n\\[\\begin{align}\n\\lambda &= C^{-1}c \\qquad C_{i,j} = \\mbox{cov}\\big(Z(s_i),Z(s_j)\\big)\n                 \\quad c_i = \\mbox{cov}\\big(Z(s_0),Z(s_i)\\big)\\\\\n     \\alpha  = & \\mbox{E}(Z(s_0)) - \\sum_{i=1}^n\\lambda_i \\mbox{E}(Z(s_i))\n\\end{align}\\]"
+  },
+  {
+    "objectID": "02_geostat.html#krigeage-simple",
+    "href": "02_geostat.html#krigeage-simple",
+    "title": "Géostatistique",
+    "section": "Krigeage simple",
+    "text": "Krigeage simple\nSupposons \\(C\\) et \\(m(s)\\) connues \\[\\widehat{Z(s_0)} = \\; c^T C^{-1}(Z-m) + m(s_0)\\] Variance de krigeage \\[\\sigma^2_{SK} = \\sigma^2(s_0) - c^TC^{-1}c\\] Si \\(s_0=s_i\\), alors \\[\\widehat{Z(s_i)}=Z(s_i)\\]\nIl faut estimer \\(C\\) et \\(m(s)\\)."
+  },
+  {
+    "objectID": "02_geostat.html#krigeage-ordinaire",
+    "href": "02_geostat.html#krigeage-ordinaire",
+    "title": "Géostatistique",
+    "section": "Krigeage ordinaire",
+    "text": "Krigeage ordinaire\nHypothèses : \\(Z(s) = \\mu + \\delta(s)\\), à accroissements stationnaires.\nOn cherche \\(\\widehat{Z}(s_0) = \\sum_{i=1}^n\\lambda_iZ(s_i)\\)} avec \\[E(\\widehat{Z}(s_0)) = E(Z(s_0)) \\mbox{ et }  E(\\widehat{Z}(s_0) - Z(s_0))^2 \\mbox{ minimum}\\]\nVariogramme : \\(\\gamma(h) = \\frac{1}{2}\\mbox{Var}(Z(s+h)-Z(s))\\) \\((\\lambda_i)_{i=1,n}\\)} solutions du système\n\\[\\begin{pmatrix}\n        0 & \\gamma(s_1 - s_2) & \\dots & \\gamma(s_1 - s_n) & 1 \\\\\n        \\gamma(s_1 - s_2) & 0 & \\dots & \\gamma(s_2 - s_n) & 1 \\\\\n        \\cdots &\\cdots &\\cdots &\\cdots &\\cdots  \\\\\n        \\gamma(s_1 - s_n) & \\gamma(s_1 - s_n) & \\dots & 0 & 1 \\\\\n        1 & 1 & \\dots & 1 & 0\\\\\n     \\end{pmatrix}\n     \\begin{pmatrix}\n        \\lambda_1\\\\\n        \\lambda_2\\\\\n        \\dots\\\\\n        \\lambda_n\\\\\n        \\alpha\\\\\n     \\end{pmatrix}\\]\n=\n\\[\\begin{pmatrix}\n        \\gamma(s_0 - s_1) \\\\\n        \\gamma(s_0 - s_2) \\\\\n        \\dots \\\\\n        \\gamma(s_0 - s_n)\\\\\n        1\\\\\n     \\end{pmatrix}\\]"
+  },
+  {
+    "objectID": "02_geostat.html#krigeage-ordinaire-1",
+    "href": "02_geostat.html#krigeage-ordinaire-1",
+    "title": "Géostatistique",
+    "section": "Krigeage Ordinaire",
+    "text": "Krigeage Ordinaire\nVariance de krigeage \\[\\sigma_K^2(s_0) = E\\big((\\widehat{Z}(s_0) - Z(s_0))^2\\big) = \\alpha + \\sum_{i=1}^{n} \\lambda_i \\gamma(s_i-s_0)\\]\nRemarques\n\nOn n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\)\nSi \\(s_0 \\in \\{ s_1,\\ldots s_n\\}\\) alors \\(\\lambda_i = 1\\), \\(\\lambda_j=0\\), \\(j\\neq i\\)}, et \\(\\sigma_K^2(s_i)=0\\)\nles poids de krigeage \\(\\lambda_i\\) dépendent de la disposition des sites de données, de la localisation du site de prédiction, du nombre de données et de la fonction variogramme."
+  },
+  {
+    "objectID": "02_geostat.html#ce-que-vous-pensez-quil-faut-retenir",
+    "href": "02_geostat.html#ce-que-vous-pensez-quil-faut-retenir",
+    "title": "Géostatistique",
+    "section": "Ce que vous pensez qu’il faut retenir",
+    "text": "Ce que vous pensez qu’il faut retenir"
+  },
+  {
+    "objectID": "02_geostat.html#références",
+    "href": "02_geostat.html#références",
+    "title": "Géostatistique",
+    "section": "Références",
+    "text": "Références\n\n\n\n\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
   },
   {
     "objectID": "01_intro.html#cadre",
