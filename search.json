@@ -46,7 +46,7 @@
     "href": "02_geostat.html#solution-best-linear-unbiased-estimator-blue",
     "title": "Géostatistique",
     "section": "Solution : Best Linear Unbiased Estimator (BLUE)",
-    "text": "Solution : Best Linear Unbiased Estimator (BLUE)\n\nMinimisation : [ _{i,j=1}^n i j c{ij} ; {i=1}^n _i = 1 ]\n\nUtiliser la méthode du multiplicateur de Lagrange et montrer qu’on cherche à résoudre le système linéaire\n\\[\\begin{pmatrix}\n  c_{11} & c_{12} & \\dots & c_{1n} & 1 \\\\\n  c_{21} & c_{22} & \\dots & c_{2n} & 1 \\\\\n  \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n  c_{n1} & c_{n2} & \\dots & c_{nn} & 1 \\\\\n  1 & 1 & \\dots & 1 & 0\n  \\end{pmatrix}\n  \\begin{pmatrix}\n  \\lambda_1 \\\\\n  \\lambda_2 \\\\\n  \\vdots \\\\\n  \\lambda_n \\\\\n  m\n  \\end{pmatrix} =\n  \\begin{pmatrix}\n  0 \\\\\n  0 \\\\\n  \\vdots \\\\\n  0 \\\\\n  1\n  \\end{pmatrix}\\]\nConclusion si \\(c_{ij}\\) connus, on peut estimer la moyenne\nEncore faut il pouvoir estimer la covariance"
+    "text": "Solution : Best Linear Unbiased Estimator (BLUE)\n\nMinimisation : \\[\\min \\sum_{i,j=1}^n \\lambda_i \\lambda_j c_{ij} \\quad ; \\quad \\sum_{i=1}^n \\lambda_i = 1\\]\n\nUtiliser la méthode du multiplicateur de Lagrange et montrer qu’on cherche à résoudre le système linéaire\n\\[\\begin{pmatrix}\n  c_{11} & c_{12} & \\dots & c_{1n} & 1 \\\\\n  c_{21} & c_{22} & \\dots & c_{2n} & 1 \\\\\n  \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n  c_{n1} & c_{n2} & \\dots & c_{nn} & 1 \\\\\n  1 & 1 & \\dots & 1 & 0\n  \\end{pmatrix}\n  \\begin{pmatrix}\n  \\lambda_1 \\\\\n  \\lambda_2 \\\\\n  \\vdots \\\\\n  \\lambda_n \\\\\n  m\n  \\end{pmatrix} =\n  \\begin{pmatrix}\n  0 \\\\\n  0 \\\\\n  \\vdots \\\\\n  0 \\\\\n  1\n  \\end{pmatrix}\\]\nConclusion si \\(c_{ij}\\) connus, on peut estimer la moyenne\nEncore faut il pouvoir estimer la covariance"
   },
   {
     "objectID": "02_geostat.html#spécificité-des-données-spatiales",
@@ -123,42 +123,42 @@
     "href": "02_geostat.html#nuée-variographique",
     "title": "Géostatistique",
     "section": "Nuée Variographique",
-    "text": "Nuée Variographique\n$(h) = (Z(s+h) - Z(s)) = ( (Z(s+h) - Z(s))^2 )\nOn cherche donc à associer à chaque \\(h\\) \\({\\mathbb{E}}( (Z(s+h) - Z(s))^2 )\\), on va approcher cette espérance par \\(\\left (Z(s_i)- Z(s_j) \\right^2\\)\n\ntemp_df &lt;- temp_df |&gt; st_transform(crs = \"EPSG:2154\" )\nvario.cloud = variogram(temp_moy~1, data = temp_df, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle(\"Nuée variographique\")"
+    "text": "Nuée Variographique\n\\[\\gamma(h) =\\frac{1}{2} {\\mathbb{V}\\text{ar}}(Z(s+h) - Z(s)) = \\frac{1}{2} {\\mathbb{E}}( (Z(s+h) - Z(s))^2 )\\]\nOn cherche donc à associer à chaque \\(h\\), \\(0.5 {\\mathbb{E}}( (Z(s+h) - Z(s))^2 )\\), on va approcher cette espérance par \\(0.5 \\left (Z(s_i)- Z(s_j) \\right)^2\\)\n\ntemp_df &lt;- temp_df |&gt; st_transform(crs = \"EPSG:2154\" )\nvario.cloud = variogram(temp_moy~1, data = temp_df, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle(\"Nuée variographique\")"
   },
   {
     "objectID": "02_geostat.html#variogramme-expérimental",
     "href": "02_geostat.html#variogramme-expérimental",
     "title": "Géostatistique",
     "section": "Variogramme expérimental",
-    "text": "Variogramme expérimental\n\\[\\widetilde \\gamma (d_k) = \\frac{1}{2n_c}\\sum_{(k-1)\\delta \\le \\|s_i-s_j\\| \\le k\\delta}(Z(s_i)-Z(s_j))^2 \\]\n\nvario.b = variogram(temp_moy~1, data = temp_df\n                    # , alpha=c(0,45,90,135)\n                    )\nggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point()"
+    "text": "Variogramme expérimental\n\\[\\widetilde \\gamma (d_k) = \\frac{1}{2n_c}\\sum_{(k-1)\\delta \\le \\|s_i-s_j\\| \\le k\\delta}(Z(s_i)-Z(s_j))^2 \\]\n\nvario.b = variogram(temp_moy~1, data = temp_df\n                    # , alpha=c(0,45,90,135)\n                    )\nggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point() + ylim(c(0, 28))"
   },
   {
     "objectID": "02_geostat.html#propriétés-du-variogramme-expérimental",
     "href": "02_geostat.html#propriétés-du-variogramme-expérimental",
     "title": "Géostatistique",
     "section": "Propriétés du variogramme expérimental",
-    "text": "Propriétés du variogramme expérimental\n* sans biais,\\\\\n* sous des conditions de m\\'elange, loi limite gaussienne, \n$\\quad$ variance en \\coul{$\\frac{1}{n}$},\\\\\n* ne n\\'ecessite pas l'estimation de la moyenne, \\\\\n* si \\coul{$Z$} est gaussien, somme de $\\chi^2(1)$\\\\\nEstimateur robuste\n\\[\\widetilde \\gamma (d_k) = \\left\\{\\frac{1}{2n_c}\\sum_{i,j \\in C(k)}(Z(s_i)-Z(s_j))^2\\right\\}^{1/4}\\frac{1}{0.457 + \\frac{0.494}{n_c}}\\]"
+    "text": "Propriétés du variogramme expérimental\n* sans biais,\n* sous des conditions de mélange, loi limite gaussienne, $\\quad$ variance en $\\frac{1}{n}$,\n* ne nécessite pas l'estimation de la moyenne, \n* si $Z$ est gaussien, somme de $\\chi^2(1)$\nEstimateur robuste\n\\[\\widetilde \\gamma (d_k) = \\left\\{\\frac{1}{2n_c}\\sum_{i,j \\in C(k)}(Z(s_i)-Z(s_j))^2\\right\\}^{1/4}\\frac{1}{0.457 + \\frac{0.494}{n_c}}\\]"
   },
   {
     "objectID": "02_geostat.html#ajustement-du-variogramme",
     "href": "02_geostat.html#ajustement-du-variogramme",
     "title": "Géostatistique",
     "section": "Ajustement du variogramme",
-    "text": "Ajustement du variogramme\n\\(\\gamma_{\\rho,C,\\nu,\\tau}\\)} variogramme admissible, solution du problème \\[\\min_{\\rho,C,\\nu,\\tau} \\sum_{k=1}^K (\\gamma_{\\rho,C,\\nu,\\tau}(d_k) - \\widetilde \\gamma(d_k))^2\\] Autres m'ethodes :\\ max de vraisemblance, moindres carrés généralisés"
+    "text": "Ajustement du variogramme\n\\(\\gamma_{\\rho,C,\\nu,\\tau}\\) variogramme admissible, \\((\\rho,\\nu, C, \\tau)\\) solution du problème \\[\\min_{\\rho,C,\\nu,\\tau} \\sum_{k=1}^K (\\gamma_{\\rho,C,\\nu,\\tau}(d_k) - \\widetilde \\gamma(d_k))^2\\]\nAutres méthodes possibles : max de vraisemblance, moindres carrés généralisés"
   },
   {
-    "objectID": "02_geostat.html#objectifs-1",
-    "href": "02_geostat.html#objectifs-1",
+    "objectID": "02_geostat.html#objectif",
+    "href": "02_geostat.html#objectif",
     "title": "Géostatistique",
-    "section": "Objectifs",
-    "text": "Objectifs\nOn observe aux sites \\(s_1,s_2,\\ldots,s_n\\)\nPrédire \\(g(Z(s))\\), \\(s\\in D\\)\nPar exemple\n\n\\(Z(s_0)\\), \\(s_0\\) non observ'e,\n\\(\\frac{1}{|B|}\\int_B Z(s)ds \\quad B \\mbox{ région de } D\\)},\n\\(P(Z(s_0)&gt;\\zeta)\\)"
+    "section": "Objectif",
+    "text": "Objectif\nOn observe \\(z(s_1),z(s_2),\\ldots,z(s_n)\\)} aux sites \\(s_1,s_2,\\ldots,s_n\\) et on veut prédire \\(g(Z(s))\\), \\(s\\in D\\)\nPar exemple\n\n\\(Z(s_0)\\), \\(s_0\\) non observé,\n\\(\\frac{1}{|B|}\\int_B Z(s)ds \\quad B \\mbox{ région de } D\\)},\n\\(P(Z(s_0)&gt;\\zeta)\\)"
   },
   {
     "objectID": "02_geostat.html#prédicteur-optimal",
     "href": "02_geostat.html#prédicteur-optimal",
     "title": "Géostatistique",
     "section": "Prédicteur optimal",
-    "text": "Prédicteur optimal\nPrédire \\(Z(s_0)\\) sachant \\(Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\)\nPrédicteur optimal \\[p^{opt} = \\mbox{E}\\big(Z(s_0)/Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\big)\\] minimise le risque quadratique \\[\\mbox{E}\\big((Z(s_0)-\\widehat{Z}(s_0))^2\\big)\\] Prédicteur linéaire optimal (BLUP) \\[ p^* = \\alpha + \\sum_{i=1}^n\\lambda_i Z(s_i)\\] Si \\(Z\\) gaussien, \\(p^{opt}=p^*\\)\nSolution\n\\[\\begin{align}\n\\lambda &= C^{-1}c \\qquad C_{i,j} = \\mbox{cov}\\big(Z(s_i),Z(s_j)\\big)\n                 \\quad c_i = \\mbox{cov}\\big(Z(s_0),Z(s_i)\\big)\\\\\n     \\alpha  = & \\mbox{E}(Z(s_0)) - \\sum_{i=1}^n\\lambda_i \\mbox{E}(Z(s_i))\n\\end{align}\\]"
+    "text": "Prédicteur optimal\nPrédire \\(Z(s_0)\\) sachant \\(Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\)\nPrédicteur optimal\nPar la propriété de l’espérance conditionnelle, le prédicteur optimal est\n\\[p^{opt}_{s_0}(Z(s_1),\\ldots,Z(s_n)) = \\mbox{E}\\big(Z(s_0)/Z(s_1),\\ldots,Z(s_n)\\big) \\] puisqu’il minimise le risque quadratique \\[\\mbox{E}\\big((Z(s_0)-\\widehat{Z}(s_0))^2\\big)\\] Prédicteur linéaire optimal (BLUP) \\[ p^* = \\alpha + \\sum_{i=1}^n\\lambda_i Z(s_i)\\] Si \\(Z\\) gaussien, \\(p^{opt}=p^*\\)\nSolution\n\\[\\begin{align}\n\\lambda &= C^{-1}c \\qquad C_{i,j} = \\mbox{cov}\\big(Z(s_i),Z(s_j)\\big)\n                 \\quad c_i = \\mbox{cov}\\big(Z(s_0),Z(s_i)\\big)\\\\\n     \\alpha  = & \\mbox{E}(Z(s_0)) - \\sum_{i=1}^n\\lambda_i \\mbox{E}(Z(s_i))\n\\end{align}\\]"
   },
   {
     "objectID": "02_geostat.html#krigeage-simple",
