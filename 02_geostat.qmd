@@ -199,9 +199,7 @@ ggplot() +
 ## Solution : Best Linear Unbiased Estimator (BLUE)
 
 - Minimisation :
-  \[
-  \min \sum_{i,j=1}^n \lambda_i \lambda_j c_{ij} \quad ; \quad \sum_{i=1}^n \lambda_i = 1
-  \]
+  $$\min \sum_{i,j=1}^n \lambda_i \lambda_j c_{ij} \quad ; \quad \sum_{i=1}^n \lambda_i = 1$$
 
 Utiliser la  méthode du multiplicateur de Lagrange et montrer qu'on cherche à  résoudre le système linéaire 
 
@@ -311,7 +309,6 @@ $$\gamma(h) = \frac{1}{2} \Var(Z(s+h) - Z(s))$$
 
 
 
-# Variogramme
 
 
 ## Variogrammes classiques
@@ -404,9 +401,9 @@ ggplot(data, aes(x = h, y = gamma)) +
 
 ## Nuée Variographique
 
-$\gamma(h) =\frac{1}{2} \Var(Z(s+h) - Z(s)) = \frac{1}{2} \E( (Z(s+h) - Z(s))^2 )
+$$\gamma(h) =\frac{1}{2} \Var(Z(s+h) - Z(s)) = \frac{1}{2} \E( (Z(s+h) - Z(s))^2 )$$
 
-On cherche donc à associer à chaque $h$ $\E( (Z(s+h) - Z(s))^2 )$, on va approcher cette espérance par $\left (Z(s_i)- Z(s_j) \right^2$
+On cherche donc à associer à chaque $h$,  $0.5 \E( (Z(s+h) - Z(s))^2 )$, on va approcher cette espérance par $0.5 \left (Z(s_i)- Z(s_j) \right)^2$
 
 ```{r}
 #| label: nuees
@@ -419,7 +416,7 @@ vario.cloud |> ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle("Nuée var
 
 
 ## Variogramme expérimental
-  $$\widetilde \gamma (d_k) = \frac{1}{2n_c}\sum_{(k-1)\delta \le \|s_i-s_j\| \le k\delta}(Z(s_i)-Z(s_j))^2 $$
+$$\widetilde \gamma (d_k) = \frac{1}{2n_c}\sum_{(k-1)\delta \le \|s_i-s_j\| \le k\delta}(Z(s_i)-Z(s_j))^2 $$
 
 ```{r}
 #| label: vario_experimental
@@ -428,42 +425,38 @@ vario.cloud |> ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle("Nuée var
 vario.b = variogram(temp_moy~1, data = temp_df
                     # , alpha=c(0,45,90,135)
                     )
-ggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point()
+ggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point() + ylim(c(0, 28))
 
 ```
 
 ## Propriétés du variogramme expérimental
 
-    * sans biais,\\
-    * sous des conditions de m\'elange, loi limite gaussienne, 
-    $\quad$ variance en \coul{$\frac{1}{n}$},\\
-    * ne n\'ecessite pas l'estimation de la moyenne, \\
-    * si \coul{$Z$} est gaussien, somme de $\chi^2(1)$\\
+    * sans biais,
+    * sous des conditions de mélange, loi limite gaussienne, $\quad$ variance en $\frac{1}{n}$,
+    * ne nécessite pas l'estimation de la moyenne, 
+    * si $Z$ est gaussien, somme de $\chi^2(1)$
 
 ### Estimateur robuste
-  $$\widetilde \gamma (d_k) = \left\{\frac{1}{2n_c}\sum_{i,j \in C(k)}(Z(s_i)-Z(s_j))^2\right\}^{1/4}\frac{1}{0.457 + \frac{0.494}{n_c}}$$
-<!-- $$\widetilde \gamma (d_k) = \frac{1}{B(d_k)}\left\{\mbox{med}(|Z(s_i)-Z(s_j)|)^{1/2},(i,j) -->
-<!--      \in C(k)\right\}^{4}\; B(d_k) \to 0.457$$ -->
-     
+$$\widetilde \gamma (d_k) = \left\{\frac{1}{2n_c}\sum_{i,j \in C(k)}(Z(s_i)-Z(s_j))^2\right\}^{1/4}\frac{1}{0.457 + \frac{0.494}{n_c}}$$
+
 
 ## Ajustement  du variogramme
 
-$\gamma_{\rho,C,\nu,\tau}$} variogramme admissible, \coul{$(\rho,\nu, C, \tau)$} solution du problème
+$\gamma_{\rho,C,\nu,\tau}$ variogramme admissible, $(\rho,\nu, C, \tau)$ solution du problème
    $$\min_{\rho,C,\nu,\tau} \sum_{k=1}^K (\gamma_{\rho,C,\nu,\tau}(d_k) - \widetilde \gamma(d_k))^2$$
-Autres m\'ethodes :\\
-max de vraisemblance, moindres carrés généralisés
+   
+Autres méthodes possibles : max de vraisemblance, moindres carrés généralisés
 
 # Prédiction : le krigeage
 
-## Objectifs 
+## Objectif
 
-   On observe \coul{$z(s_1),z(s_2),\ldots,z(s_n)$} aux sites $s_1,s_2,\ldots,s_n$
+   On observe $z(s_1),z(s_2),\ldots,z(s_n)$} aux sites $s_1,s_2,\ldots,s_n$ et on veut prédire  $g(Z(s))$, $s\in D$ 
    
-### Prédire $g(Z(s))$, $s\in D$
-
+   
 Par exemple 
 
-* $Z(s_0)$, $s_0$ non observ\'e,
+* $Z(s_0)$, $s_0$ non observé,
 * $\frac{1}{|B|}\int_B Z(s)ds \quad B \mbox{ région de } D$},
 * $P(Z(s_0)>\zeta)$
 
@@ -472,8 +465,11 @@ Par exemple
 Prédire $Z(s_0)$ sachant $Z(s_1)=z(s_1),\ldots,Z(s_n)=z(s_n)$
 
    [Prédicteur optimal]{.rouge}
-   $$p^{opt} = \mbox{E}\big(Z(s_0)/Z(s_1)=z(s_1),\ldots,Z(s_n)=z(s_n)\big)$$
-   minimise le risque quadratique
+   
+   Par la propriété de l'espérance conditionnelle, le prédicteur optimal est 
+   
+   $$p^{opt}_{s_0}(Z(s_1),\ldots,Z(s_n)) = \mbox{E}\big(Z(s_0)/Z(s_1),\ldots,Z(s_n)\big) $$
+    puisqu'il minimise  le risque quadratique
    $$\mbox{E}\big((Z(s_0)-\widehat{Z}(s_0))^2\big)$$
    [Prédicteur linéaire optimal (BLUP)]{.rouge}
    $$ p^* = \alpha + \sum_{i=1}^n\lambda_i Z(s_i)$$
