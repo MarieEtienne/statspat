@@ -266,6 +266,27 @@
     "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
   },
   {
+    "objectID": "01_pluies.html#présentation",
+    "href": "01_pluies.html#présentation",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Présentation",
+    "text": "Présentation\nCe premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données."
+  },
+  {
+    "objectID": "01_pluies.html#objectifs",
+    "href": "01_pluies.html#objectifs",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Objectifs",
+    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+  },
+  {
+    "objectID": "01_pluies.html#directives",
+    "href": "01_pluies.html#directives",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Directives",
+    "text": "Directives\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss_full/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Statistique Spatiale",
