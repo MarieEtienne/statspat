@@ -1,72 +1,76 @@
 library(tidyverse)
 library(ggforce)
-library(geoR)
-library(fields)
 library(gstat)
 library(sf)
-# library(akima)
-# library(RandomFields)
 
-dta <- read.table('/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/geostat/sic_obs.dat',
-                  col.names = c('id','x','y','pluies'),sep=',') |> 
-    select(x,y, pluies) 
+dta <- read.table('https://raw.githubusercontent.com/MarieEtienne/statspat/refs/heads/master/sic_obs.dat',
+                  col.names = c('id','x','y','pluies'),sep=',') |>
+    select(x,y, pluies)
 xmin <- min(dta$x)
 ymin <- min(dta$y)
+dta_sf <- st_as_sf(dta, coords = c("x", "y"))|> st_set_crs(value = 21780)
+st_write(dta_sf, dsn = paste0("swiss/swiss_rain.shp"))
 
-dta <- dta |>  
-    mutate(x = (x-xmin)/1000, y = (y- ymin)/1000)
-
-dta_full <-  read.table('/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/geostat/sic_full.dat',
-                        col.names = c('id','x','y','pluies'),sep=',',skip=6) |> 
-    select(x,y, pluies) |> 
-    mutate(x = (x-xmin)/1000, y = (y- ymin)/1000)
-
-
-dta_full_sf <- st_as_sf(dta_full, coords = c("x", "y"))
-dta_sf <- st_as_sf(dta, coords = c("x", "y"))
-
-bords <- read.table('/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/geostat/bords.txt',col.names = c('x','y'))|> 
-    mutate(x = (x-xmin)/1000, y = (y- ymin)/1000)
-
-elevation <- read.table('/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/geostat/surfdem.grd',skip=6)
-
-taille = dta_full$pluies/100
-
-dta |> ggplot() + geom_circle(aes(x0=x, y0=y, r=pluies/100, fill = pluies)) +
-    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) +
-    geom_path(data = bords, aes(x=x, y=y))
+dta_full <-  read.table('https://raw.githubusercontent.com/MarieEtienne/statspat/refs/heads/master/sic_full.dat',
+                        col.names = c('id','x','y','pluies'),sep=',',skip=6) |>
+    select(x,y, pluies)
+dta_full_sf <- st_as_sf(dta_full, coords = c("x", "y")) |> st_set_crs(value = 21780)
+st_write(dta_full_sf, dsn = paste0("swiss/swiss_rain_full.shp"))
 
 
-dta_full |> ggplot() + geom_circle(aes(x0=x, y0=y, r=pluies/100, fill = pluies)) +
-    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) +
-    geom_path(data = bords, aes(x=x, y=y))
+dta_full_sf <- st_read(dsn = "swiss_full/swiss_rain_full.shp") 
+dta_sf <- st_read(dsn = "swiss/swiss_rain.shp")
+bords_sf <- st_read(dsn = "swiss/bords.shp") 
+elev_sf <- st_read(dsn = "swiss/elev.shp") 
 
-### remettre dans le même référentiel
-xllcorner  =   (-185556.375 -xmin)/1000
-yllcorner  =   (-127261.5234375 -ymin)/1000
-cellsize    =  1009.975/1000
+dta_sf |> st_coordinates() |> bind_cols(dta_sf) |> ggplot() + 
+    geom_sf(data = bords_sf, linewidth = 0.1) +
+    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +
+    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) 
 
-xelev = seq(xllcorner,cellsize*375+xllcorner,cellsize)
-yelev = seq(yllcorner,cellsize*252+yllcorner,cellsize)
-elev <- expand.grid(xelev,yelev) |> mutate(elevation = as.numeric(t(as.matrix(elevation))))
-elev |> ggplot() + 
-    geom_point(aes(x=Var1, y = Var2, col = elevation)) + 
-    geom_path(data = bords, aes(x=x, y=y), linewidth = 1) +
+
+dta_full_sf |> st_coordinates() |> bind_cols(dta_full_sf) |> 
+    ggplot() + 
+    geom_sf(data = bords_sf, linewidth = 0.1) +
+    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +
+    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) 
+
+elev_sf |> ggplot() + 
+    geom_sf(aes(col = elevation)) + 
+    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + 
     theme_minimal() +
     theme(legend.position = "right") +
     scale_color_viridis_c(name = "Z", option = "mako", transform= "log10")
 
 #------------
-# variogrammemin(elevation)
+# 0. Nuees variographiques à la main
+#-------------------------
+
+nrow_dta <- nrow(dta_sf)
+ecart2_list <- lapply(1:nrow_dta, 
+                      function(i){
+    xy <- dta_sf|> st_coordinates()
+    x0 = xy[i,1]
+    y0 = xy[i,2]
+    pluie0 = dta_sf$pluies[i]
+    
+    dta_sf |> rownames_to_column('Id')  |> 
+        mutate(delta_x = xy[,1] - x0, 
+                  delta_y = xy[,2]- y0,
+                  ecart = pluies - pluie0) |> 
+        filter(Id > i) |> 
+        mutate( i = i, j = Id, h = sqrt(delta_x^2 +delta_y^2), ecart2 = ecart^2/2) |> 
+        select(i,j, h, ecart2)
+})
+nuees_dta <- do.call(rbind, ecart2_list)
+nuees_dta |> st_drop_geometry() |> ggplot()  + geom_point(aes(x=h, y = ecart2)) + xlim(c(0, 120000))
+
+
 #------------
 # 1. Variogramme empirique
 #-------------------------
 
-m.d = 200                  # distance maximale essayer 150 et 500
-interv = seq(0,m.d,20)    # intervalles
-p.m = 20                     # nombre minimal de paire regarder l'impact
-
-dta_sf <- st_as_sf(dta, coords = c("x", "y"))
+m.d = 120
 vario.cloud = variogram(pluies~1, data = dta_sf, cloud = TRUE)
 vario.cloud |> ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle("Nuée variographique") 
 
@@ -76,6 +80,8 @@ vario.cloud |> ggplot(aes(x=dist, y =gamma)) + geom_point() + ggtitle("Nuée var
 vario.b = variogram(pluies~1, data = dta_sf, alpha=c(0,45,90,135))
 ggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_point()
 
+
+## choix d'un modèle exponentiel
 vario.iso = variogram(pluies~1, data = dta_sf)
 v.fit = fit.variogram(vario.iso, vgm(model =  "Exp", 15000, 60))
 vario_fit_exp <- variogramLine(v.fit, maxdist = m.d)
@@ -83,40 +89,56 @@ vario_fit_exp <- variogramLine(v.fit, maxdist = m.d)
 ggplot(data = vario.iso, aes(x=dist, y =gamma))  + geom_point() + 
     geom_line(data= vario_fit_exp , aes(x=dist, y = gamma))
 
-
-
    
 # 3. Krigeage
 #------------
 ## transform in sf object
 dta_full_sf <- st_as_sf(dta_full_sf)
-Kfull <- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf,  model = v.fit)
+Kfull <- krige(formula = pluies ~ 1, locations = dta_sf, 
+               newdata = dta_full_sf,  model = v.fit)
 Kfull |> st_join(dta_full_sf) |> 
     mutate( error = pluies- var1.pred) |> ggplot() + geom_sf(aes(col = error)) +
     theme_minimal() +
     theme(legend.position = "right") +
-    scale_color_viridis_c(name = "Température", option = "plasma")
+    scale_color_viridis_c(name = "Pluies", option = "plasma")
 RMSEP = Kfull |> st_join(dta_full_sf) |>  mutate( error2 = (pluies- var1.pred)^2) |> 
     summarise(rmsep = sum(error2)) |> pull(rmsep)
 
-# krigeage sur une grille
-grid <- st_make_grid(dta_full_sf, n= c(50, 50))
+# 4. Krigeage sur une grille
+#------------
+grid <- st_make_grid(bords_sf, n= c(50, 50))
 dta |> ggplot()  +
     scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1)  +
     geom_sf(data= grid) +
     geom_path(data = bords, aes(x=x, y=y))+ 
     geom_circle(aes(x0=x, y0=y, r=pluies/100, fill = pluies))
 Kfull <- krige(formula = pluies ~ 1, locations = dta_sf, newdata = grid,  model = v.fit)
-Kfull |> ggplot() + geom_sf(aes(fill = var1.pred)) 
 
 
-## Tester différentes formes de variagoram
+Kfull |> ggplot() + geom_sf(aes(fill = var1.pred)) + 
+    geom_sf(data = dta_sf, aes(col = pluies)) +
+    scale_color_viridis_c(name = "Z", option = "mako", transform= "log10")+
+    scale_fill_viridis_c( option = "mako", transform= "log10") 
 
-# Explorer l'anisotropie
-#----------------- 
+## représenter la variance de prédiction
+Kfull |> ggplot() + 
+    geom_sf(aes(fill = var1.var)) +  
+    geom_sf(data = dta_sf, col = "red") +
+    scale_color_viridis_c( option = "mako", transform= "log10") 
 
-# aJOUT DE LA COVARIABLE elevation
+dta_sf <- res
+res <- do.call('rbind', 
+               lapply(
+                   split(dta_sf, 1:nrow(dta_sf)),
+                   function(x) {
+                       st_join(x, elev_sf, join = st_nearest_feature)
+                   }))
+
+# 5. A votre tour
+#------------
+## 5.1 Tester différentes formes de variogram
+
+
+# 5.2 Ajout de la covariable
 #-----------------
 
-# Simulations conditionnelles
-#----------------------------
