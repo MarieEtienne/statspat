@@ -1,0 +1,124 @@
+---
+title: "TD1 - Statistique Spatiale"
+author:
+  - name: Marie-Pierre Etienne (sur la base du TD  de Liliane Bel)
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format:
+  revealjs: 
+    slide-number: true
+    show-slide-number: print
+    menu:
+      useTextContentForMissingTitles: false
+    mathjax: true  # Active MathJax
+    self-contained: true
+bibliography: spatstat.bib
+---
+
+## Présentation
+
+Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons `R` et plusieurs packages spécialisés (`tidyverse`, `sf`, `gstat`, etc.) pour visualiser, analyser et modéliser ces données.
+
+## Objectifs
+
+1. Charger et visualiser les données spatialisées.
+2. Construire et interpréter des nuées variographiques.
+3. Estimer et ajuster des variogrammes.
+4. Effectuer un krigeage pour interpoler les précipitations.
+5. Tester différentes structures de variogramme et intégrer une covariable.
+
+## Directives
+
+### 1. Chargement et visualisation des données
+
+```r
+library(tidyverse)
+library(ggforce)
+library(gstat)
+library(sf)
+
+
+dta_full_sf <- st_read(dsn = "swiss_full/swiss_rain_full.shp") 
+dta_sf <- st_read(dsn = "swiss/swiss_rain.shp")
+bords_sf <- st_read(dsn = "swiss/bords.shp") 
+elev_sf <- st_read(dsn = "swiss/elev.shp") 
+
+dta_sf |> st_coordinates() |> bind_cols(dta_sf) |> ggplot() + 
+    geom_sf(data = bords_sf, linewidth = 0.1) +
+    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +
+    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) 
+
+
+dta_full_sf |> st_coordinates() |> bind_cols(dta_full_sf) |> 
+    ggplot() + 
+    geom_sf(data = bords_sf, linewidth = 0.1) +
+    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +
+    scale_fill_viridis_c(name = "Pluies", option = "mako", direction = -1) 
+
+elev_sf |> ggplot() + 
+    geom_sf(aes(col = elevation)) + 
+    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + 
+    theme_minimal() +
+    theme(legend.position = "right") +
+    scale_color_viridis_c(name = "Z", option = "mako", transform= "log10")
+
+```
+
+### 2. Nuées variographiques à la main
+
+```r
+nuees_dta <- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {
+    xy <- st_coordinates(dta_sf)
+    x0 <- xy[i, 1]
+    y0 <- xy[i, 2]
+    pluie0 <- dta_sf$pluies[i]
+    dta_sf |> rownames_to_column('Id')  |> 
+        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |> 
+        filter(Id > i) |> 
+        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |> 
+        select(Id, h, ecart2)
+}))
+
+nuees_dta |> ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))
+```
+
+### 3. Variogramme empirique
+
+```r
+vario.cloud <- variogram(pluies~1, data = dta_sf, cloud = TRUE)
+vario.cloud |> ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle("Nuée variographique")
+```
+
+### 4. Ajustement du variogramme
+
+```r
+vario.iso <- variogram(pluies~1, data = dta_sf)
+v.fit <- fit.variogram(vario.iso, vgm(model = "Exp", 15000, 60))
+vario_fit_exp <- variogramLine(v.fit, maxdist = 120)
+
+ggplot(data = vario.iso, aes(x=dist, y=gamma)) + 
+    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))
+```
+
+### 5. Krigeage
+
+```r
+Kfull <- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)
+Kfull |> ggplot() + geom_sf(aes(fill = var1.pred)) +
+    geom_sf(data = dta_sf, aes(col = pluies)) +
+    scale_fill_viridis_c(option = "mako", transform = "log10")
+```
+
+### 6. À votre tour
+
+1. Tester différentes formes de variogramme (exponentiel, gaussien, sphérique).
+2. Ajouter une covariable (altitude) au modèle de krigeage et comparer les résultats.

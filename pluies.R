@@ -3,20 +3,6 @@ library(ggforce)
 library(gstat)
 library(sf)
 
-dta <- read.table('https://raw.githubusercontent.com/MarieEtienne/statspat/refs/heads/master/sic_obs.dat',
-                  col.names = c('id','x','y','pluies'),sep=',') |>
-    select(x,y, pluies)
-xmin <- min(dta$x)
-ymin <- min(dta$y)
-dta_sf <- st_as_sf(dta, coords = c("x", "y"))|> st_set_crs(value = 21780)
-st_write(dta_sf, dsn = paste0("swiss/swiss_rain.shp"))
-
-dta_full <-  read.table('https://raw.githubusercontent.com/MarieEtienne/statspat/refs/heads/master/sic_full.dat',
-                        col.names = c('id','x','y','pluies'),sep=',',skip=6) |>
-    select(x,y, pluies)
-dta_full_sf <- st_as_sf(dta_full, coords = c("x", "y")) |> st_set_crs(value = 21780)
-st_write(dta_full_sf, dsn = paste0("swiss/swiss_rain_full.shp"))
-
 
 dta_full_sf <- st_read(dsn = "swiss_full/swiss_rain_full.shp") 
 dta_sf <- st_read(dsn = "swiss/swiss_rain.shp")

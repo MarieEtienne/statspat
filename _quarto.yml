@@ -24,6 +24,8 @@ website:
           - href: 02_geostat.qmd
 
       - text: "TP"
+        menu: 
+          - href: 01_pluies.qmd
 
        
 
