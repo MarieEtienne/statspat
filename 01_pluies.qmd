@@ -13,34 +13,31 @@ editor:
   markdown: 
     wrap: 72
 css: mpe_pres_revealjs.css
-format:
-  revealjs: 
-    slide-number: true
-    show-slide-number: print
-    menu:
-      useTextContentForMissingTitles: false
-    mathjax: true  # Active MathJax
-    self-contained: true
+format: html
 bibliography: spatstat.bib
 ---
 
 ## Présentation
 
-Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons `R` et plusieurs packages spécialisés (`tidyverse`, `sf`, `gstat`, etc.) pour visualiser, analyser et modéliser ces données.
+Ce premier TD vise à explorer les données spatialisées de précipitations
+en Suisse. Nous utiliserons `R` et plusieurs packages spécialisés
+(`tidyverse`, `sf`, `gstat`, etc.) pour visualiser, analyser et
+modéliser ces données.
 
 ## Objectifs
 
-1. Charger et visualiser les données spatialisées.
-2. Construire et interpréter des nuées variographiques.
-3. Estimer et ajuster des variogrammes.
-4. Effectuer un krigeage pour interpoler les précipitations.
-5. Tester différentes structures de variogramme et intégrer une covariable.
+1.  Charger et visualiser les données spatialisées.
+2.  Construire et interpréter des nuées variographiques.
+3.  Estimer et ajuster des variogrammes.
+4.  Effectuer un krigeage pour interpoler les précipitations.
+5.  Tester différentes structures de variogramme et intégrer une
+    covariable.
 
 ## Directives
 
 ### 1. Chargement et visualisation des données
 
-```r
+``` r
 library(tidyverse)
 library(ggforce)
 library(gstat)
@@ -70,12 +67,11 @@ elev_sf |> ggplot() +
     theme_minimal() +
     theme(legend.position = "right") +
     scale_color_viridis_c(name = "Z", option = "mako", transform= "log10")
-
 ```
 
 ### 2. Nuées variographiques à la main
 
-```r
+``` r
 nuees_dta <- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {
     xy <- st_coordinates(dta_sf)
     x0 <- xy[i, 1]
@@ -93,14 +89,14 @@ nuees_dta |> ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))
 
 ### 3. Variogramme empirique
 
-```r
+``` r
 vario.cloud <- variogram(pluies~1, data = dta_sf, cloud = TRUE)
 vario.cloud |> ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle("Nuée variographique")
 ```
 
 ### 4. Ajustement du variogramme
 
-```r
+``` r
 vario.iso <- variogram(pluies~1, data = dta_sf)
 v.fit <- fit.variogram(vario.iso, vgm(model = "Exp", 15000, 60))
 vario_fit_exp <- variogramLine(v.fit, maxdist = 120)
@@ -111,7 +107,7 @@ ggplot(data = vario.iso, aes(x=dist, y=gamma)) +
 
 ### 5. Krigeage
 
-```r
+``` r
 Kfull <- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)
 Kfull |> ggplot() + geom_sf(aes(fill = var1.pred)) +
     geom_sf(data = dta_sf, aes(col = pluies)) +
@@ -120,5 +116,7 @@ Kfull |> ggplot() + geom_sf(aes(fill = var1.pred)) +
 
 ### 6. À votre tour
 
-1. Tester différentes formes de variogramme (exponentiel, gaussien, sphérique).
-2. Ajouter une covariable (altitude) au modèle de krigeage et comparer les résultats.
+1.  Tester différentes formes de variogramme (exponentiel, gaussien,
+    sphérique).
+2.  Ajouter une covariable (altitude) au modèle de krigeage et comparer
+    les résultats.
