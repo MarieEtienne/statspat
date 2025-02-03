@@ -168,25 +168,18 @@
     "text": "Krigeage simple\nSupposons \\(C\\) et \\(m(s)\\) connues \\[\\widehat{Z(s_0)} = \\; c^T C^{-1}(Z-m) + m(s_0)\\] Variance de krigeage \\[\\sigma^2_{SK} = \\sigma^2(s_0) - c^TC^{-1}c\\] Si \\(s_0=s_i\\), alors \\[\\widehat{Z(s_i)}=Z(s_i)\\]\nIl faut estimer \\(C\\) et \\(m(s)\\)."
   },
   {
-    "objectID": "02_geostat.html#krigeage-ordinaire",
-    "href": "02_geostat.html#krigeage-ordinaire",
+    "objectID": "02_geostat.html#krigeage-universel",
+    "href": "02_geostat.html#krigeage-universel",
     "title": "Géostatistique",
-    "section": "Krigeage ordinaire",
-    "text": "Krigeage ordinaire\nHypothèses : \\(Z(s) = \\mu + \\delta(s)\\), à accroissements stationnaires.\nOn cherche \\(\\widehat{Z}(s_0) = \\sum_{i=1}^n\\lambda_iZ(s_i)\\)} avec \\[E(\\widehat{Z}(s_0)) = E(Z(s_0)) \\mbox{ et }  E(\\widehat{Z}(s_0) - Z(s_0))^2 \\mbox{ minimum}\\]\nVariogramme : \\(\\gamma(h) = \\frac{1}{2}\\mbox{Var}(Z(s+h)-Z(s))\\) \\((\\lambda_i)_{i=1,n}\\)} solutions du système\n\\[\\begin{pmatrix}\n        0 & \\gamma(s_1 - s_2) & \\dots & \\gamma(s_1 - s_n) & 1 \\\\\n        \\gamma(s_1 - s_2) & 0 & \\dots & \\gamma(s_2 - s_n) & 1 \\\\\n        \\cdots &\\cdots &\\cdots &\\cdots &\\cdots  \\\\\n        \\gamma(s_1 - s_n) & \\gamma(s_1 - s_n) & \\dots & 0 & 1 \\\\\n        1 & 1 & \\dots & 1 & 0\\\\\n     \\end{pmatrix}\n     \\begin{pmatrix}\n        \\lambda_1\\\\\n        \\lambda_2\\\\\n        \\dots\\\\\n        \\lambda_n\\\\\n        \\alpha\\\\\n     \\end{pmatrix}\\]\n=\n\\[\\begin{pmatrix}\n        \\gamma(s_0 - s_1) \\\\\n        \\gamma(s_0 - s_2) \\\\\n        \\dots \\\\\n        \\gamma(s_0 - s_n)\\\\\n        1\\\\\n     \\end{pmatrix}\\]"
+    "section": "Krigeage universel",
+    "text": "Krigeage universel\nHypothèses : \\(Z(s) = X\\beta + \\epsilon(s)\\),\nOn cherche \\(\\widehat{Z}(s_0) = \\sum_{i=1}^n\\lambda_iZ(s_i)\\)} avec \\[E(\\widehat{Z}(s_0)) = E(Z(s_0)) \\mbox{ et }  E(\\widehat{Z}(s_0) - Z(s_0))^2 \\mbox{ minimum}\\]\nCovariance : \\(C(h) = Cov(Z(s+h),Z(s))\\), \\(\\boldsymbol{\\Sigma}\\) the covariance matrix (\\(\\Sigma_{ij}= C(s_j-s_i)\\)), \\(\\boldsymbol{c_0}\\) the covariance vector (\\(c_j =C(s_o-s_j)\\))\nProposition :\n\\[\\widehat{Z}(s_0) = \\left \\lbrace \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} + (X_0 - X^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})^T (X^T \\boldsymbol{\\Sigma}^{-1} X)^{-1} X^T  \\boldsymbol{\\Sigma}^{-1}  \\right\\rbrace Z\\] \\[\n\\tau^2(s_0) = \\sigma_0^2 -  \\mathbf{c_0}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0}\n+  \\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)^T\n\\left(  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{X} \\right)^{-1}\n\\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)\\] \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRemarques\n\nOn n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\)\nSi \\(s_0 \\in \\{ s_1,\\ldots s_n\\}\\) alors \\(\\lambda_i = 1\\), \\(\\lambda_j=0\\), \\(j\\neq i\\)}, et \\(\\sigma_K^2(s_i)=0\\)\nles poids de krigeage \\(\\lambda_i\\) dépendent de la disposition des sites de données, de la localisation du site de prédiction, du nombre de données et de la fonction variogramme."
   },
   {
-    "objectID": "02_geostat.html#krigeage-ordinaire-1",
-    "href": "02_geostat.html#krigeage-ordinaire-1",
+    "objectID": "02_geostat.html#en-pratique",
+    "href": "02_geostat.html#en-pratique",
     "title": "Géostatistique",
-    "section": "Krigeage Ordinaire",
-    "text": "Krigeage Ordinaire\nVariance de krigeage \\[\\sigma_K^2(s_0) = E\\big((\\widehat{Z}(s_0) - Z(s_0))^2\\big) = \\alpha + \\sum_{i=1}^{n} \\lambda_i \\gamma(s_i-s_0)\\]\nRemarques\n\nOn n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\)\nSi \\(s_0 \\in \\{ s_1,\\ldots s_n\\}\\) alors \\(\\lambda_i = 1\\), \\(\\lambda_j=0\\), \\(j\\neq i\\)}, et \\(\\sigma_K^2(s_i)=0\\)\nles poids de krigeage \\(\\lambda_i\\) dépendent de la disposition des sites de données, de la localisation du site de prédiction, du nombre de données et de la fonction variogramme."
-  },
-  {
-    "objectID": "02_geostat.html#ce-que-vous-pensez-quil-faut-retenir",
-    "href": "02_geostat.html#ce-que-vous-pensez-quil-faut-retenir",
-    "title": "Géostatistique",
-    "section": "Ce que vous pensez qu’il faut retenir",
-    "text": "Ce que vous pensez qu’il faut retenir"
+    "section": "En pratique",
+    "text": "En pratique\nVoir le TD"
   },
   {
     "objectID": "02_geostat.html#références",
@@ -266,11 +259,18 @@
     "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
   },
   {
+    "objectID": "01_pluies.html",
+    "href": "01_pluies.html",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
     "objectID": "01_pluies.html#présentation",
     "href": "01_pluies.html#présentation",
     "title": "TD1 - Statistique Spatiale",
-    "section": "Présentation",
-    "text": "Présentation\nCe premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données."
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
   },
   {
     "objectID": "01_pluies.html#objectifs",
@@ -284,7 +284,7 @@
     "href": "01_pluies.html#directives",
     "title": "TD1 - Statistique Spatiale",
     "section": "Directives",
-    "text": "Directives\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss_full/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss_full/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
   },
   {
     "objectID": "index.html",
