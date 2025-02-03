@@ -69,7 +69,7 @@ ggplot(data = vario.b, aes(x=dist, y =gamma)) + facet_wrap(~dir.hor) + geom_poin
 
 ## choix d'un modèle exponentiel
 vario.iso = variogram(pluies~1, data = dta_sf)
-v.fit = fit.variogram(vario.iso, vgm(model =  "Exp", 15000, 600))
+v.fit = fit.variogram(vario.iso, vgm(model =  "Exp", psill= 15000, range = 50000))
 vario_fit_exp <- variogramLine(v.fit, maxdist = m.d)
 
 ggplot(data = vario.iso, aes(x=dist, y =gamma))  + geom_point() + 
@@ -128,4 +128,12 @@ Kfull |> ggplot() +
 
 # 5.2 Ajout de la covariable
 #-----------------
+
+res <- do.call('rbind', 
+               lapply(
+                   split(dta_sf, 1:nrow(dta_sf)),
+                   function(x) {
+                       st_join(x, elev_sf, join = st_nearest_feature)
+                   }))
+
 
