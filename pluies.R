@@ -129,11 +129,19 @@ Kfull |> ggplot() +
 # 5.2 Ajout de la covariable
 #-----------------
 
-res <- do.call('rbind', 
+dta_sf <- do.call('rbind', 
                lapply(
                    split(dta_sf, 1:nrow(dta_sf)),
                    function(x) {
                        st_join(x, elev_sf, join = st_nearest_feature)
                    }))
 
+
+
+dta_full_sf <- do.call('rbind', 
+                  lapply(
+                      split(dta_full_sf, 1:nrow(dta_full_sf)),
+                      function(x) {
+                          st_join(x, elev_sf, join = st_nearest_feature)
+                      }))
 
