@@ -7,8 +7,6 @@ author:
     email: marie-pierre.etienne@ensai.fr
 date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
 institute: https://marieetienne.github.io/statspat
-execute: 
-  freeze: true
 editor: 
   markdown: 
     wrap: 72
@@ -497,43 +495,56 @@ Supposons
    Il faut estimer $C$ et $m(s)$.
 
 
-## Krigeage ordinaire
+## Krigeage universel
 
-   Hypothèses : $Z(s) = \mu + \delta(s)$,  à accroissements stationnaires.
+   Hypothèses : $Z(s) = X\beta + \epsilon(s)$, 
    
    On cherche  $\Zchap(s_0) = \sum_{i=1}^n\lambda_iZ(s_i)$} avec
    $$E(\Zchap (s_0)) = E(Z(s_0)) \mbox{ et }  E(\Zchap (s_0) - Z(s_0))^2 \mbox{ minimum}$$
  
-   Variogramme : $\gamma(h) = \frac{1}{2}\mbox{Var}(Z(s+h)-Z(s))$
-   $(\lambda_i)_{i=1,n}$} solutions du système
-   \begin{pmatrix}
-        0 & \gamma(s_1 - s_2) & \dots & \gamma(s_1 - s_n) & 1 \\
-        \gamma(s_1 - s_2) & 0 & \dots & \gamma(s_2 - s_n) & 1 \\
-        \cdots &\cdots &\cdots &\cdots &\cdots  \\
-        \gamma(s_1 - s_n) & \gamma(s_1 - s_n) & \dots & 0 & 1 \\
-        1 & 1 & \dots & 1 & 0\\
-     \end{pmatrix}
-     \begin{pmatrix}
-        \lambda_1\\
-        \lambda_2\\
-        \dots\\
-        \lambda_n\\
-        \alpha\\
-     \end{pmatrix}
-     =
-     \begin{pmatrix}
-        \gamma(s_0 - s_1) \\
-        \gamma(s_0 - s_2) \\
-        \dots \\
-        \gamma(s_0 - s_n)\\
-        1\\
-     \end{pmatrix}
-  
+   Covariance : $C(h) = Cov(Z(s+h),Z(s))$, $\boldsymbol{\Sigma}$ the covariance matrix ($\Sigma_{ij}= C(s_j-s_i)$), $\boldsymbol{c_0}$ the covariance vector
+   ($c_j =C(s_o-s_j)$)
 
-## Krigeage Ordinaire
 
-Variance de krigeage 
-$$\sigma_K^2(s_0) = E\big((\Zchap (s_0) - Z(s_0))^2\big) = \alpha + \sum_{i=1}^{n} \lambda_i \gamma(s_i-s_0)$$
+Proposition : 
+
+ $$\Zchap(s_0) = \left \lbrace \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} + (X_0 - X^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})^T (X^T \boldsymbol{\Sigma}^{-1} X)^{-1} X^T  \boldsymbol{\Sigma}^{-1}  \right\rbrace Z$$
+   $$
+\tau^2(s_0) = \sigma_0^2 -  \mathbf{c_0}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} 
++  \left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)^T 
+\left(  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{X} \right)^{-1} 
+\left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)$$
+<!--    Variogramme : $\gamma(h) = \frac{1}{2}\mbox{Var}(Z(s+h)-Z(s))$ -->
+
+<!--    $(\lambda_i)_{i=1,n}$} solutions du système -->
+<!--    \begin{pmatrix} -->
+<!--         0 & \gamma(s_1 - s_2) & \dots & \gamma(s_1 - s_n) & 1 \\ -->
+<!--         \gamma(s_1 - s_2) & 0 & \dots & \gamma(s_2 - s_n) & 1 \\ -->
+<!--         \cdots &\cdots &\cdots &\cdots &\cdots  \\ -->
+<!--         \gamma(s_1 - s_n) & \gamma(s_1 - s_n) & \dots & 0 & 1 \\ -->
+<!--         1 & 1 & \dots & 1 & 0\\ -->
+<!--      \end{pmatrix} -->
+<!--      \begin{pmatrix} -->
+<!--         \lambda_1\\ -->
+<!--         \lambda_2\\ -->
+<!--         \dots\\ -->
+<!--         \lambda_n\\ -->
+<!--         \alpha\\ -->
+<!--      \end{pmatrix} -->
+<!--      = -->
+<!--      \begin{pmatrix} -->
+<!--         \gamma(s_0 - s_1) \\ -->
+<!--         \gamma(s_0 - s_2) \\ -->
+<!--         \dots \\ -->
+<!--         \gamma(s_0 - s_n)\\ -->
+<!--         1\\ -->
+<!--      \end{pmatrix} -->
+
+
+<!-- ## Krigeage Ordinaire -->
+
+<!-- Variance de krigeage  -->
+<!-- $$\sigma_K^2(s_0) = E\big((\Zchap (s_0) - Z(s_0))^2\big) = \alpha + \sum_{i=1}^{n} \lambda_i \gamma(s_i-s_0)$$ -->
 
 [Remarques]{.rouge}
 
@@ -541,6 +552,8 @@ $$\sigma_K^2(s_0) = E\big((\Zchap (s_0) - Z(s_0))^2\big) = \alpha + \sum_{i=1}^{
 2. Si $s_0 \in \{ s_1,\ldots s_n\}$ alors $\lambda_i = 1$, $\lambda_j=0$, $j\neq i$}, et $\sigma_K^2(s_i)=0$
 3. les poids de krigeage $\lambda_i$ dépendent de la disposition des sites de données, de la localisation du site de prédiction,   du nombre de données et de la fonction variogramme.
 
-## Ce que vous pensez qu'il faut retenir
+##  En pratique 
+
+Voir le [TD](https://marieetienne.github.io/statspat/01_pluies.html#/title-slide)
 
 ## Références
