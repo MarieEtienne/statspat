@@ -11,5 +11,5 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
   mercurial gdal-bin libgdal-dev gsl-bin libgsl-dev \
   libc6-i386
-
+RUN R -e "install.packages('SpatialExtremes')"
 
