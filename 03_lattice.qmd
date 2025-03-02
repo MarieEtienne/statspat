@@ -55,15 +55,16 @@ myBib <- ReadBib("./spatstat.bib", check = FALSE)
 
 # Introduction
 
-
 ## Sources
 
-Ce cours est construit à partir du livre de @cressie2015statistics et de l'article @verhoef2018relationship
+Ce cours est construit à partir du livre de @cressie2015statistics et de
+l'article @verhoef2018relationship
 
 ## Exemple illustratif
 
-On s'intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de @cressie2015statistics). Les données sont disponibles dans le package `sf`
-
+On s'intéresse aux données de mort subite du nourrisson en Caroline du
+Nord en 1974 (exemple extrait du livre de @cressie2015statistics). Les
+données sont disponibles dans le package `sf`
 
 ```{r}
 #| echo: false
@@ -77,72 +78,97 @@ p2 <- nc |> ggplot() + geom_sf(aes(fill = SID79)) +
 ggarrange(p1, p2, ncol = 2)
 ```
 
+Les données sont ici des comptages par counties, mais on peut imaginer
+des prix au m2 par IRIS, des taux de chomage par IRIS etc ....
 
-
-
-
-Les données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ....
-
-On cherche typiquement à ajuster un modèle de régression pour trouver des covariables liées au phénomène d'intérêt. 
+On cherche typiquement à ajuster un modèle de régression pour trouver
+des covariables liées au phénomène d'intérêt.
 
 ## Pourquoi faire attention à la corrélation spatiale
 
 ### Un exemple
 
-$$Y_t = \rho Y_{t-1} +\varepsilon_t$$ 
+$$Y_t = \rho Y_{t-1} +\varepsilon_t$$
 
 <!-- ```{r} -->
+
 <!-- n <- 100 -->
 
 <!-- d <- 5 -->
+
 <!-- eta <- rnorm(n+d, sd=2) -->
+
 <!-- epsilon <- eta + 0.95 * lag(eta) + 0.9 * lag(eta, 2)+ 0.8 * lag(eta, 3)+ 0.87* lag(eta, 4)+ 0.8* lag(eta, 5) -->
+
 <!-- x = seq(0, 1, length.out = n) -->
 
 <!-- # Compute Mean -->
+
 <!-- nu = 10 -->
+
 <!-- # kernel def -->
+
 <!-- K <- function(x, xprime, ell = 10) { -->
 
 <!--     # Force it to column matrix -->
+
 <!--     x = matrix(x) -->
+
 <!--     xprime = matrix(xprime) -->
+
 <!--     p= dim(x)[1];     -->
+
 <!--     n= dim(xprime)[1]; -->
 
 <!--     # Broadcast the matrix -->
+
 <!--     x = matrix(x, nrow = p, ncol = n) -->
+
 <!--     xprime = matrix(xprime, nrow = n, ncol = p) -->
 
 <!--     # Compute the kernel -->
+
 <!--     xprime = t(xprime) -->
+
 <!--     return(exp(-abs(x - xprime)^2 / ell)) -->
+
 <!-- } -->
+
 <!-- # Compute Covariance -->
+
 <!-- set.seed(123) -->
+
 <!-- S <- K(x, x, ell = 0.05) -->
+
 <!-- jitter = diag(n) * 1e-9 # For numerical stability -->
+
 <!-- A <- t(chol(S + jitter)) -->
 
 <!-- # Generate covariate X -->
+
 <!-- Z <- rnorm(n) -->
+
 <!-- X <-   nu + 1.5* A %*% Z # One sample -->
+
 <!-- plot(X) -->
 
 <!-- Y <-  X + 0.5 + epsilon[(d+1):(n+d)] -->
+
 <!-- dta <- data.frame(Y= Y, X= X) -->
 
 <!-- dta |> ggplot()+ geom_point(aes(x=X, y= Y)) + geom_smooth(method = "lm", aes(x=X, y = Y), se = FALSE) -->
 
-
 <!-- dta <- data.frame(Y=Y, X=X) -->
+
 <!-- mod <- lm(Y~X, data = dta) -->
+
 <!-- summary(mod) -->
 
 <!-- resid <- data.frame(r = resid(mod)) |> mutate( pos = ifelse(r>0, "P", "N"), id = 1:n) -->
-<!-- resid |> ggplot() + geom_point(aes(x=id, y = r, col = pos), size = 2) + geom_line(aes(x=id, y = r), alpha = 0.5)  -->
-<!-- ``` -->
 
+<!-- resid |> ggplot() + geom_point(aes(x=id, y = r, col = pos), size = 2) + geom_line(aes(x=id, y = r), alpha = 0.5)  -->
+
+<!-- ``` -->
 
 ```{r}
 set.seed(123)
@@ -173,48 +199,48 @@ ggarrange(p1, p2, ncol = 2)
 
 Variance de $\hat{\mu}$ :
 
-* Cas indépendant $Var(\hat{\mu})= n^{-1} \sigma^2$
+-   Cas indépendant $Var(\hat{\mu})= n^{-1} \sigma^2$
 
-* Cas corrélé $Var(\hat{\mu})= n^{-1} \sigma^2 \left(1 + 2\left( \frac{\rho}{1-\rho}\right)\left( 1 -\frac{1}{n}\right)  - 2 \left( \frac{\rho}{1-\rho}\right)^2 \left( \frac{1-\rho^{n-1}}{n}\right)    \right)$
+-   Cas corrélé
+    $Var(\hat{\mu})= n^{-1} \sigma^2 \left(1 + 2\left( \frac{\rho}{1-\rho}\right)\left( 1 -\frac{1}{n}\right)  - 2 \left( \frac{\rho}{1-\rho}\right)^2 \left( \frac{1-\rho^{n-1}}{n}\right)    \right)$
 
 Ici on sous estime l'incertitude
 
-
 ## Quelques remarques
 
-* Processus spatial est défini sur une grille : pas de réalisation possible entre deux localisation.
+-   Processus spatial est défini sur une grille : pas de réalisation
+    possible entre deux localisation.
 
-* on note $D$ l'ensemble des points de la grille
+-   on note $D$ l'ensemble des points de la grille
 
-* On souhaite construire un modèle pour décrire la distribution du processus $Z$ en tout point $s$ de $D$ 
-
+-   On souhaite construire un modèle pour décrire la distribution du
+    processus $Z$ en tout point $s$ de $D$
 
 # Les modèles spatiaux sur grille et leur estimation
-
 
 ## Modèle SAR - Cadre Gaussien
 
 $$Z = BZ + \nu$$
 
-- $B$ : Matrice de poids spatiaux
-- $\nu$ : Bruit normal $\nu \sim N(0, \Omega)$ 
-  * $\Omega$ est une matrice diagonale dont tous les termes diagonaux sont stritecement positifs.
-  * Par convention les termes $b_{ii}$ de la matrice sont nuls (les sites ne dépendent pas d'eux-mêmes)
+-   $B$ : Matrice de poids spatiaux
+-   $\nu$ : Bruit normal $\nu \sim N(0, \Omega)$
+    -   $\Omega$ est une matrice diagonale dont tous les termes
+        diagonaux sont stritecement positifs.
+    -   Par convention les termes $b_{ii}$ de la matrice sont nuls (les
+        sites ne dépendent pas d'eux-mêmes)
+-   Modèle simultané : chaque variable dépend directement de ses
+    voisines
 
-- Modèle simultané : chaque variable dépend directement de ses voisines
-
-
-
-Puisque $Z - BZ = \nu$, 
+Puisque $Z - BZ = \nu$,
 $$ \Sigma_{SAR} = (I - B)^{-1} \Omega (I - B^T)^{-1} $$
 
 ### Remarques
 
-* La dépendance spatiale est due à B. 
-* $B$ n'est pas obligatoirement symétrique, en effet la forme quadratique $(I - B)^{-1} \Omega (I - B^T)^{-1}$ est symétrique même si $B$ ne l'est pas
-* Il faut que $I-B$ soit inversible
-
-
+-   La dépendance spatiale est due à B.
+-   $B$ n'est pas obligatoirement symétrique, en effet la forme
+    quadratique $(I - B)^{-1} \Omega (I - B^T)^{-1}$ est symétrique même
+    si $B$ ne l'est pas
+-   Il faut que $I-B$ soit inversible
 
 ## Modèle CAR
 
@@ -222,78 +248,79 @@ $$ Z_i | Z_{-i} \sim N \left( \sum_{j \neq i} c_{ij} Z_j, \sigma^2 / m_{ii} \rig
 
 $Z_{-i}$ désigne l'ensemble des $Z_j$ pour $j\ne i$.
 
-* La matrice $C$ est la matrice des poids spatiaux et on impose $C_{ii}=0$ (on ne définit pas $Z_i$ conditionnellement à lui même)
+-   La matrice $C$ est la matrice des poids spatiaux et on impose
+    $C_{ii}=0$ (on ne définit pas $Z_i$ conditionnellement à lui même)
 
-* La matrice $M$ est diagonal et ses termes diagonaux sont positifs. 
+-   La matrice $M$ est diagonal et ses termes diagonaux sont positifs.
 
-- Dépendance conditionnelle : chaque variable est conditionnée aux voisines
-- Matrice de covariance :
+-   Dépendance conditionnelle : chaque variable est conditionnée aux
+    voisines
+
+-   Matrice de covariance :
 
 $$\Sigma_{CAR} = (I - C)^{-1} M$$
 
 ### Remarques
 
-La loi conditionnelle de $Z_i$ est une combinaison linéaire des autres variables.
+La loi conditionnelle de $Z_i$ est une combinaison linéaire des autres
+variables.
 
 Les valeurs de $m_{ii}$ se sont pas toutes identiques
 
-[Ce n'est pas évident que ca définit une loi jointe qui existe ]{.rouge}
+[Ce n'est pas évident que ca définit une loi jointe qui existe]{.rouge}
 
-##  Modèle CAR
+## Modèle CAR
 
-* Existence du modèle CAR  sous réserve que    $(I-C)^{-1} M$ est définie positive (@besag1974spatial) et alors
+-   Existence du modèle CAR sous réserve que $(I-C)^{-1} M$ est définie
+    positive (@besag1974spatial) et alors
 
 $$Z \sim \mathcal{N}(0, \Sigma_{CAR}), \quad \Sigma_{CAR} = (I-C)^{-1} M$$
 Puisque $\Sigma_{CAR}$ doit être symétrique alors
 $$\frac{C_{ij}}{m_{ii}} =\frac{C_{ji}}{m_{jj}}$$
 
-
-Dans @verhoef2018relationship, on trouve une caractérisation intéressante qui permet de faire le lien entre SAR et CAR
+Dans @verhoef2018relationship, on trouve une caractérisation
+intéressante qui permet de faire le lien entre SAR et CAR
 
 Pour que $\Sigma_{CAR}$ soit une matrice de covariance valide il faut
 
-* $(I-C)$ a ses valeurs propres positives
+-   $(I-C)$ a ses valeurs propres positives
 
-* $M$ est diagonal avec ses termes diagonaux positifs
+-   $M$ est diagonal avec ses termes diagonaux positifs
 
-* $C_{ii} = 0$ pour tout $i$ 
+-   $C_{ii} = 0$ pour tout $i$
 
-* $C_{ij}/m_{ii} = C_{ji}/m_{jj}$ pour tout i,j 
-
+-   $C_{ij}/m_{ii} = C_{ji}/m_{jj}$ pour tout i,j
 
 ## Les matrices de poids
 
-
-En pratique, on choist la matrice $B$ du modèle SAR sous la forme $B = \rho_s W$ et
+En pratique, on choist la matrice $B$ du modèle SAR sous la forme
+$B = \rho_s W$ et
 
 la matrice $C$ du CAR sous la forme $C=\rho_C W$.
 
-La matrice $W$ est une matrice de poids tels que 
+La matrice $W$ est une matrice de poids tels que
 
-* $W_{ij}\ne 0$ si $i$ et $j$ sont voisins
-
+-   $W_{ij}\ne 0$ si $i$ et $j$ sont voisins
 
 ## La notion de voisinage
 
-
 ### Rappel Chaîne de Markov
 
-Soit $Z$ une chaine de Markov  alors
+Soit $Z$ une chaine de Markov alors
 
-$$\P(Z_t,  Z_{t-1}, \ldots Z_1 \vert Z_0) = \prod_{s=1}^t Q_s(Z_s; Z_{s-1})$$ 
-[Quel est l'intérêt d'une chaîne de Markov dans le traitement de la dépendance]{.rouge}
+$${\mathbb{P}}(Z_t,  Z_{t-1}, \ldots Z_1 \vert Z_0) = \prod_{s=1}^t Q_s(Z_s; Z_{s-1})$$
+[Quel est l'intérêt d'une chaîne de Markov dans le traitement de la
+dépendance]{.rouge}
 
-. . . 
+. . .
 
-Les indépendances conditionelles  $Z_t$ et $Z_{t-2}$ sont indépendant si on conditionne par $Z_{t-1}$ et dans ce cas le terme $\Sigma_{t, t-2}^{-1}=0$
-
+Les indépendances conditionelles $Z_t$ et $Z_{t-2}$ sont indépendant si
+on conditionne par $Z_{t-1}$ et dans ce cas le terme
+$\Sigma_{t, t-2}^{-1}=0$
 
 On veut copier l'idée pour les CAR
 
-
-
 ## Des exemples de voisinage sur une grille régulière
-
 
 ```{r}
 
@@ -332,7 +359,6 @@ p2 <- ggplot(grid_points, aes(x, y, color = color)) +
 ggarrange(p1, p2, ncol = 2) + ggtitle("2 structures de voisinage")
 ```
 
-
 ## Impact du voisinage
 
 ```{r}
@@ -361,22 +387,17 @@ $$Z_i \vert Z_{-i} \sim \mathcal{N}(\sum_{j, j\in V(i)} Z_j, \sigma^2/m_{ii})$$
 
 Est-ce un modèle CAR valide ?
 
-
-
-
-
 ## Que faire dans le cas des counties -- grille non régulière
 
 ```{r}
-load("/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/documents-export-2024-06-19_reseau/LondonSuicide/LondonSuicides.RData")
-london.gen <- st_read("/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/documents-export-2024-06-19_reseau/LondonSuicide/LDNSuicides.shp")
+load("data/LondonSuicides.RData")
+london.gen <- st_read("data/LondonSuicide/LDNSuicides.shp")
 london.gen |> ggplot() + geom_sf() 
 ```
 
-
 ## Que faire dans le cas des counties -- grille non régulière
 
-On est voisin si on se touche 
+On est voisin si on se touche
 
 ```{r}
 london.gen <- london.gen |> mutate(center = st_centroid(geometry)) 
@@ -388,7 +409,7 @@ neighbors <- st_touches(london.gen)
 
 ## Que faire dans le cas des counties -- grille non régulière
 
-On est voisin si on se touche 
+On est voisin si on se touche
 
 ```{r}
 
@@ -451,16 +472,14 @@ london.gen |> ggplot() +
 
 ```
 
-
 # Relations entre CAR et SAR
 
-**Théorème**  @verhoef2018relationship : 
+**Théorème** @verhoef2018relationship :
 
-* Tout modèle SAR peut s'écrire de manière unique comme un modèle CAR
+-   Tout modèle SAR peut s'écrire de manière unique comme un modèle CAR
 
-* Tout modèle CAR peut s'écrire de manière  comme un modèle SAR mais cette écriture n'est pas unique
-
-
+-   Tout modèle CAR peut s'écrire de manière comme un modèle SAR mais
+    cette écriture n'est pas unique
 
 ## Estmation des modèles CAR et SAR
 
@@ -470,25 +489,24 @@ on a donc des modèles
 
 $Y = X\beta + Z$ où $Z$ a une structure SAR ou CAR.
 
-
 Dans la pratique
 
-* On estime $\tilde{\beta}$ comme si il n'y avait pas de dépendanc, et on calcule les résidus $\tilde{Z} = Y- X \tilde{\beta}$. 
+-   On estime $\tilde{\beta}$ comme si il n'y avait pas de dépendanc, et
+    on calcule les résidus $\tilde{Z} = Y- X \tilde{\beta}$.
 
-* on ajuste la structure de covariance sur les résidus
+-   on ajuste la structure de covariance sur les résidus
 
-* On en déduit une estimation de la covariance et on peut estimer les paramètres $\beta$
-
+-   On en déduit une estimation de la covariance et on peut estimer les
+    paramètres $\beta$
 
 ## Que se passe t il si on n'est plus dans un cadre gaussien ?
 
-On compte le nombre de personnes atteintes de cancer soigné dans les hopitaux. 
+On compte le nombre de personnes atteintes de cancer soigné dans les
+hopitaux.
 
-Chaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.
+Chaque hopital est associé à un sercteur géographique, pour lequel on a
+des descripteurs environnementaux.
 
 Quel modèle proposez vous ?
-
-
-
 
 ## Références
