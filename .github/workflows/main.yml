@@ -10,7 +10,7 @@ jobs:
   build:
     name: Build website with quarto
     runs-on: ubuntu-latest
-    container: mpetienne/statspat:0.02
+    container: mpetienne/statspat:0.03
 
     steps:
       - name: Checkout repository
