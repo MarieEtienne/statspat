@@ -47,7 +47,7 @@ library(gstat)
 library(sf)
 
 
-dta_full_sf <- st_read(dsn = "swiss_full/swiss_rain_full.shp") 
+dta_full_sf <- st_read(dsn = "swiss/swiss_rain_full.shp") 
 dta_sf <- st_read(dsn = "swiss/swiss_rain.shp")
 bords_sf <- st_read(dsn = "swiss/bords.shp") 
 elev_sf <- st_read(dsn = "swiss/elev.shp") 

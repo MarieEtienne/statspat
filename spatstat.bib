@@ -8,13 +8,17 @@
 }
 
 
-@book{cressie2015statistics,
-  title={Statistics for spatial data},
-  keywords = {spatstat}, 
-  author={Cressie, Noel},
-  year={2015},
-  publisher={John Wiley \& Sons}
+@article{besag1974spatial,
+  title={Spatial interaction and the statistical analysis of lattice systems},
+  author={Besag, Julian},
+  journal={Journal of the Royal Statistical Society: Series B (Methodological)},
+  volume={36},
+  number={2},
+  pages={192--225},
+  year={1974},
+  publisher={Wiley Online Library}
 }
+
 
 
 @article{blangiardo2013spatial,
@@ -28,11 +32,44 @@
   publisher={Elsevier}
 }
 
+@book{cressie2015statistics,
+  title={Statistics for spatial data},
+  keywords = {spatstat}, 
+  author={Cressie, Noel},
+  year={2015},
+  publisher={John Wiley \& Sons}
+}
+
 @book{gomez2020bayesian,
   title={Bayesian inference with INLA},
   keywords = {spatstat}, % keyword for subdivided bibliography
   author={G{\'o}mez-Rubio, Virgilio},
   year={2020},
+  publisher={Chapman and Hall/CRC}
+}
+
+@book{krainski2018advanced,
+  title={Advanced spatial modeling with stochastic partial differential equations using R and INLA},
+  author={Krainski, Elias and G{\'o}mez-Rubio, Virgilio and Bakka, Haakon and Lenzi, Amanda and Castro-Camilo, Daniela and Simpson, Daniel and Lindgren, Finn and Rue, H{\aa}vard},
+  year={2018},
+  publisher={Chapman and Hall/CRC}
+}
+
+@article{rue2009approximate,
+  title={Approximate Bayesian inference for latent Gaussian models by using integrated nested Laplace approximations},
+  author={Rue, H{\aa}vard and Martino, Sara and Chopin, Nicolas},
+  journal={Journal of the Royal Statistical Society Series B: Statistical Methodology},
+  volume={71},
+  number={2},
+  pages={319--392},
+  year={2009},
+  publisher={Oxford University Press}
+}
+
+@book{rue2005gaussian,
+  title={Gaussian Markov random fields: theory and applications},
+  author={Rue, H{\aa}vard and Held, Leonhard},
+  year={2005},
   publisher={Chapman and Hall/CRC}
 }
 
@@ -48,3 +85,16 @@
   publisher={Wiley Online Library}
 }
 
+@article{verhoef2018relationship,
+title = {On the relationship between conditional (CAR) and simultaneous (SAR) autoregressive models},
+journal = {Spatial Statistics},
+volume = {25},
+pages = {68-85},
+year = {2018},
+issn = {2211-6753},
+doi = {https://doi.org/10.1016/j.spasta.2018.04.006},
+url = {https://www.sciencedirect.com/science/article/pii/S2211675317302725},
+author = {Jay M. {Ver Hoef} and Ephraim M. Hanks and Mevin B. Hooten},
+keywords = {Lattice models, Areal models, Spatial statistics, Covariance matrix},
+abstract = {We clarify relationships between conditional (CAR) and simultaneous (SAR) autoregressive models. We review the literature on this topic and find that it is mostly incomplete. Our main result is that a SAR model can be written as a unique CAR model, and while a CAR model can be written as a SAR model, it is not unique. In fact, we show how any multivariate Gaussian distribution on a finite set of points with a positive-definite covariance matrix can be written as either a CAR or a SAR model. We illustrate how to obtain any number of SAR covariance matrices from a single CAR covariance matrix by using Givens rotation matrices on a simulated example. We also discuss sparseness in the original CAR construction, and for the resulting SAR weights matrix. For a real example, we use crime data in 49 neighborhoods from Columbus, Ohio, and show that a geostatistical model optimizes the likelihood much better than typical first-order CAR models. We then use the implied weights from the geostatistical model to estimate CAR model parameters that provides the best overall optimization.}
+}
