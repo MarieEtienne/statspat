@@ -1,0 +1,494 @@
+---
+title: "Données spatiales sur réseau"
+author:
+  - name: Marie-Pierre Etienne
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format:
+  revealjs: 
+    slide-number: true
+    show-slide-number: print
+    menu:
+      useTextContentForMissingTitles: false
+    mathjax: true  # Active MathJax
+    self-contained: true
+bibliography: spatstat.bib
+---
+
+```{r setup, include=FALSE, eval = TRUE}
+library(RefManageR)
+library(tidyverse) ## to benefit from the tydiverse coding system
+library(lubridate)
+library(wesanderson)
+library(gstat)
+library(ggpubr)
+library(sf)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("./spatstat.bib", check = FALSE)
+```
+
+::: hidden
+\$\$
+
+\newcommand\E{{\mathbb{E}}}
+\newcommand\P{{\mathbb{P}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Cov{{\mathbb{C}\text{ov}}}
+\newcommand\Var{{\mathbb{V}\text{ar}}}
+\newcommand\Zchap{\widehat{Z}}
+
+\$\$
+:::
+
+# Introduction
+
+
+## Sources
+
+Ce cours est construit à partir du livre de @cressie2015statistics et de l'article @verhoef2018relationship
+
+## Exemple illustratif
+
+On s'intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de @cressie2015statistics). Les données sont disponibles dans le package `sf`
+
+
+```{r}
+#| echo: false
+#| message: false
+library(sf)
+library(usmap) #import the package
+nc <- st_read(system.file("shape/nc.shp", package="sf"), quiet = TRUE)
+p1 <- us_map() |> filter(!(abbr %in% c("AK", "HI"))) |> mutate(State = ifelse(abbr == "NC", "NC", "other")) |> ggplot() + geom_sf(aes(fill=State)) + scale_fill_manual( values= c("#AA4400", "#DDDDDD")) + theme(legend.position = "none")
+p2 <- nc |> ggplot() + geom_sf(aes(fill = SID79)) +
+    scale_fill_viridis_c( option = "mako", direction = -1) + ggtitle('Nombre de Morts subites en 1979 par counties en caroline du Nord')
+ggarrange(p1, p2, ncol = 2)
+```
+
+
+
+
+
+Les données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ....
+
+On cherche typiquement à ajuster un modèle de régression pour trouver des covariables liées au phénomène d'intérêt. 
+
+## Pourquoi faire attention à la corrélation spatiale
+
+### Un exemple
+
+$$Y_t = \rho Y_{t-1} +\varepsilon_t$$ 
+
+<!-- ```{r} -->
+<!-- n <- 100 -->
+
+<!-- d <- 5 -->
+<!-- eta <- rnorm(n+d, sd=2) -->
+<!-- epsilon <- eta + 0.95 * lag(eta) + 0.9 * lag(eta, 2)+ 0.8 * lag(eta, 3)+ 0.87* lag(eta, 4)+ 0.8* lag(eta, 5) -->
+<!-- x = seq(0, 1, length.out = n) -->
+
+<!-- # Compute Mean -->
+<!-- nu = 10 -->
+<!-- # kernel def -->
+<!-- K <- function(x, xprime, ell = 10) { -->
+
+<!--     # Force it to column matrix -->
+<!--     x = matrix(x) -->
+<!--     xprime = matrix(xprime) -->
+<!--     p= dim(x)[1];     -->
+<!--     n= dim(xprime)[1]; -->
+
+<!--     # Broadcast the matrix -->
+<!--     x = matrix(x, nrow = p, ncol = n) -->
+<!--     xprime = matrix(xprime, nrow = n, ncol = p) -->
+
+<!--     # Compute the kernel -->
+<!--     xprime = t(xprime) -->
+<!--     return(exp(-abs(x - xprime)^2 / ell)) -->
+<!-- } -->
+<!-- # Compute Covariance -->
+<!-- set.seed(123) -->
+<!-- S <- K(x, x, ell = 0.05) -->
+<!-- jitter = diag(n) * 1e-9 # For numerical stability -->
+<!-- A <- t(chol(S + jitter)) -->
+
+<!-- # Generate covariate X -->
+<!-- Z <- rnorm(n) -->
+<!-- X <-   nu + 1.5* A %*% Z # One sample -->
+<!-- plot(X) -->
+
+<!-- Y <-  X + 0.5 + epsilon[(d+1):(n+d)] -->
+<!-- dta <- data.frame(Y= Y, X= X) -->
+
+<!-- dta |> ggplot()+ geom_point(aes(x=X, y= Y)) + geom_smooth(method = "lm", aes(x=X, y = Y), se = FALSE) -->
+
+
+<!-- dta <- data.frame(Y=Y, X=X) -->
+<!-- mod <- lm(Y~X, data = dta) -->
+<!-- summary(mod) -->
+
+<!-- resid <- data.frame(r = resid(mod)) |> mutate( pos = ifelse(r>0, "P", "N"), id = 1:n) -->
+<!-- resid |> ggplot() + geom_point(aes(x=id, y = r, col = pos), size = 2) + geom_line(aes(x=id, y = r), alpha = 0.5)  -->
+<!-- ``` -->
+
+
+```{r}
+set.seed(123)
+n <- 100
+eta <- rnorm(n, sd=2)
+Y <- numeric( n)
+Y[1] <- eta[1]
+for(i in 2:n){
+  Y[i] <- 0.95 * Y[i-1] + eta[i]
+}
+
+dta <- data.frame(Y= Y, X= 1:n)
+p1 <- dta |> ggplot()+ geom_point(aes(x=X, y= Y))
+
+mod <- lm(Y~1, data = dta)
+summary(mod)$coefficient
+sd.est <- summary(mod)$coefficient[2] # ecart type d el'erreur d'estimation
+
+resid <- data.frame(r = resid(mod), X = 1:n) |> mutate( pos = ifelse(r>0, "P", "N"))
+p1 <- p1 + geom_hline(yintercept = 0, col = "#22BBAA") + geom_hline(yintercept = coef(mod)[1], col="#AA3333") + ggtitle("Mean estimation") + 
+  geom_hline(yintercept = coef(mod)[1]+1.96*sd.est, col="#AA3333", linetype = "dotted") + 
+  geom_hline(yintercept = coef(mod)[1]-1.96*sd.est, col="#AA3333", linetype = "dotted") +
+ggtitle("Mean estimation") 
+
+p2 <- resid |> ggplot() + geom_point(aes(x=X, y = r, col = pos), size = 2) + geom_line(aes(x=X, y = r), alpha = 0.5) + ggtitle('Residuals') + theme(legend.position = "none")
+ggarrange(p1, p2, ncol = 2)
+```
+
+Variance de $\hat{\mu}$ :
+
+* Cas indépendant $Var(\hat{\mu})= n^{-1} \sigma^2$
+
+* Cas corrélé $Var(\hat{\mu})= n^{-1} \sigma^2 \left(1 + 2\left( \frac{\rho}{1-\rho}\right)\left( 1 -\frac{1}{n}\right)  - 2 \left( \frac{\rho}{1-\rho}\right)^2 \left( \frac{1-\rho^{n-1}}{n}\right)    \right)$
+
+Ici on sous estime l'incertitude
+
+
+## Quelques remarques
+
+* Processus spatial est défini sur une grille : pas de réalisation possible entre deux localisation.
+
+* on note $D$ l'ensemble des points de la grille
+
+* On souhaite construire un modèle pour décrire la distribution du processus $Z$ en tout point $s$ de $D$ 
+
+
+# Les modèles spatiaux sur grille et leur estimation
+
+
+## Modèle SAR - Cadre Gaussien
+
+$$Z = BZ + \nu$$
+
+- $B$ : Matrice de poids spatiaux
+- $\nu$ : Bruit normal $\nu \sim N(0, \Omega)$ 
+  * $\Omega$ est une matrice diagonale dont tous les termes diagonaux sont stritecement positifs.
+  * Par convention les termes $b_{ii}$ de la matrice sont nuls (les sites ne dépendent pas d'eux-mêmes)
+
+- Modèle simultané : chaque variable dépend directement de ses voisines
+
+
+
+Puisque $Z - BZ = \nu$, 
+$$ \Sigma_{SAR} = (I - B)^{-1} \Omega (I - B^T)^{-1} $$
+
+### Remarques
+
+* La dépendance spatiale est due à B. 
+* $B$ n'est pas obligatoirement symétrique, en effet la forme quadratique $(I - B)^{-1} \Omega (I - B^T)^{-1}$ est symétrique même si $B$ ne l'est pas
+* Il faut que $I-B$ soit inversible
+
+
+
+## Modèle CAR
+
+$$ Z_i | Z_{-i} \sim N \left( \sum_{j \neq i} c_{ij} Z_j, \sigma^2 / m_{ii} \right) $$
+
+$Z_{-i}$ désigne l'ensemble des $Z_j$ pour $j\ne i$.
+
+* La matrice $C$ est la matrice des poids spatiaux et on impose $C_{ii}=0$ (on ne définit pas $Z_i$ conditionnellement à lui même)
+
+* La matrice $M$ est diagonal et ses termes diagonaux sont positifs. 
+
+- Dépendance conditionnelle : chaque variable est conditionnée aux voisines
+- Matrice de covariance :
+
+$$\Sigma_{CAR} = (I - C)^{-1} M$$
+
+### Remarques
+
+La loi conditionnelle de $Z_i$ est une combinaison linéaire des autres variables.
+
+Les valeurs de $m_{ii}$ se sont pas toutes identiques
+
+[Ce n'est pas évident que ca définit une loi jointe qui existe ]{.rouge}
+
+##  Modèle CAR
+
+* Existence du modèle CAR  sous réserve que    $(I-C)^{-1} M$ est définie positive (@besag1974spatial) et alors
+
+$$Z \sim \mathcal{N}(0, \Sigma_{CAR}), \quad \Sigma_{CAR} = (I-C)^{-1} M$$
+Puisque $\Sigma_{CAR}$ doit être symétrique alors
+$$\frac{C_{ij}}{m_{ii}} =\frac{C_{ji}}{m_{jj}}$$
+
+
+Dans @verhoef2018relationship, on trouve une caractérisation intéressante qui permet de faire le lien entre SAR et CAR
+
+Pour que $\Sigma_{CAR}$ soit une matrice de covariance valide il faut
+
+* $(I-C)$ a ses valeurs propres positives
+
+* $M$ est diagonal avec ses termes diagonaux positifs
+
+* $C_{ii} = 0$ pour tout $i$ 
+
+* $C_{ij}/m_{ii} = C_{ji}/m_{jj}$ pour tout i,j 
+
+
+## Les matrices de poids
+
+
+En pratique, on choist la matrice $B$ du modèle SAR sous la forme $B = \rho_s W$ et
+
+la matrice $C$ du CAR sous la forme $C=\rho_C W$.
+
+La matrice $W$ est une matrice de poids tels que 
+
+* $W_{ij}\ne 0$ si $i$ et $j$ sont voisins
+
+
+## La notion de voisinage
+
+
+### Rappel Chaîne de Markov
+
+Soit $Z$ une chaine de Markov  alors
+
+$$\P(Z_t,  Z_{t-1}, \ldots Z_1 \vert Z_0) = \prod_{s=1}^t Q_s(Z_s; Z_{s-1})$$ 
+[Quel est l'intérêt d'une chaîne de Markov dans le traitement de la dépendance]{.rouge}
+
+. . . 
+
+Les indépendances conditionelles  $Z_t$ et $Z_{t-2}$ sont indépendant si on conditionne par $Z_{t-1}$ et dans ce cas le terme $\Sigma_{t, t-2}^{-1}=0$
+
+
+On veut copier l'idée pour les CAR
+
+
+
+## Des exemples de voisinage sur une grille régulière
+
+
+```{r}
+
+# Création des coordonnées des points de la grille
+grid_points <- expand.grid(x = 1:5, y = 1:5)
+
+# Ajout d'une colonne pour différencier le point central
+grid_points <- grid_points |> mutate(color = ifelse(grid_points$x == 3 & grid_points$y == 3, "#C94326", "#0c324e")) |> 
+  mutate(color = ifelse(abs(grid_points$x -3) + abs(grid_points$y -3) == 1 , "#F7A913", color))
+
+# Création du graphique
+p1 <- ggplot(grid_points, aes(x, y, color = color)) +
+  geom_point(size = 5) +
+  scale_color_identity() + 
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  coord_fixed()  # Pour garder des proportions carrées
+
+
+grid_points <- grid_points  |> 
+  mutate(color = ifelse( (grid_points$x -3)^2+(grid_points$y -3)^2 <= 2 , "#F7A913", "#0c324e"))|> 
+  mutate(color = ifelse(grid_points$x == 3 & grid_points$y == 3, "#C94326", color))
+
+# Création du graphique
+p2 <- ggplot(grid_points, aes(x, y, color = color)) +
+  geom_point(size = 5) +
+  scale_color_identity() +  # Utilisation des couleurs directement
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  coord_fixed()  # Pour garder des proportions carrées
+
+ggarrange(p1, p2, ncol = 2) + ggtitle("2 structures de voisinage")
+```
+
+
+## Impact du voisinage
+
+```{r}
+
+# Création des coordonnées des points de la grille
+grid_points <- expand.grid(x = 1:3, y = 1:3)
+
+# Ajout d'une colonne pour différencier le point central
+grid_points <- grid_points |> mutate(color = ifelse(grid_points$x == 2 & grid_points$y == 2, "#C94326", "#0c324e")) |> 
+  mutate(color = ifelse(abs(grid_points$x -2) + abs(grid_points$y -2) == 1 , "#F7A913", color))
+
+# Création du graphique
+ggplot(grid_points, aes(x, y, color = color)) +
+  geom_point(size = 5) +
+  scale_color_identity() + 
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  coord_fixed()  # Pour garder des proportions carrées
+```
+
+On souhaite définir un CAR sous la forme
+
+$$Z_i \vert Z_{-i} \sim \mathcal{N}(\sum_{j, j\in V(i)} Z_j, \sigma^2/m_{ii})$$
+
+Est-ce un modèle CAR valide ?
+
+
+
+
+
+## Que faire dans le cas des counties -- grille non régulière
+
+```{r}
+load("/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/documents-export-2024-06-19_reseau/LondonSuicide/LondonSuicides.RData")
+london.gen <- st_read("/home/metienne/Cours/ENSAI/spatial/docs/Cours_liliane/documents-export-2024-06-19_reseau/LondonSuicide/LDNSuicides.shp")
+london.gen |> ggplot() + geom_sf() 
+```
+
+
+## Que faire dans le cas des counties -- grille non régulière
+
+On est voisin si on se touche 
+
+```{r}
+london.gen <- london.gen |> mutate(center = st_centroid(geometry)) 
+london.gen |> ggplot() + geom_sf() + geom_sf(aes(geometry = center), col = "#C94326") 
+
+# Find neighboring polygons
+neighbors <- st_touches(london.gen)
+```
+
+## Que faire dans le cas des counties -- grille non régulière
+
+On est voisin si on se touche 
+
+```{r}
+
+# Create lines connecting centroids of neighboring polygons
+lines_list <- map2(
+  seq_along(neighbors), neighbors, 
+  ~ {
+    start_point <- london.gen$center[.x, ]
+    lapply(.y, function(j) {
+      end_point <-  london.gen$center[j, ]
+      st_sf(geometry = 
+        st_sfc(st_linestring(rbind(st_coordinates(start_point), 
+                                 st_coordinates(end_point))), 
+             crs = st_crs(london.gen)))
+    })
+  }
+) %>% unlist(recursive = FALSE) |> bind_rows()
+
+
+# Plot with ggplot2
+london.gen |> ggplot() +
+  geom_sf() +
+  geom_sf(aes(geometry = center), color = "#C94326", size = 2) +
+  geom_sf(data = lines_list, color = "#0c324e") +
+  theme_minimal()
+```
+
+## Que faire dans le cas des counties -- grille non régulière
+
+On a au plus 3 voisins
+
+```{r}
+# les 3 plus proches voisins
+
+neighbors <- lapply(london.gen$center, function(x) {
+  ind <- order(st_distance(x, london.gen$center))[2:4]
+  return(london.gen$center[ind])
+  })
+
+# Create lines connecting centroids of neighboring polygons
+lines_list <- map2(
+  seq_along(neighbors), neighbors, 
+  ~ {
+    start_point <- london.gen$center[.x, ]
+    lapply(.y, function(j) {
+      end_point <-  london.gen$center[j, ]
+      st_sf(geometry = 
+              st_sfc(st_linestring(rbind(st_coordinates(start_point), 
+                                         st_coordinates(end_point))), 
+                     crs = st_crs(london.gen)))
+    })
+  }
+) %>% unlist(recursive = FALSE) |> bind_rows()
+# Plot with ggplot2
+london.gen |> ggplot() +
+  geom_sf() +
+  geom_sf(aes(geometry = center), color = "#C94326", size = 2) +
+  geom_sf(data = lines_list, color = "#0c324e") +
+  theme_minimal()
+
+```
+
+
+# Relations entre CAR et SAR
+
+**Théorème**  @verhoef2018relationship : 
+
+* Tout modèle SAR peut s'écrire de manière unique comme un modèle CAR
+
+* Tout modèle CAR peut s'écrire de manière  comme un modèle SAR mais cette écriture n'est pas unique
+
+
+
+## Estmation des modèles CAR et SAR
+
+En général CAR et SAR ne sont utilisés que pour le bruit
+
+on a donc des modèles
+
+$Y = X\beta + Z$ où $Z$ a une structure SAR ou CAR.
+
+
+Dans la pratique
+
+* On estime $\tilde{\beta}$ comme si il n'y avait pas de dépendanc, et on calcule les résidus $\tilde{Z} = Y- X \tilde{\beta}$. 
+
+* on ajuste la structure de covariance sur les résidus
+
+* On en déduit une estimation de la covariance et on peut estimer les paramètres $\beta$
+
+
+## Que se passe t il si on n'est plus dans un cadre gaussien ?
+
+On compte le nombre de personnes atteintes de cancer soigné dans les hopitaux. 
+
+Chaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.
+
+Quel modèle proposez vous ?
+
+
+
+
+## Références

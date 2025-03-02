@@ -1,0 +1,22 @@
+---
+title: "TD2 - Introduction to INLA"
+author:
+  - name: Marie-Pierre Etienne (sur la base du livre Bayesian inerence with INLA )
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format: html
+bibliography: spatstat.bib
+---
+
+Ce TP est construit sur la base des exemples du livre @gomez2020bayesian
+
+## Le nombre de 
