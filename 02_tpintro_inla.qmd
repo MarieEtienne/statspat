@@ -9,6 +9,7 @@ date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
 institute: https://marieetienne.github.io/statspat
 execute: 
   freeze: true
+  eval: false
 editor: 
   markdown: 
     wrap: 72
@@ -31,18 +32,16 @@ Ressources :
 -   <https://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf>
 
 
-[IMPORTANT : Utiliser le cluster 13 !!! INLA n'est pas installé sur les autres.]{.rouge}
+[IMPORTANT : Utiliser le cluster 10 !!! INLA n'est pas installé sur les autres.]{.rouge}
 
 ## Installation de INLA
 
-(Ici inutile car INLA est déja sur le cluster 13)
+(Ici inutile car INLA est déja sur le cluster 10)
 
 ```{r}
 #| eval: false
 # Base de R INLA
 install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
-# inlabru wrapper
-install.packages("inlabru")
 ```
 
 ## La réussite en maths
