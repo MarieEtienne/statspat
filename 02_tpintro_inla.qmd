@@ -1,7 +1,7 @@
 ---
-title: "TD1 - Statistique Spatiale"
+title: "TD2 - Introduction INLA"
 author:
-  - name: Marie-Pierre Etienne (sur la base du TD  de Liliane Bel)
+  - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
     affiliation: 
       - ENSAI - CREST
     email: marie-pierre.etienne@ensai.fr
@@ -196,10 +196,12 @@ summary(m.pois.lin_surd2)
 ```
 
 
-14. on peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC
+14. On peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC
 
 
 ```{r effet-aleatoire-3}
+#| echo: true
+#| eval: false
 m.pois.lin_surd2 <- inla(num_awards ~ math + 
                            f(ID, model = "iid",
                              hyper = list(prec = list(prior = "loggamma", param = c(3, 1)))),
@@ -211,10 +213,47 @@ summary(m.pois.lin_surd2)
 
 
 
-## References
+15. Intégrer un effet non linéaire de la note en mathématique
 
-1.  <https://www.pymc.io/projects/examples/en/latest/gaussian_processes/log-gaussian-cox-process.html>
-2.  Fabian E. Bachl, Finn Lindgren, David L. Borchers, and Janine B. Illian (2019), inlabru: an R package for Bayesian spatial modelling from ecological survey data, Methods in Ecology and Evolution, British Ecological Society, 10, 760--766, doi:10.1111/2041-210X.13168
-3.  Funwi-Gabga, N. and Mateu, J. (2012) Understanding the nesting spatial behaviour of gorillas_sf in the Kagwene Sanctuary, Cameroon. Stochastic Environmental Research and Risk Assessment 26 (6), 793-811.
-4.  <https://www.muscardinus.be/2018/07/inlabru-bru/>
-5.  <https://inlabru-org.github.io/inlabru/index.html>
+```{r rw}
+#| echo: true
+#| eval: false
+m.pois.nonlin <- inla(num_awards ~ f(math,  model = "rw1"),
+                         control.compute = list(dic = TRUE, waic = TRUE),
+                         data = awards, family = "poisson")
+
+summary(m.pois.nonlin)
+
+awards |> mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],
+                 pred_lin = m.pois.lin1$summary.fitted.values[,1]) |> 
+  pivot_longer(cols = c("pred_nonlin", "pred_lin"), names_to = "method", values_to = "pred") |> 
+  arrange(math) |> 
+  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +
+  geom_point(aes(x=math, y = num_awards)) + ggtitle("Fit with linear and non linear effect (RW1)")
+
+```
+
+16. Il existe un modèle RW2, en vous référrant au chapitre [Mixed-effects Models du livre @gomez2020bayesian](https://becarioprecario.bitbucket.io/inla-gitbook/ch-mixed.html), expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?
+
+
+```{r rw2}
+#| echo: true
+#| eval: false
+m.pois.nonlin2 <- inla(num_awards ~ f(math,  model = "rw2"),
+                         control.compute = list(dic = TRUE, waic = TRUE),
+                         data = awards, family = "poisson")
+
+summary(m.pois.nonlin2)
+
+awards |> mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],
+                 pred_nonlin2 = m.pois.nonlin2$summary.fitted.values[,1],
+                 pred_lin = m.pois.lin1$summary.fitted.values[,1]
+) |> 
+  pivot_longer(cols = c("pred_nonlin","pred_nonlin2", "pred_lin"), names_to = "method", values_to = "pred") |> 
+  arrange(math) |> 
+  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +
+  geom_point(aes(x=math, y = num_awards)) + ggtitle("Fit with linear and non linear effect (RW1)")
+```
+
+
+## References
