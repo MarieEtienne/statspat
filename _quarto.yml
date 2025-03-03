@@ -22,13 +22,14 @@ website:
         menu: 
           - href: 01_intro.qmd
           - href: 02_geostat.qmd
+          - href: 03_lattice.qmd
+          - href: 04_inla.qmd
 
       - text: "TP"
         menu: 
           - href: 01_pluies.qmd
-
-       
-
+          - href: 02_tpintro_inla.qmd
+          
 format:
   html:
     theme: cosmo
