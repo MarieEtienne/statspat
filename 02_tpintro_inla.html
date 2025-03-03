@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Marie-Pierre Etienne (sur la base du TD de Liliane Bel)">
+<meta name="author" content="Marie-Pierre Etienne (sur la base des idées expolorée dans FinistR2023 )">
 <meta name="dcterms.date" content="2025-03-03">
 
-<title>TD1 - Statistique Spatiale – Statistique Spatiale</title>
+<title>TD2 - Introduction INLA – Statistique Spatiale</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -224,7 +224,7 @@ window.Quarto = {
   </li>  
         <li>
     <a class="dropdown-item" href="./02_tpintro_inla.html">
- <span class="dropdown-text">TD1 - Statistique Spatiale</span></a>
+ <span class="dropdown-text">TD2 - Introduction INLA</span></a>
   </li>  
     </ul>
   </li>
@@ -265,7 +265,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">TD1 - Statistique Spatiale</h1>
+<h1 class="title">TD2 - Introduction INLA</h1>
 </div>
 
 
@@ -274,7 +274,7 @@ window.Quarto = {
   <div class="quarto-title-meta-heading">Affiliations</div>
   
     <div class="quarto-title-meta-contents">
-    <p class="author">Marie-Pierre Etienne (sur la base du TD de Liliane Bel) <a href="mailto:marie-pierre.etienne@ensai.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+    <p class="author">Marie-Pierre Etienne (sur la base des idées expolorée dans <a href="https://stateofther.github.io/finistR2023/">FinistR2023</a> ) <a href="mailto:marie-pierre.etienne@ensai.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
   </div>
   <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -393,7 +393,7 @@ window.Quarto = {
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.358, Running = 0.171, Post = 0.0128, Total = 0.541 
+    Pre = 0.362, Running = 0.162, Post = 0.013, Total = 0.537 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.351 0.591     -6.510   -5.351     -4.192 -5.351   0
@@ -444,7 +444,7 @@ Posterior summaries for the linear predictor and the fitted values are computed
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.217, Running = 0.249, Post = 0.0194, Total = 0.486 
+    Pre = 0.218, Running = 0.252, Post = 0.0194, Total = 0.489 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.351 0.591     -6.511   -5.351     -4.192 -5.351   0
@@ -456,7 +456,7 @@ Random effects:
 
 Model hyperparameters:
                      mean       sd 0.025quant 0.5quant 0.975quant   mode
-Precision for ID 19921.38 19936.27     596.86 13870.88   73944.92 233.97
+Precision for ID 19921.38 19936.27     596.86 13870.88   73944.93 233.96
 
 Marginal log-Likelihood:  -199.71 
  is computed 
@@ -472,7 +472,7 @@ Posterior summaries for the linear predictor and the fitted values are computed
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a> m.pois.lin_surd<span class="sc">$</span>summary.hyperpar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     mean       sd 0.025quant 0.5quant 0.975quant     mode
-Precision for ID 19921.38 19936.27    596.857 13870.88   73944.92 233.9734</code></pre>
+Precision for ID 19921.38 19936.27   596.8582 13870.88   73944.93 233.9636</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -506,49 +506,49 @@ Precision for ID 19921.38 19936.27    596.857 13870.88   73944.92 233.9734</code
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  x           y
- [1,] -7.955428e-02  0.03565581
- [2,] -7.581918e-02  0.09835382
- [3,] -6.844042e-02  0.13702705
- [4,] -3.908495e-02  0.64819374
- [5,] -2.600819e-02  1.95617699
- [6,] -1.808928e-02  4.88448552
- [7,] -1.184378e-02 12.44499721
- [8,] -8.793810e-03 21.00249899
- [9,] -6.786319e-03 29.38928088
-[10,] -5.263463e-03 37.03400848
-[11,] -4.009330e-03 43.59196533
-[12,] -2.894426e-03 48.98381993
-[13,] -2.381577e-03 51.13091494
-[14,] -1.889759e-03 52.89898025
-[15,] -1.412390e-03 54.28486096
-[16,] -9.437154e-04 55.28889646
-[17,] -7.574965e-04 55.58253995
-[18,] -5.715096e-04 55.81347143
-[19,] -4.785049e-04 55.90512273
-[20,] -3.854407e-04 55.98071103
-[21,] -1.989783e-04 56.08305327
-[22,] -1.183177e-05 56.11906392
-[23,]  1.750622e-04 56.08785333
-[24,]  3.612728e-04 55.99058576
-[25,]  4.542186e-04 55.91761133
-[26,]  5.471094e-04 55.82861121
-[27,]  7.328821e-04 55.60305407
-[28,]  9.189038e-04 55.31481619
-[29,]  1.387152e-03 54.32394190
-[30,]  1.864173e-03 52.94982448
-[31,]  2.355705e-03 51.19182282
-[32,]  2.868309e-03 49.05334029
-[33,]  3.981357e-03 43.67897628
-[34,]  5.232270e-03 37.13367128
-[35,]  6.751624e-03 29.48761169
-[36,]  8.750591e-03 21.09884433
-[37,]  1.178500e-02 12.52015175
-[38,]  1.798719e-02  4.92168530
-[39,]  2.584109e-02  1.97320961
-[40,]  3.881386e-02  0.65227546
-[41,]  6.821411e-02  0.13524009
-[42,]  7.571751e-02  0.09637505
-[43,]  7.943908e-02  0.07611087</code></pre>
+ [1,] -7.955425e-02  0.03565585
+ [2,] -7.581915e-02  0.09835400
+ [3,] -6.844041e-02  0.13702727
+ [4,] -3.908496e-02  0.64819402
+ [5,] -2.600821e-02  1.95617670
+ [6,] -1.808930e-02  4.88448367
+ [7,] -1.184379e-02 12.44498904
+ [8,] -8.793817e-03 21.00248205
+ [9,] -6.786324e-03 29.38925498
+[10,] -5.263467e-03 37.03397680
+[11,] -4.009333e-03 43.59192870
+[12,] -2.894428e-03 48.98377980
+[13,] -2.381579e-03 51.13087374
+[14,] -1.889761e-03 52.89893823
+[15,] -1.412391e-03 54.28481831
+[16,] -9.437161e-04 55.28885334
+[17,] -7.574970e-04 55.58249670
+[18,] -5.715101e-04 55.81342807
+[19,] -4.785053e-04 55.90507933
+[20,] -3.854410e-04 55.98066760
+[21,] -1.989784e-04 56.08300979
+[22,] -1.183179e-05 56.11902042
+[23,]  1.750623e-04 56.08780985
+[24,]  3.612731e-04 55.99054233
+[25,]  4.542189e-04 55.91756793
+[26,]  5.471098e-04 55.82856786
+[27,]  7.328826e-04 55.60301083
+[28,]  9.189044e-04 55.31477308
+[29,]  1.387153e-03 54.32389925
+[30,]  1.864175e-03 52.94978246
+[31,]  2.355707e-03 51.19178163
+[32,]  2.868311e-03 49.05330018
+[33,]  3.981360e-03 43.67893968
+[34,]  5.232274e-03 37.13363957
+[35,]  6.751630e-03 29.48758573
+[36,]  8.750598e-03 21.09882731
+[37,]  1.178500e-02 12.52014352
+[38,]  1.798720e-02  4.92168343
+[39,]  2.584111e-02  1.97320931
+[40,]  3.881387e-02  0.65227574
+[41,]  6.821409e-02  0.13524030
+[42,]  7.571748e-02  0.09637524
+[43,]  7.943906e-02  0.07611101</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -609,7 +609,7 @@ math -0.982</code></pre>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.209, Running = 0.258, Post = 0.0177, Total = 0.485 
+    Pre = 0.211, Running = 0.237, Post = 0.0178, Total = 0.465 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.674 0.688     -7.040   -5.669     -4.338 -5.670   0
