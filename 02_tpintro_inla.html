@@ -313,16 +313,14 @@ window.Quarto = {
 <li><p><a href="https://www.r-inla.org/home" class="uri">https://www.r-inla.org/home</a></p></li>
 <li><p><a href="https://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf" class="uri">https://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf</a></p></li>
 </ul>
-<p><span class="rouge">IMPORTANT : Utiliser le cluster 13 !!! INLA n’est pas installé sur les autres.</span></p>
+<p><span class="rouge">IMPORTANT : Utiliser le cluster 10 !!! INLA n’est pas installé sur les autres.</span></p>
 </section>
 <section id="installation-de-inla" class="level2">
 <h2 class="anchored" data-anchor-id="installation-de-inla">Installation de INLA</h2>
-<p>(Ici inutile car INLA est déja sur le cluster 13)</p>
+<p>(Ici inutile car INLA est déja sur le cluster 10)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Base de R INLA</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"INLA"</span>,<span class="at">repos=</span><span class="fu">c</span>(<span class="fu">getOption</span>(<span class="st">"repos"</span>),<span class="at">INLA=</span><span class="st">"https://inla.r-inla-download.org/R/stable"</span>), <span class="at">dep=</span><span class="cn">TRUE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># inlabru wrapper</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"inlabru"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"INLA"</span>,<span class="at">repos=</span><span class="fu">c</span>(<span class="fu">getOption</span>(<span class="st">"repos"</span>),<span class="at">INLA=</span><span class="st">"https://inla.r-inla-download.org/R/stable"</span>), <span class="at">dep=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="la-réussite-en-maths" class="level2">
@@ -341,15 +339,6 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chargement des donnees</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"data/awards.RData"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(awards)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  num_awards       prog math id
-1          0 Vocational   41  1
-2          0    General   41  2
-3          0 Vocational   44  3
-4          0 Vocational   42  4
-5          0 Vocational   40  5
-6          0    General   42  6</code></pre>
-</div>
 </div>
 <!-- La fonction `bru_options_set` permet de fixer des options sur des paramètres spécifiques à INLA. -->
 <!-- ```{r set-options} -->
@@ -365,17 +354,10 @@ window.Quarto = {
 <li>On souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| eval: false</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: false</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_pres</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span> math, <span class="at">y =</span> num_awards) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="02_tpintro_inla_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| eval: false</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: false</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_pres</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span> math, <span class="at">y =</span> num_awards) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>Proposer un modèle.</li>
@@ -385,43 +367,23 @@ window.Quarto = {
 <li>Ajustement du modèle</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| eval: false</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_first_model</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Application de la formule avec un modèle de Poisson</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>m.pois.lin1 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Time used:
-    Pre = 0.362, Running = 0.162, Post = 0.013, Total = 0.537 
-Fixed effects:
-              mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-(Intercept) -5.351 0.591     -6.510   -5.351     -4.192 -5.351   0
-math         0.086 0.010      0.067    0.086      0.105  0.086   0
-
-Marginal log-Likelihood:  -199.63 
- is computed 
-Posterior summaries for the linear predictor and the fitted values are computed
-(Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Vous pouvez éventuellement comparer à ce que donneraitjags</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| eval: false</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_first_model</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Application de la formule avec un modèle de Poisson</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>m.pois.lin1 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin1)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Vous pouvez éventuellement comparer à ce que donneraitjags</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="4" type="1">
 <li>Quelle est la distribution a posteriori pour l’effet des mathématiques</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_first_post</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin1<span class="sc">$</span>marginals.fixed<span class="sc">$</span>math <span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">mean</span>(m.pois.lin1<span class="sc">$</span>summary.fixed[<span class="dv">2</span>,<span class="dv">1</span>]), <span class="at">sd =</span> m.pois.lin1<span class="sc">$</span>summary.fixed[<span class="dv">2</span>,<span class="dv">2</span>]), <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="02_tpintro_inla_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_first_post</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin1<span class="sc">$</span>marginals.fixed<span class="sc">$</span>math <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">mean</span>(m.pois.lin1<span class="sc">$</span>summary.fixed[<span class="dv">2</span>,<span class="dv">1</span>]), <span class="at">sd =</span> m.pois.lin1<span class="sc">$</span>summary.fixed[<span class="dv">2</span>,<span class="dv">2</span>]), <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="5" type="1">
 <li>Comparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance</li>
@@ -435,247 +397,104 @@ Posterior summaries for the linear predictor and the fitted values are computed
 </ol>
 <p><span class="math display">\[Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i+E_i)) \quad \text{avec}\quad E_i\overset{ind}{\sim}\mathcal{N}(0,\sigma^2).\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_ranef</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>awards <span class="ot">&lt;-</span> awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">ID =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(awards))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Time used:
-    Pre = 0.218, Running = 0.252, Post = 0.0194, Total = 0.489 
-Fixed effects:
-              mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-(Intercept) -5.351 0.591     -6.511   -5.351     -4.192 -5.351   0
-math         0.086 0.010      0.067    0.086      0.105  0.086   0
-
-Random effects:
-  Name    Model
-    ID IID model
-
-Model hyperparameters:
-                     mean       sd 0.025quant 0.5quant 0.975quant   mode
-Precision for ID 19921.38 19936.27     596.86 13870.88   73944.93 233.96
-
-Marginal log-Likelihood:  -199.71 
- is computed 
-Posterior summaries for the linear predictor and the fitted values are computed
-(Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_ranef</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>awards <span class="ot">&lt;-</span> awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">ID =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(awards))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="7" type="1">
 <li><p>Discuter les distributions a posteriori des effets fixes</p></li>
 <li><p>on peut regarder la loi a posteriori de la précision sur les effets alétaoires</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a> m.pois.lin_surd<span class="sc">$</span>summary.hyperpar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                     mean       sd 0.025quant 0.5quant 0.975quant     mode
-Precision for ID 19921.38 19936.27   596.8582 13870.88   73944.93 233.9636</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="02_tpintro_inla_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a> m.pois.lin_surd<span class="sc">$</span>summary.hyperpar</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="9" type="1">
 <li>Si une variable aléatoire V est strictement positive et admet une densité <span class="math inline">\(f\)</span>, quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l’effet aléatoire.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span>  <span class="fu">mutate</span>(<span class="at">u =</span> <span class="dv">1</span><span class="sc">/</span>x, <span class="at">fu =</span> x<span class="sc">^</span><span class="dv">2</span> ) <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>u, <span class="at">y =</span> fu) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="02_tpintro_inla_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span>  <span class="fu">mutate</span>(<span class="at">u =</span> <span class="dv">1</span><span class="sc">/</span>x, <span class="at">fu =</span> x<span class="sc">^</span><span class="dv">2</span> ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>u, <span class="at">y =</span> fu) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="10" type="1">
 <li>On peut accéder aux effets aléatoires a posteriori, par exemple pour l’élève 1.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_post_ranef</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  x           y
- [1,] -7.955425e-02  0.03565585
- [2,] -7.581915e-02  0.09835400
- [3,] -6.844041e-02  0.13702727
- [4,] -3.908496e-02  0.64819402
- [5,] -2.600821e-02  1.95617670
- [6,] -1.808930e-02  4.88448367
- [7,] -1.184379e-02 12.44498904
- [8,] -8.793817e-03 21.00248205
- [9,] -6.786324e-03 29.38925498
-[10,] -5.263467e-03 37.03397680
-[11,] -4.009333e-03 43.59192870
-[12,] -2.894428e-03 48.98377980
-[13,] -2.381579e-03 51.13087374
-[14,] -1.889761e-03 52.89893823
-[15,] -1.412391e-03 54.28481831
-[16,] -9.437161e-04 55.28885334
-[17,] -7.574970e-04 55.58249670
-[18,] -5.715101e-04 55.81342807
-[19,] -4.785053e-04 55.90507933
-[20,] -3.854410e-04 55.98066760
-[21,] -1.989784e-04 56.08300979
-[22,] -1.183179e-05 56.11902042
-[23,]  1.750623e-04 56.08780985
-[24,]  3.612731e-04 55.99054233
-[25,]  4.542189e-04 55.91756793
-[26,]  5.471098e-04 55.82856786
-[27,]  7.328826e-04 55.60301083
-[28,]  9.189044e-04 55.31477308
-[29,]  1.387153e-03 54.32389925
-[30,]  1.864175e-03 52.94978246
-[31,]  2.355707e-03 51.19178163
-[32,]  2.868311e-03 49.05330018
-[33,]  3.981360e-03 43.67893968
-[34,]  5.232274e-03 37.13363957
-[35,]  6.751630e-03 29.48758573
-[36,]  8.750598e-03 21.09882731
-[37,]  1.178500e-02 12.52014352
-[38,]  1.798720e-02  4.92168343
-[39,]  2.584111e-02  1.97320931
-[40,]  3.881387e-02  0.65227574
-[41,]  6.821409e-02  0.13524030
-[42,]  7.571748e-02  0.09637524
-[43,]  7.943906e-02  0.07611101</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="02_tpintro_inla_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#| echo: true</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#| label: awards_post_ranef</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="11" type="1">
 <li>On peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fit4.glmm<span class="ot">&lt;-</span><span class="fu">glmer</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> poisson, <span class="at">data =</span> awards)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit4.glmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace
-  Approximation) [glmerMod]
- Family: poisson  ( log )
-Formula: num_awards ~ math + (1 | id)
-   Data: awards
-
-     AIC      BIC   logLik deviance df.resid 
-   381.2    391.1   -187.6    375.2      197 
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--1.1653 -0.5518 -0.3760  0.3900  2.9242 
-
-Random effects:
- Groups Name        Variance Std.Dev.
- id     (Intercept) 0.3257   0.5707  
-Number of obs: 200, groups:  id, 200
-
-Fixed effects:
-            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept) -5.63163    0.70476  -7.991 1.34e-15 ***
-math         0.08861    0.01161   7.634 2.28e-14 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Correlation of Fixed Effects:
-     (Intr)
-math -0.982</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit4.glmm<span class="ot">&lt;-</span><span class="fu">glmer</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">family =</span> poisson, <span class="at">data =</span> awards)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit4.glmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="12" type="1">
 <li><p>Quels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande <code>inla.doc("iid")</code>. Quelle différence entre prior et postérior ?</p></li>
 <li><p>On souhaite changer le prior en une loi gamma de parametre 1,2 (Attention les priors sont codés dans le format interne d’inla cf <a href="https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#tab:internalhyper">Table 5.3 <span class="citation" data-cites="gomez2020bayesian">Gómez-Rubio (<span>2020</span>)</span></a></p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hyper =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">list</span>(<span class="at">prior =</span> <span class="st">"loggamma"</span>, <span class="at">param =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>)))),</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Time used:
-    Pre = 0.211, Running = 0.237, Post = 0.0178, Total = 0.465 
-Fixed effects:
-              mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-(Intercept) -5.674 0.688     -7.040   -5.669     -4.338 -5.670   0
-math         0.089 0.012      0.067    0.089      0.112  0.089   0
-
-Random effects:
-  Name    Model
-    ID IID model
-
-Model hyperparameters:
-                 mean   sd 0.025quant 0.5quant 0.975quant mode
-Precision for ID 3.69 1.43       1.69     3.42       7.21 2.92
-
-Marginal log-Likelihood:  -197.99 
- is computed 
-Posterior summaries for the linear predictor and the fitted values are computed
-(Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hyper =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">list</span>(<span class="at">prior =</span> <span class="st">"loggamma"</span>, <span class="at">param =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>)))),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="14" type="1">
 <li>On peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hyper =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">list</span>(<span class="at">prior =</span> <span class="st">"loggamma"</span>, <span class="at">param =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>)))),</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">f</span>(ID, <span class="at">model =</span> <span class="st">"iid"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">hyper =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">list</span>(<span class="at">prior =</span> <span class="st">"loggamma"</span>, <span class="at">param =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>)))),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="15" type="1">
 <li>Intégrer un effet non linéaire de la note en mathématique</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw1"</span>),</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]) <span class="sc">|&gt;</span> </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw1"</span>),</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]) <span class="sc">|&gt;</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="16" type="1">
 <li>Il existe un modèle RW2, en vous référrant au chapitre <a href="https://becarioprecario.bitbucket.io/inla-gitbook/ch-mixed.html">Mixed-effects Models du livre <span class="citation" data-cites="gomez2020bayesian">Gómez-Rubio (<span>2020</span>)</span></a>, expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw2"</span>),</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin2)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_nonlin2 =</span> m.pois.nonlin2<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>,<span class="st">"pred_nonlin2"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw2"</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin2)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_nonlin2 =</span> m.pois.nonlin2<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>,<span class="st">"pred_nonlin2"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
