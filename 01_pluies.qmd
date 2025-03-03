@@ -24,8 +24,8 @@ en Suisse. Nous utiliserons `R` et plusieurs packages spécialisés
 (`tidyverse`, `sf`, `gstat`, etc.) pour visualiser, analyser et
 modéliser ces données.
 
-
-Utilisez les clusters  [cluster10](https://clust-n10.ensai.fr) et [cluster13](https://clust-n13.ensai.fr)
+Utilisez les clusters [cluster10](https://clust-n10.ensai.fr) et
+[cluster13](https://clust-n13.ensai.fr)
 
 ## Objectifs
 
