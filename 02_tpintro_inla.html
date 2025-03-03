@@ -393,7 +393,7 @@ window.Quarto = {
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.377, Running = 0.161, Post = 0.013, Total = 0.551 
+    Pre = 0.358, Running = 0.171, Post = 0.0128, Total = 0.541 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.351 0.591     -6.510   -5.351     -4.192 -5.351   0
@@ -444,7 +444,7 @@ Posterior summaries for the linear predictor and the fitted values are computed
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.221, Running = 0.243, Post = 0.0196, Total = 0.484 
+    Pre = 0.217, Running = 0.249, Post = 0.0194, Total = 0.486 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.351 0.591     -6.511   -5.351     -4.192 -5.351   0
@@ -456,7 +456,7 @@ Random effects:
 
 Model hyperparameters:
                      mean       sd 0.025quant 0.5quant 0.975quant   mode
-Precision for ID 19921.38 19936.27     596.86 13870.88   73944.93 233.97
+Precision for ID 19921.38 19936.27     596.86 13870.88   73944.92 233.97
 
 Marginal log-Likelihood:  -199.71 
  is computed 
@@ -472,7 +472,7 @@ Posterior summaries for the linear predictor and the fitted values are computed
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a> m.pois.lin_surd<span class="sc">$</span>summary.hyperpar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     mean       sd 0.025quant 0.5quant 0.975quant     mode
-Precision for ID 19921.38 19936.27   596.8578 13870.88   73944.93 233.9663</code></pre>
+Precision for ID 19921.38 19936.27    596.857 13870.88   73944.92 233.9734</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.hyperpar<span class="sc">$</span><span class="st">`</span><span class="at">Precision for ID</span><span class="st">`</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -506,49 +506,49 @@ Precision for ID 19921.38 19936.27   596.8578 13870.88   73944.93 233.9663</code
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  x           y
- [1,] -7.955425e-02  0.03565584
- [2,] -7.581915e-02  0.09835395
- [3,] -6.844040e-02  0.13702722
- [4,] -3.908495e-02  0.64819401
- [5,] -2.600820e-02  1.95617699
- [6,] -1.808929e-02  4.88448478
- [7,] -1.184379e-02 12.44499332
- [8,] -8.793814e-03 21.00249052
- [9,] -6.786322e-03 29.38926757
-[10,] -5.263465e-03 37.03399225
-[11,] -4.009331e-03 43.59194648
-[12,] -2.894427e-03 48.98379920
-[13,] -2.381578e-03 51.13089365
-[14,] -1.889760e-03 52.89895853
-[15,] -1.412391e-03 54.28483890
-[16,] -9.437157e-04 55.28887414
-[17,] -7.574968e-04 55.58251756
-[18,] -5.715099e-04 55.81344898
-[19,] -4.785051e-04 55.90510025
-[20,] -3.854408e-04 55.98068854
-[21,] -1.989783e-04 56.08303075
-[22,] -1.183178e-05 56.11904139
-[23,]  1.750622e-04 56.08783081
-[24,]  3.612729e-04 55.99056327
-[25,]  4.542187e-04 55.91758886
-[26,]  5.471096e-04 55.82858876
-[27,]  7.328824e-04 55.60303169
-[28,]  9.189041e-04 55.31479388
-[29,]  1.387152e-03 54.32391984
-[30,]  1.864174e-03 52.94980275
-[31,]  2.355706e-03 51.19180153
-[32,]  2.868310e-03 49.05331957
-[33,]  3.981359e-03 43.67895744
-[34,]  5.232272e-03 37.13365502
-[35,]  6.751627e-03 29.48759834
-[36,]  8.750595e-03 21.09883581
-[37,]  1.178500e-02 12.52014782
-[38,]  1.798719e-02  4.92168455
-[39,]  2.584110e-02  1.97320960
-[40,]  3.881386e-02  0.65227573
-[41,]  6.821409e-02  0.13524025
-[42,]  7.571748e-02  0.09637519
-[43,]  7.943905e-02  0.07611098</code></pre>
+ [1,] -7.955428e-02  0.03565581
+ [2,] -7.581918e-02  0.09835382
+ [3,] -6.844042e-02  0.13702705
+ [4,] -3.908495e-02  0.64819374
+ [5,] -2.600819e-02  1.95617699
+ [6,] -1.808928e-02  4.88448552
+ [7,] -1.184378e-02 12.44499721
+ [8,] -8.793810e-03 21.00249899
+ [9,] -6.786319e-03 29.38928088
+[10,] -5.263463e-03 37.03400848
+[11,] -4.009330e-03 43.59196533
+[12,] -2.894426e-03 48.98381993
+[13,] -2.381577e-03 51.13091494
+[14,] -1.889759e-03 52.89898025
+[15,] -1.412390e-03 54.28486096
+[16,] -9.437154e-04 55.28889646
+[17,] -7.574965e-04 55.58253995
+[18,] -5.715096e-04 55.81347143
+[19,] -4.785049e-04 55.90512273
+[20,] -3.854407e-04 55.98071103
+[21,] -1.989783e-04 56.08305327
+[22,] -1.183177e-05 56.11906392
+[23,]  1.750622e-04 56.08785333
+[24,]  3.612728e-04 55.99058576
+[25,]  4.542186e-04 55.91761133
+[26,]  5.471094e-04 55.82861121
+[27,]  7.328821e-04 55.60305407
+[28,]  9.189038e-04 55.31481619
+[29,]  1.387152e-03 54.32394190
+[30,]  1.864173e-03 52.94982448
+[31,]  2.355705e-03 51.19182282
+[32,]  2.868309e-03 49.05334029
+[33,]  3.981357e-03 43.67897628
+[34,]  5.232270e-03 37.13367128
+[35,]  6.751624e-03 29.48761169
+[36,]  8.750591e-03 21.09884433
+[37,]  1.178500e-02 12.52015175
+[38,]  1.798719e-02  4.92168530
+[39,]  2.584109e-02  1.97320961
+[40,]  3.881386e-02  0.65227546
+[41,]  6.821411e-02  0.13524009
+[42,]  7.571751e-02  0.09637505
+[43,]  7.943908e-02  0.07611087</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd<span class="sc">$</span>marginals.random<span class="sc">$</span>ID<span class="sc">$</span>index<span class="fl">.1</span> <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -609,7 +609,7 @@ math -0.982</code></pre>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time used:
-    Pre = 0.212, Running = 0.272, Post = 0.0179, Total = 0.502 
+    Pre = 0.209, Running = 0.258, Post = 0.0177, Total = 0.485 
 Fixed effects:
               mean    sd 0.025quant 0.5quant 0.975quant   mode kld
 (Intercept) -5.674 0.688     -7.040   -5.669     -4.338 -5.670   0
@@ -630,7 +630,7 @@ Posterior summaries for the linear predictor and the fitted values are computed
 </div>
 </div>
 <ol start="14" type="1">
-<li>on peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC</li>
+<li>On peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC</li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m.pois.lin_surd2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> math <span class="sc">+</span> </span>
@@ -640,46 +640,47 @@ Posterior summaries for the linear predictor and the fitted values are computed
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.lin_surd2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Time used:
-    Pre = 0.206, Running = 0.277, Post = 0.0191, Total = 0.502 
-Fixed effects:
-              mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-(Intercept) -5.674 0.688     -7.040   -5.669     -4.338 -5.670   0
-math         0.089 0.012      0.067    0.089      0.112  0.089   0
-
-Random effects:
-  Name    Model
-    ID IID model
-
-Model hyperparameters:
-                 mean   sd 0.025quant 0.5quant 0.975quant mode
-Precision for ID 3.69 1.43       1.69     3.42       7.21 2.92
-
-Deviance Information Criterion (DIC) ...............: 377.40
-Deviance Information Criterion (DIC, saturated) ....: 201.16
-Effective number of parameters .....................: 30.27
-
-Watanabe-Akaike information criterion (WAIC) ...: 377.97
-Effective number of parameters .................: 25.93
-
-Marginal log-Likelihood:  -197.99 
- is computed 
-Posterior summaries for the linear predictor and the fitted values are computed
-(Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')</code></pre>
 </div>
+<ol start="15" type="1">
+<li>Intégrer un effet non linéaire de la note en mathématique</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw1"</span>),</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]) <span class="sc">|&gt;</span> </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="16" type="1">
+<li>Il existe un modèle RW2, en vous référrant au chapitre <a href="https://becarioprecario.bitbucket.io/inla-gitbook/ch-mixed.html">Mixed-effects Models du livre <span class="citation" data-cites="gomez2020bayesian">Gómez-Rubio (<span>2020</span>)</span></a>, expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>m.pois.nonlin2 <span class="ot">&lt;-</span> <span class="fu">inla</span>(num_awards <span class="sc">~</span> <span class="fu">f</span>(math,  <span class="at">model =</span> <span class="st">"rw2"</span>),</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">dic =</span> <span class="cn">TRUE</span>, <span class="at">waic =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> awards, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.pois.nonlin2)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>awards <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pred_nonlin =</span> m.pois.nonlin<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_nonlin2 =</span> m.pois.nonlin2<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>],</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pred_lin =</span> m.pois.lin1<span class="sc">$</span>summary.fitted.values[,<span class="dv">1</span>]</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pred_nonlin"</span>,<span class="st">"pred_nonlin2"</span>, <span class="st">"pred_lin"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pred"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(math) <span class="sc">|&gt;</span> </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> pred, <span class="at">col =</span> method)) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>math, <span class="at">y =</span> num_awards)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Fit with linear and non linear effect (RW1)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
-<ol type="1">
-<li><a href="https://www.pymc.io/projects/examples/en/latest/gaussian_processes/log-gaussian-cox-process.html" class="uri">https://www.pymc.io/projects/examples/en/latest/gaussian_processes/log-gaussian-cox-process.html</a></li>
-<li>Fabian E. Bachl, Finn Lindgren, David L. Borchers, and Janine B. Illian (2019), inlabru: an R package for Bayesian spatial modelling from ecological survey data, Methods in Ecology and Evolution, British Ecological Society, 10, 760–766, doi:10.1111/2041-210X.13168</li>
-<li>Funwi-Gabga, N. and Mateu, J. (2012) Understanding the nesting spatial behaviour of gorillas_sf in the Kagwene Sanctuary, Cameroon. Stochastic Environmental Research and Risk Assessment 26 (6), 793-811.</li>
-<li><a href="https://www.muscardinus.be/2018/07/inlabru-bru/" class="uri">https://www.muscardinus.be/2018/07/inlabru-bru/</a></li>
-<li><a href="https://inlabru-org.github.io/inlabru/index.html" class="uri">https://inlabru-org.github.io/inlabru/index.html</a></li>
-</ol>
+
 
 
 
