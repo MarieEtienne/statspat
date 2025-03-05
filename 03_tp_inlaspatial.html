@@ -396,7 +396,6 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 <span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  ggplot() + geom_sf(data=gambia.borders_sf) + geom_sf(data=gambia_sf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Dans les approches INLA, le champs gaussien caché est vu comme la solution d’une Equation aux Dérivées Partielles Stochastiques (EDPS) qui va être résolue sur un maillage. On peut définir le maillage.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>hull <span class="ot">=</span> <span class="fu">inla.nonconvex.hull</span>(gambia_sf,<span class="at">convex =</span> <span class="sc">-</span><span class="fl">0.1</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>(<span class="at">boundary =</span> hull, <span class="at">max.edge =</span> <span class="fl">0.2</span>)</span>
