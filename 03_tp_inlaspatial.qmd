@@ -106,10 +106,11 @@ Dans les approches INLA, le champs gaussien caché est vu comme la solution d'un
 #| eval: false
 
 hull = inla.nonconvex.hull(gambia_sf,convex = -0.1)
-gambia_mesh <- inla.mesh.2d(boundary = hull, max.edge = 0.2)
+gambia_mesh <- inla.mesh.2d(boundary = hull, max.edge= 0.2)
 
 plot(gambia_mesh,main="",asp=1)
-points(gambia,pch=21,bg="white",cex=1.5,lwd=1.5)
+coo <- st_coordinates(gambia_sf)
+points(coo, col = "red")
 ```
 
 
@@ -119,7 +120,7 @@ Mais pour résoudre l'EDPS, on a besoin de mettre des conditions de nullité au 
 
 ```{r,eval=FALSE}
 hull = inla.nonconvex.hull(gambia_sf,convex = -0.1)
-gambia_mesh <- inla.mesh.2d( boundary = hull,max.edge = c(0.2, 2))
+gambia_mesh <- inla.mesh.2d( boundary = hull,max.edge = c(0.2, 2), offset = c(1, 0.2))
 plot(gambia_mesh,main="",asp=1)
 ```
 
@@ -208,7 +209,7 @@ formula = pos ~ 0 + b0 + treated +
   age +
   green +
   phc +
-   f(s, model = spde)
+   f(s, model = gambia_spde)
 
 fit <- inla(formula,
   family = "binomial",
