@@ -1,31 +1,402 @@
 [
   {
-    "objectID": "02_tpintro_inla.html",
-    "href": "02_tpintro_inla.html",
-    "title": "TD2 - Introduction INLA",
+    "objectID": "03_tp_inlaspatial.html",
+    "href": "03_tp_inlaspatial.html",
+    "title": "TD3 - Ajuster un modèle hiérarchique spatial avec INLA",
     "section": "",
-    "text": "Ce TP est construit à partir des idées explorées durant la session FinistR2023"
+    "text": "# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nThis is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.\n - See www.r-inla.org/contact-us for how to get help.\n - List available models/likelihoods/etc with inla.list.models()\n - Use inla.doc(&lt;NAME&gt;) to access documentation\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE"
   },
   {
-    "objectID": "02_tpintro_inla.html#introduction",
-    "href": "02_tpintro_inla.html#introduction",
-    "title": "TD2 - Introduction INLA",
-    "section": "Introduction",
-    "text": "Introduction\nPrésentation de la méthodologie INLA (integrated nested Laplace approximation) en utilisant les packages {INLA}.\nRessources :\n\nhttps://www.r-inla.org/home\nhttps://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf\n\nIMPORTANT : Utiliser le cluster 10 !!! INLA n’est pas installé sur les autres."
+    "objectID": "03_tp_inlaspatial.html#references",
+    "href": "03_tp_inlaspatial.html#references",
+    "title": "TD3 - Ajuster un modèle hiérarchique spatial avec INLA",
+    "section": "References",
+    "text": "References"
   },
   {
-    "objectID": "02_tpintro_inla.html#installation-de-inla",
-    "href": "02_tpintro_inla.html#installation-de-inla",
-    "title": "TD2 - Introduction INLA",
-    "section": "Installation de INLA",
-    "text": "Installation de INLA\n(Ici inutile car INLA est déja sur le cluster 10)\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE)"
+    "objectID": "03_lattice.html#sources",
+    "href": "03_lattice.html#sources",
+    "title": "Données spatiales sur réseau",
+    "section": "Sources",
+    "text": "Sources\nCe cours est construit à partir du livre de Cressie (2015) et de l’article Ver Hoef, Hanks, and Hooten (2018)"
   },
   {
-    "objectID": "02_tpintro_inla.html#la-réussite-en-maths",
-    "href": "02_tpintro_inla.html#la-réussite-en-maths",
-    "title": "TD2 - Introduction INLA",
-    "section": "La réussite en maths",
-    "text": "La réussite en maths\n\nChargement de packages\n\n# Chargement des packages\nlibrary(tidyverse)\nlibrary(INLA)\nlibrary(lme4) # pour comparer avec l'approche frequentiste \n\nLe jeu de données awards contient le nombre de récompenses (num_awards) obtenues en fonction des résultats en mathématique (math) pour une classe de 200 élèves.\nLa réponse mesurée est un comptage.\n\n# Chargement des donnees\nload(\"data/awards.RData\")\nhead(awards)\n\n\n\n\n\n\n\n\n\n\n\n\nOn souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique\n\n\n #| eval: false\n #| echo: false\n #| label: awards_pres\nawards |&gt; ggplot() + aes(x= math, y = num_awards) + geom_point()\n\n\nProposer un modèle.\n\n\n\nAjustement du modèle\n\n\n #| eval: false\n #| label: awards_first_model\n# Application de la formule avec un modèle de Poisson\nm.pois.lin1 &lt;- inla(num_awards ~ math,\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin1)\n#Vous pouvez éventuellement comparer à ce que donneraitjags\n\n\nQuelle est la distribution a posteriori pour l’effet des mathématiques\n\n\n #| echo: true\n #| label: awards_first_post\nm.pois.lin1$marginals.fixed$math |&gt; \n  ggplot() + aes(x=x, y = y) + geom_line() + \n  stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = \"red\")\n\n\nComparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance\n\n\n\n\n\n\nPour prendre en compte le problème classique de surdispersion dans les données de comptages, il peut être intéressant de rajouter un effet aléatoire de la manière suivante. Identifier tous les hyper paramètres et toutes les variables latentes.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i+E_i)) \\quad \\text{avec}\\quad E_i\\overset{ind}{\\sim}\\mathcal{N}(0,\\sigma^2).\\]\n\n #| echo: true\n #| label: awards_ranef\n \nawards &lt;- awards |&gt; mutate(ID = 1:nrow(awards))\nm.pois.lin_surd &lt;- inla(num_awards ~ math + f(ID, model = \"iid\"),\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin_surd)\n\n\nDiscuter les distributions a posteriori des effets fixes\non peut regarder la loi a posteriori de la précision sur les effets alétaoires\n\n\n m.pois.lin_surd$summary.hyperpar\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nSi une variable aléatoire V est strictement positive et admet une densité \\(f\\), quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l’effet aléatoire.\n\n\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  as.data.frame() |&gt;  mutate(u = 1/x, fu = x^2 ) |&gt; \n  ggplot() + aes(x=u, y = fu) + geom_line()\n\n\nOn peut accéder aux effets aléatoires a posteriori, par exemple pour l’élève 1.\n\n\n #| echo: true\n #| label: awards_post_ranef\nm.pois.lin_surd$marginals.random$ID$index.1\nm.pois.lin_surd$marginals.random$ID$index.1 |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nOn peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?\n\n\nfit4.glmm&lt;-glmer(num_awards ~ math + (1|id), family = poisson, data = awards)\nsummary(fit4.glmm)\n\n\nQuels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande inla.doc(\"iid\"). Quelle différence entre prior et postérior ?\nOn souhaite changer le prior en une loi gamma de parametre 1,2 (Attention les priors sont codés dans le format interne d’inla cf Table 5.3 Gómez-Rubio (2020)\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nOn peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nIntégrer un effet non linéaire de la note en mathématique\n\n\nm.pois.nonlin &lt;- inla(num_awards ~ f(math,  model = \"rw1\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")\n\n\nIl existe un modèle RW2, en vous référrant au chapitre Mixed-effects Models du livre Gómez-Rubio (2020), expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?\n\n\nm.pois.nonlin2 &lt;- inla(num_awards ~ f(math,  model = \"rw2\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin2)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_nonlin2 = m.pois.nonlin2$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]\n) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\",\"pred_nonlin2\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")"
+    "objectID": "03_lattice.html#exemple-illustratif",
+    "href": "03_lattice.html#exemple-illustratif",
+    "title": "Données spatiales sur réseau",
+    "section": "Exemple illustratif",
+    "text": "Exemple illustratif\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\n\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\nOn cherche typiquement à ajuster un modèle de régression pour trouver des covariables liées au phénomène d’intérêt."
+  },
+  {
+    "objectID": "03_lattice.html#pourquoi-faire-attention-à-la-corrélation-spatiale",
+    "href": "03_lattice.html#pourquoi-faire-attention-à-la-corrélation-spatiale",
+    "title": "Données spatiales sur réseau",
+    "section": "Pourquoi faire attention à la corrélation spatiale",
+    "text": "Pourquoi faire attention à la corrélation spatiale\nUn exemple\n\\[Y_t = \\rho Y_{t-1} +\\varepsilon_t\\]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n            Estimate Std. Error  t value     Pr(&gt;|t|)\n(Intercept) 1.871456  0.3667672 5.102571 1.619417e-06\n\n\n\nVariance de \\(\\hat{\\mu}\\) :\n\nCas indépendant \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2\\)\nCas corrélé \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2 \\left(1 + 2\\left( \\frac{\\rho}{1-\\rho}\\right)\\left( 1 -\\frac{1}{n}\\right)  - 2 \\left( \\frac{\\rho}{1-\\rho}\\right)^2 \\left( \\frac{1-\\rho^{n-1}}{n}\\right)    \\right)\\)\n\nIci on sous estime l’incertitude"
+  },
+  {
+    "objectID": "03_lattice.html#quelques-remarques",
+    "href": "03_lattice.html#quelques-remarques",
+    "title": "Données spatiales sur réseau",
+    "section": "Quelques remarques",
+    "text": "Quelques remarques\n\nProcessus spatial est défini sur une grille : pas de réalisation possible entre deux localisation.\non note \\(D\\) l’ensemble des points de la grille\nOn souhaite construire un modèle pour décrire la distribution du processus \\(Z\\) en tout point \\(s\\) de \\(D\\)"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-sar---cadre-gaussien",
+    "href": "03_lattice.html#modèle-sar---cadre-gaussien",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle SAR - Cadre Gaussien",
+    "text": "Modèle SAR - Cadre Gaussien\n\\[Z = BZ + \\nu\\]\n\n\\(B\\) : Matrice de poids spatiaux\n\\(\\nu\\) : Bruit normal \\(\\nu \\sim N(0, \\Omega)\\)\n\n\\(\\Omega\\) est une matrice diagonale dont tous les termes diagonaux sont stritecement positifs.\nPar convention les termes \\(b_{ii}\\) de la matrice sont nuls (les sites ne dépendent pas d’eux-mêmes)\n\nModèle simultané : chaque variable dépend directement de ses voisines\n\nPuisque \\(Z - BZ = \\nu\\), \\[ \\Sigma_{SAR} = (I - B)^{-1} \\Omega (I - B^T)^{-1} \\]\nRemarques\n\nLa dépendance spatiale est due à B.\n\\(B\\) n’est pas obligatoirement symétrique, en effet la forme quadratique \\((I - B)^{-1} \\Omega (I - B^T)^{-1}\\) est symétrique même si \\(B\\) ne l’est pas\nIl faut que \\(I-B\\) soit inversible"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-car",
+    "href": "03_lattice.html#modèle-car",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle CAR",
+    "text": "Modèle CAR\n\\[ Z_i | Z_{-i} \\sim N \\left( \\sum_{j \\neq i} c_{ij} Z_j, \\sigma^2 / m_{ii} \\right) \\]\n\\(Z_{-i}\\) désigne l’ensemble des \\(Z_j\\) pour \\(j\\ne i\\).\n\nLa matrice \\(C\\) est la matrice des poids spatiaux et on impose \\(C_{ii}=0\\) (on ne définit pas \\(Z_i\\) conditionnellement à lui même)\nLa matrice \\(M\\) est diagonal et ses termes diagonaux sont positifs.\nDépendance conditionnelle : chaque variable est conditionnée aux voisines\nMatrice de covariance :\n\n\\[\\Sigma_{CAR} = (I - C)^{-1} M\\]\nRemarques\nLa loi conditionnelle de \\(Z_i\\) est une combinaison linéaire des autres variables.\nLes valeurs de \\(m_{ii}\\) se sont pas toutes identiques\nCe n’est pas évident que ca définit une loi jointe qui existe"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-car-1",
+    "href": "03_lattice.html#modèle-car-1",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle CAR",
+    "text": "Modèle CAR\n\nExistence du modèle CAR sous réserve que \\((I-C)^{-1} M\\) est définie positive (Besag (1974)) et alors\n\n\\[Z \\sim \\mathcal{N}(0, \\Sigma_{CAR}), \\quad \\Sigma_{CAR} = (I-C)^{-1} M\\] Puisque \\(\\Sigma_{CAR}\\) doit être symétrique alors \\[\\frac{C_{ij}}{m_{ii}} =\\frac{C_{ji}}{m_{jj}}\\]\nDans Ver Hoef, Hanks, and Hooten (2018), on trouve une caractérisation intéressante qui permet de faire le lien entre SAR et CAR\nPour que \\(\\Sigma_{CAR}\\) soit une matrice de covariance valide il faut\n\n\\((I-C)\\) a ses valeurs propres positives\n\\(M\\) est diagonal avec ses termes diagonaux positifs\n\\(C_{ii} = 0\\) pour tout \\(i\\)\n\\(C_{ij}/m_{ii} = C_{ji}/m_{jj}\\) pour tout i,j"
+  },
+  {
+    "objectID": "03_lattice.html#les-matrices-de-poids",
+    "href": "03_lattice.html#les-matrices-de-poids",
+    "title": "Données spatiales sur réseau",
+    "section": "Les matrices de poids",
+    "text": "Les matrices de poids\nEn pratique, on choist la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
+  },
+  {
+    "objectID": "03_lattice.html#la-notion-de-voisinage",
+    "href": "03_lattice.html#la-notion-de-voisinage",
+    "title": "Données spatiales sur réseau",
+    "section": "La notion de voisinage",
+    "text": "La notion de voisinage\nRappel Chaîne de Markov\nSoit \\(Z\\) une chaine de Markov alors\n\\[{\\mathbb{P}}(Z_t,  Z_{t-1}, \\ldots Z_1 \\vert Z_0) = \\prod_{s=1}^t Q_s(Z_s; Z_{s-1})\\] Quel est l’intérêt d’une chaîne de Markov dans le traitement de la dépendance\n. . .\nLes indépendances conditionelles \\(Z_t\\) et \\(Z_{t-2}\\) sont indépendant si on conditionne par \\(Z_{t-1}\\) et dans ce cas le terme \\(\\Sigma_{t, t-2}^{-1}=0\\)\nOn veut copier l’idée pour les CAR"
+  },
+  {
+    "objectID": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
+    "href": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
+    "title": "Données spatiales sur réseau",
+    "section": "Des exemples de voisinage sur une grille régulière",
+    "text": "Des exemples de voisinage sur une grille régulière"
+  },
+  {
+    "objectID": "03_lattice.html#impact-du-voisinage",
+    "href": "03_lattice.html#impact-du-voisinage",
+    "title": "Données spatiales sur réseau",
+    "section": "Impact du voisinage",
+    "text": "Impact du voisinage\n\nOn souhaite définir un CAR sous la forme\n\\[Z_i \\vert Z_{-i} \\sim \\mathcal{N}(\\sum_{j, j\\in V(i)} Z_j, \\sigma^2/m_{ii})\\]\nEst-ce un modèle CAR valide ?"
+  },
+  {
+    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
+    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
+    "title": "Données spatiales sur réseau",
+    "section": "Que faire dans le cas des counties – grille non régulière",
+    "text": "Que faire dans le cas des counties – grille non régulière\n\n\nReading layer `LDNSuicides' from data source \n  `/__w/statspat/statspat/data/LondonSuicide/LDNSuicides.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 32 features and 18 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 503568.2 ymin: 155850.8 xmax: 561957.5 ymax: 200933.9\nCRS:           NA"
+  },
+  {
+    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-1",
+    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-1",
+    "title": "Données spatiales sur réseau",
+    "section": "Que faire dans le cas des counties – grille non régulière",
+    "text": "Que faire dans le cas des counties – grille non régulière\nOn est voisin si on se touche"
+  },
+  {
+    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-2",
+    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-2",
+    "title": "Données spatiales sur réseau",
+    "section": "Que faire dans le cas des counties – grille non régulière",
+    "text": "Que faire dans le cas des counties – grille non régulière\nOn est voisin si on se touche"
+  },
+  {
+    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-3",
+    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-3",
+    "title": "Données spatiales sur réseau",
+    "section": "Que faire dans le cas des counties – grille non régulière",
+    "text": "Que faire dans le cas des counties – grille non régulière\nOn a au plus 3 voisins"
+  },
+  {
+    "objectID": "03_lattice.html#estmation-des-modèles-car-et-sar",
+    "href": "03_lattice.html#estmation-des-modèles-car-et-sar",
+    "title": "Données spatiales sur réseau",
+    "section": "Estmation des modèles CAR et SAR",
+    "text": "Estmation des modèles CAR et SAR\nEn général CAR et SAR ne sont utilisés que pour le bruit\non a donc des modèles\n\\(Y = X\\beta + Z\\) où \\(Z\\) a une structure SAR ou CAR.\nDans la pratique\n\nOn estime \\(\\tilde{\\beta}\\) comme si il n’y avait pas de dépendanc, et on calcule les résidus \\(\\tilde{Z} = Y- X \\tilde{\\beta}\\).\non ajuste la structure de covariance sur les résidus\nOn en déduit une estimation de la covariance et on peut estimer les paramètres \\(\\beta\\)"
+  },
+  {
+    "objectID": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
+    "href": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
+    "title": "Données spatiales sur réseau",
+    "section": "Que se passe t il si on n’est plus dans un cadre gaussien ?",
+    "text": "Que se passe t il si on n’est plus dans un cadre gaussien ?\nOn compte le nombre de personnes atteintes de cancer soigné dans les hopitaux.\nChaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.\nQuel modèle proposez vous ?"
+  },
+  {
+    "objectID": "03_lattice.html#références",
+    "href": "03_lattice.html#références",
+    "title": "Données spatiales sur réseau",
+    "section": "Références",
+    "text": "Références\n\n\n\n\n\n\n\n\nBesag, Julian. 1974. “Spatial Interaction and the Statistical Analysis of Lattice Systems.” Journal of the Royal Statistical Society: Series B (Methodological) 36 (2): 192–225.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nVer Hoef, Jay M., Ephraim M. Hanks, and Mevin B. Hooten. 2018. “On the Relationship Between Conditional (CAR) and Simultaneous (SAR) Autoregressive Models.” Spatial Statistics 25: 68–85. https://doi.org/https://doi.org/10.1016/j.spasta.2018.04.006."
+  },
+  {
+    "objectID": "04_inla.html#sources",
+    "href": "04_inla.html#sources",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Sources",
+    "text": "Sources\nCe cours est construit à partir du livre de Rue and Held (2005), Blangiardo et al. (2013), Krainski et al. (2018), Gómez-Rubio (2020) et de l’article Rue, Martino, and Chopin (2009)"
+  },
+  {
+    "objectID": "04_inla.html#rappel-modèle-hiérarchique",
+    "href": "04_inla.html#rappel-modèle-hiérarchique",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel modèle hiérarchique",
+    "text": "Rappel modèle hiérarchique\n\n\n\n\n\n\n\n\n\n\n\n\nUn modèlé hiéarchique peut être utilisé pour représenter des dépendances complexes entre les données.\nDes exemples :\nDes exemples spatiaux :"
+  },
+  {
+    "objectID": "04_inla.html#exemple-illustratif---mort-subite",
+    "href": "04_inla.html#exemple-illustratif---mort-subite",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Exemple illustratif - Mort subite",
+    "text": "Exemple illustratif - Mort subite\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\n\n\n\n\n\n\n\n\n\n\n\n\nProposer un modèle hiéarchique pour ces données qui\n\nprend en compte la dépendance spatial\nmodélise le nombre de morts subites comme des comptages, avec un offset pour tenir compte de la taille du county"
+  },
+  {
+    "objectID": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
+    "href": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Exemple illustratif - les pluies en Suisse",
+    "text": "Exemple illustratif - les pluies en Suisse\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCa n’a pas vraiment une distribution gaussienne …..\n\nProposer un modèle dans lequel les observations ne sont pas gaussiennes mais qui gardent une cohérence spatiale"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne",
+    "href": "04_inla.html#rappel-estimation-bayésienne",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple\n\n\n\n\n\n\n\n\n\n\n\n\n\nEcrire le modèle\nComment mener l’inférence bayésienne\nLe choix des priors"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne-1",
+    "href": "04_inla.html#rappel-estimation-bayésienne-1",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple, écrit dans le formalisme du modèle linéaire généralisé\nModèle\n\\[Y_i \\overset{i.i.d} \\sim \\mathcal{N}(\\mu_i, \\sigma^2)\\]\navec\n\\[g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_i.\\]\nPrior\n\\[ \\beta \\sim \\mathcal{N}(0, 10^6 I_2) \\] \\[ \\log(\\sigma^2) \\sim logGamma(1, 10^{-5})\\]\nPosterior\nOn est surtout intéressé par\n\\[\\pi(\\beta\\vert \\boldsymbol{y}) = \\int_{\\sigma^2} \\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y}) d\\sigma^2\\]"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne-2",
+    "href": "04_inla.html#rappel-estimation-bayésienne-2",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nLes “rares” bons cas\nOn a une forme conjuguée et on connait \\(\\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y})\\)\nGénéralement\nOn approche \\(\\pi(\\theta\\vert \\boldsymbol{y})\\) par des méhodes de Monte Carlo car\n\\[\\pi(\\theta\\vert \\boldsymbol{y}) = \\frac{\\pi(\\boldsymbol{y}, \\theta)}{\\pi(\\boldsymbol{y})} =\\frac{\\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)}{\\pi(\\boldsymbol{y})}\\propto \\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)\\]\nProblème\nPeut être long car\n\nles chaînes bougent mal\nca converge mal\n\nC’est souvent le cas en spatial car la forte dépendance entre les données rend la construction d’algorithme efficace difficile."
+  },
+  {
+    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré",
+    "href": "04_inla.html#le-cadre-de-modélisation-considéré",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Le cadre de modélisation considéré",
+    "text": "Le cadre de modélisation considéré\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
+  },
+  {
+    "objectID": "04_inla.html#variables-latentes-en-inla",
+    "href": "04_inla.html#variables-latentes-en-inla",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Variables latentes en INLA",
+    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF). Les observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
+  },
+  {
+    "objectID": "04_inla.html#estimation",
+    "href": "04_inla.html#estimation",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Estimation",
+    "text": "Estimation\nDistribution postérieure jointe\nLa distribution postérieure des variables latentes s’écrit :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) \\pi(\\mathbf{x}, \\theta)\n\\]\nVraisemblance\nLes observations étant indépendantes conditionnellement à \\(\\mathbf{x}\\) et \\(\\theta\\), la vraisemblance devient :\n\\[\n\\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) = \\prod_{i \\in I} \\pi(y_i \\mid x_i, \\theta)\n\\]\navec \\(I\\) l’ensemble des indices des observations effectivement observées.\nDistribution des variables latentes\nOn factorise la distribution jointe :\n\\[\n\\pi(\\mathbf{x}, \\theta) = \\pi(\\mathbf{x} \\mid \\theta) \\pi(\\theta)\n\\]\navec \\(\\pi(\\theta)\\) une distribution a priori, souvent factorisée en lois univariées."
+  },
+  {
+    "objectID": "04_inla.html#distribution-postérieure-des-variables-latentes",
+    "href": "04_inla.html#distribution-postérieure-des-variables-latentes",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Distribution postérieure des variables latentes",
+    "text": "Distribution postérieure des variables latentes\nComme \\(\\mathbf{x}\\) est un GMRF :\n\\[\n\\pi(\\mathbf{x} \\mid \\theta) \\propto |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} \\right)\n\\]\nLa distribution postérieure devient :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\theta) |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} + \\sum_{i \\in I} \\log \\pi(y_i \\mid x_i, \\theta) \\right)\n\\]"
+  },
+  {
+    "objectID": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
+    "href": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)",
+    "text": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)\nINLA ne cherche pas la postérieure complète mais les marginales des variables latentes et hyperparamètres :\nOn va vouloir calculer\n\\[\n\\pi(x_l \\mid \\mathbf{y}) = \\int \\pi(x_l \\mid \\theta, \\mathbf{y}) \\pi(\\theta \\mid \\mathbf{y}) d\\theta\n\\] et\n\\[\n\\pi(\\theta_k \\mid \\mathbf{y}) = \\int \\pi(\\theta \\mid \\mathbf{y}) d\\theta_{-k}\n\\]\navec \\(\\theta_{-k}\\) le vecteur \\(\\theta\\) sans \\(\\theta_k\\).\nApproximation en INLA\nL’approximation \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\) de Rue, Martino et Chopin (2009) est :\n\\[\n\\tilde{\\pi}(\\theta \\mid \\mathbf{y}) \\propto \\frac{\\pi(\\mathbf{x}, \\theta, \\mathbf{y})}{ \\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})} \\bigg|_{\\mathbf{x} = \\mathbf{x}^*(\\theta)}\n\\]\navec \\(\\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})\\) une approximation gaussienne et \\(\\mathbf{x}^*(\\theta)\\) le mode de la conditionnelle."
+  },
+  {
+    "objectID": "04_inla.html#approximations-finales",
+    "href": "04_inla.html#approximations-finales",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Approximations Finales",
+    "text": "Approximations Finales\nLa marginale \\(\\pi(\\theta_k \\mid \\mathbf{y})\\) est obtenue par intégration de \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\).\nL’approximation de \\(\\pi(x_i \\mid \\mathbf{y})\\) utilise l’intégration numérique, avec la méthode de Laplace donnant de meilleurs résultats."
+  },
+  {
+    "objectID": "04_inla.html#la-flexibilité-de-cette-approche",
+    "href": "04_inla.html#la-flexibilité-de-cette-approche",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "La flexibilité de cette approche",
+    "text": "La flexibilité de cette approche\n\nOn rendre compte d’effets non linéaires de covariables en modélisant l’effet de la covariabble comme un processus gaussien (dont il faudra préciser la forme)\nLes temps de calcul son imbattables : quelques secondes pour un champs spatial\n\nEt le spatial dans tout ca ?"
+  },
+  {
+    "objectID": "04_inla.html#inla-et-modèles-spatiaux",
+    "href": "04_inla.html#inla-et-modèles-spatiaux",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "INLA et modèles spatiaux",
+    "text": "INLA et modèles spatiaux\n\nLe terme d’effets aléatoires peut rendre compte des aspects spatiaux.\n\nLes limites\nSi le nombre de données est important, le vecteur \\(\\boldsymbol{x}\\) devient trop grand et lestemps de calcul augmentent rapidement"
+  },
+  {
+    "objectID": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
+    "href": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Limiter l’impact du nombre de points : l’approche SPDE",
+    "text": "Limiter l’impact du nombre de points : l’approche SPDE\nLe nombre de points important en géostatistique.\nIl se trouve qu’un champs gaussien de Matern peut s’écrire comme la solution d’une équation aux dérivées partielles stochastique\nProcessus Gaussiens avec Covariance de Matérn\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité."
+  },
+  {
+    "objectID": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
+    "href": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Processus Gaussiens avec Covariance de Matérn",
+    "text": "Processus Gaussiens avec Covariance de Matérn\nFonction de Corrélation de Matérn\nRappel est définie par un paramètre d’échelle \\(\\kappa &gt; 0\\) et un paramètre de régularité \\(\\nu &gt; 0\\). Pour deux positions \\(s_i\\) et \\(s_j\\), la fonction de corrélation stationnaire et isotrope de Matérn est donnée par :\n\\[\n\\text{Cor}_M(U(s_i), U(s_j)) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)} (\\kappa \\|s_i - s_j\\|)^\\nu K_\\nu (\\kappa \\|s_i - s_j\\|)\n\\]\noù \\(K_\\nu\\) est la fonction de Bessel modifiée de seconde espèce et \\(\\Gamma(\\nu)\\) est la fonction gamma.\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité.\nRésolution de l’EDPS sur un maillage\nC’est une technique classique des numériciens on se donne un maillage et on résoud l’EDPS sur les points du maillage. On interpole ensuite au sein du maillage.\nLa finesse du maillage contrôle la complexité du problème et sa précision"
+  },
+  {
+    "objectID": "04_inla.html#conclusion",
+    "href": "04_inla.html#conclusion",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Conclusion",
+    "text": "Conclusion\n\nOn dispose d’un outil rapide pour des modèles à variable latente y compris spatiaux (et même spatio temporels)\ndes contraintes dans la modélisation\ndes habitudes de modélisation à acquérir."
+  },
+  {
+    "objectID": "04_inla.html#références",
+    "href": "04_inla.html#références",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Références",
+    "text": "Références\n\n\n\n\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, Amanda Lenzi, Daniela Castro-Camilo, Daniel Simpson, Finn Lindgren, and Håvard Rue. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
+  },
+  {
+    "objectID": "01_intro.html#cadre",
+    "href": "01_intro.html#cadre",
+    "title": "Introduction",
+    "section": "Cadre",
+    "text": "Cadre\n{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#données-géostatistiques",
+    "href": "01_intro.html#données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Données géostatistiques",
+    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
+    "href": "01_intro.html#exemple-de-données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Exemple de données géostatistiques",
+    "text": "1. Exemple de données géostatistiques"
+  },
+  {
+    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "title": "Introduction",
+    "section": "2. Données en réseau ou maillage fixe (données lattice)",
+    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-lattice",
+    "href": "01_intro.html#exemple-de-données-lattice",
+    "title": "Introduction",
+    "section": "2. Exemple de données lattice",
+    "text": "2. Exemple de données lattice\n\n\nFigure 1"
+  },
+  {
+    "objectID": "01_intro.html#données-ponctuelles",
+    "href": "01_intro.html#données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Données ponctuelles",
+    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
+    "href": "01_intro.html#exemple-de-données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Exemple de données ponctuelles",
+    "text": "3. Exemple de données ponctuelles\nFigure extraite de Renner et al. (2015)\n\n\nFigure 2"
+  },
+  {
+    "objectID": "01_intro.html#exercice",
+    "href": "01_intro.html#exercice",
+    "title": "Introduction",
+    "section": "Exercice",
+    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#cadre-du-cours",
+    "href": "01_intro.html#cadre-du-cours",
+    "title": "Introduction",
+    "section": "Cadre du cours",
+    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
+  },
+  {
+    "objectID": "01_intro.html#references",
+    "href": "01_intro.html#references",
+    "title": "Introduction",
+    "section": "References",
+    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
+  },
+  {
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
+    "section": "",
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+  },
+  {
+    "objectID": "01_pluies.html",
+    "href": "01_pluies.html",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#présentation",
+    "href": "01_pluies.html#présentation",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#objectifs",
+    "href": "01_pluies.html#objectifs",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Objectifs",
+    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+  },
+  {
+    "objectID": "01_pluies.html#directives",
+    "href": "01_pluies.html#directives",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Directives",
+    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  },
+  {
+    "objectID": "references_statspat.html",
+    "href": "references_statspat.html",
+    "title": "References",
+    "section": "",
+    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+  },
+  {
+    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "title": "References",
+    "section": "Pour approfondir ou compléter le cours",
+    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
   },
   {
     "objectID": "02_geostat.html#sources",
@@ -217,388 +588,31 @@
     "text": "Références\n\n\n\n\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
   },
   {
-    "objectID": "references_statspat.html",
-    "href": "references_statspat.html",
-    "title": "References",
+    "objectID": "02_tpintro_inla.html",
+    "href": "02_tpintro_inla.html",
+    "title": "TD2 - Introduction INLA",
     "section": "",
-    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+    "text": "Ce TP est construit à partir des idées explorées durant la session FinistR2023"
   },
   {
-    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "title": "References",
-    "section": "Pour approfondir ou compléter le cours",
-    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
+    "objectID": "02_tpintro_inla.html#introduction",
+    "href": "02_tpintro_inla.html#introduction",
+    "title": "TD2 - Introduction INLA",
+    "section": "Introduction",
+    "text": "Introduction\nPrésentation de la méthodologie INLA (integrated nested Laplace approximation) en utilisant les packages {INLA}.\nRessources :\n\nhttps://www.r-inla.org/home\nhttps://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf\n\nIMPORTANT : Utiliser le cluster 10 !!! INLA n’est pas installé sur les autres."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistique Spatiale",
-    "section": "",
-    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+    "objectID": "02_tpintro_inla.html#installation-de-inla",
+    "href": "02_tpintro_inla.html#installation-de-inla",
+    "title": "TD2 - Introduction INLA",
+    "section": "Installation de INLA",
+    "text": "Installation de INLA\n(Ici inutile car INLA est déja sur le cluster 10)\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE)"
   },
   {
-    "objectID": "01_pluies.html",
-    "href": "01_pluies.html",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
-  },
-  {
-    "objectID": "01_pluies.html#présentation",
-    "href": "01_pluies.html#présentation",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
-  },
-  {
-    "objectID": "01_pluies.html#objectifs",
-    "href": "01_pluies.html#objectifs",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Objectifs",
-    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
-  },
-  {
-    "objectID": "01_pluies.html#directives",
-    "href": "01_pluies.html#directives",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Directives",
-    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
-  },
-  {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
-    "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
-  },
-  {
-    "objectID": "01_intro.html#cadre",
-    "href": "01_intro.html#cadre",
-    "title": "Introduction",
-    "section": "Cadre",
-    "text": "Cadre\n{La statistique spatiale}[.rouge] est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
-  },
-  {
-    "objectID": "01_intro.html#données-géostatistiques",
-    "href": "01_intro.html#données-géostatistiques",
-    "title": "Introduction",
-    "section": "1. Données géostatistiques",
-    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
-    "href": "01_intro.html#exemple-de-données-géostatistiques",
-    "title": "Introduction",
-    "section": "1. Exemple de données géostatistiques",
-    "text": "1. Exemple de données géostatistiques"
-  },
-  {
-    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "title": "Introduction",
-    "section": "2. Données en réseau ou maillage fixe (données lattice)",
-    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-lattice",
-    "href": "01_intro.html#exemple-de-données-lattice",
-    "title": "Introduction",
-    "section": "2. Exemple de données lattice",
-    "text": "2. Exemple de données lattice\n\n\nFigure 1"
-  },
-  {
-    "objectID": "01_intro.html#données-ponctuelles",
-    "href": "01_intro.html#données-ponctuelles",
-    "title": "Introduction",
-    "section": "3. Données ponctuelles",
-    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
-  },
-  {
-    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
-    "href": "01_intro.html#exemple-de-données-ponctuelles",
-    "title": "Introduction",
-    "section": "3. Exemple de données ponctuelles",
-    "text": "3. Exemple de données ponctuelles\nFigure extraite de Renner et al. (2015)\n\n\nFigure 2"
-  },
-  {
-    "objectID": "01_intro.html#exercice",
-    "href": "01_intro.html#exercice",
-    "title": "Introduction",
-    "section": "Exercice",
-    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
-  },
-  {
-    "objectID": "01_intro.html#cadre-du-cours",
-    "href": "01_intro.html#cadre-du-cours",
-    "title": "Introduction",
-    "section": "Cadre du cours",
-    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
-  },
-  {
-    "objectID": "01_intro.html#references",
-    "href": "01_intro.html#references",
-    "title": "Introduction",
-    "section": "References",
-    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
-  },
-  {
-    "objectID": "04_inla.html#sources",
-    "href": "04_inla.html#sources",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Sources",
-    "text": "Sources\nCe cours est construit à partir du livre de Rue and Held (2005), Blangiardo et al. (2013), Krainski et al. (2018), Gómez-Rubio (2020) et de l’article Rue, Martino, and Chopin (2009)"
-  },
-  {
-    "objectID": "04_inla.html#rappel-modèle-hiérarchique",
-    "href": "04_inla.html#rappel-modèle-hiérarchique",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel modèle hiérarchique",
-    "text": "Rappel modèle hiérarchique\n\n\n\n\n\n\n\n\n\n\n\n\nUn modèlé hiéarchique peut être utilisé pour représenter des dépendances complexes entre les données.\nDes exemples :\nDes exemples spatiaux :"
-  },
-  {
-    "objectID": "04_inla.html#exemple-illustratif---mort-subite",
-    "href": "04_inla.html#exemple-illustratif---mort-subite",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Exemple illustratif - Mort subite",
-    "text": "Exemple illustratif - Mort subite\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\n\n\n\n\n\n\n\n\n\n\n\n\nProposer un modèle hiéarchique pour ces données qui\n\nprend en compte la dépendance spatial\nmodélise le nombre de morts subites comme des comptages, avec un offset pour tenir compte de la taille du county"
-  },
-  {
-    "objectID": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
-    "href": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Exemple illustratif - les pluies en Suisse",
-    "text": "Exemple illustratif - les pluies en Suisse\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCa n’a pas vraiment une distribution gaussienne …..\n\nProposer un modèle dans lequel les observations ne sont pas gaussiennes mais qui gardent une cohérence spatiale"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne",
-    "href": "04_inla.html#rappel-estimation-bayésienne",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple\n\n\n\n\n\n\n\n\n\n\n\n\n\nEcrire le modèle\nComment mener l’inférence bayésienne\nLe choix des priors"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne-1",
-    "href": "04_inla.html#rappel-estimation-bayésienne-1",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple, écrit dans le formalisme du modèle linéaire généralisé\nModèle\n\\[Y_i \\overset{i.i.d} \\sim \\mathcal{N}(\\mu_i, \\sigma^2)\\]\navec\n\\[g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_i.\\]\nPrior\n\\[ \\beta \\sim \\mathcal{N}(0, 10^6 I_2) \\] \\[ \\log(\\sigma^2) \\sim logGamma(1, 10^{-5})\\]\nPosterior\nOn est surtout intéressé par\n\\[\\pi(\\beta\\vert \\boldsymbol{y}) = \\int_{\\sigma^2} \\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y}) d\\sigma^2\\]"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne-2",
-    "href": "04_inla.html#rappel-estimation-bayésienne-2",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nLes “rares” bons cas\nOn a une forme conjuguée et on connait \\(\\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y})\\)\nGénéralement\nOn approche \\(\\pi(\\theta\\vert \\boldsymbol{y})\\) par des méhodes de Monte Carlo car\n\\[\\pi(\\theta\\vert \\boldsymbol{y}) = \\frac{\\pi(\\boldsymbol{y}, \\theta)}{\\pi(\\boldsymbol{y})} =\\frac{\\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)}{\\pi(\\boldsymbol{y})}\\propto \\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)\\]\nProblème\nPeut être long car\n\nles chaînes bougent mal\nca converge mal\n\nC’est souvent le cas en spatial car la forte dépendance entre les données rend la construction d’algorithme efficace difficile."
-  },
-  {
-    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré",
-    "href": "04_inla.html#le-cadre-de-modélisation-considéré",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Le cadre de modélisation considéré",
-    "text": "Le cadre de modélisation considéré\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
-  },
-  {
-    "objectID": "04_inla.html#variables-latentes-en-inla",
-    "href": "04_inla.html#variables-latentes-en-inla",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Variables latentes en INLA",
-    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF). Les observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
-  },
-  {
-    "objectID": "04_inla.html#estimation",
-    "href": "04_inla.html#estimation",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Estimation",
-    "text": "Estimation\nDistribution postérieure jointe\nLa distribution postérieure des variables latentes s’écrit :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) \\pi(\\mathbf{x}, \\theta)\n\\]\nVraisemblance\nLes observations étant indépendantes conditionnellement à \\(\\mathbf{x}\\) et \\(\\theta\\), la vraisemblance devient :\n\\[\n\\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) = \\prod_{i \\in I} \\pi(y_i \\mid x_i, \\theta)\n\\]\navec \\(I\\) l’ensemble des indices des observations effectivement observées.\nDistribution des variables latentes\nOn factorise la distribution jointe :\n\\[\n\\pi(\\mathbf{x}, \\theta) = \\pi(\\mathbf{x} \\mid \\theta) \\pi(\\theta)\n\\]\navec \\(\\pi(\\theta)\\) une distribution a priori, souvent factorisée en lois univariées."
-  },
-  {
-    "objectID": "04_inla.html#distribution-postérieure-des-variables-latentes",
-    "href": "04_inla.html#distribution-postérieure-des-variables-latentes",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Distribution postérieure des variables latentes",
-    "text": "Distribution postérieure des variables latentes\nComme \\(\\mathbf{x}\\) est un GMRF :\n\\[\n\\pi(\\mathbf{x} \\mid \\theta) \\propto |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} \\right)\n\\]\nLa distribution postérieure devient :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\theta) |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} + \\sum_{i \\in I} \\log \\pi(y_i \\mid x_i, \\theta) \\right)\n\\]"
-  },
-  {
-    "objectID": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
-    "href": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)",
-    "text": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)\nINLA ne cherche pas la postérieure complète mais les marginales des variables latentes et hyperparamètres :\nOn va vouloir calculer\n\\[\n\\pi(x_l \\mid \\mathbf{y}) = \\int \\pi(x_l \\mid \\theta, \\mathbf{y}) \\pi(\\theta \\mid \\mathbf{y}) d\\theta\n\\] et\n\\[\n\\pi(\\theta_k \\mid \\mathbf{y}) = \\int \\pi(\\theta \\mid \\mathbf{y}) d\\theta_{-k}\n\\]\navec \\(\\theta_{-k}\\) le vecteur \\(\\theta\\) sans \\(\\theta_k\\).\nApproximation en INLA\nL’approximation \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\) de Rue, Martino et Chopin (2009) est :\n\\[\n\\tilde{\\pi}(\\theta \\mid \\mathbf{y}) \\propto \\frac{\\pi(\\mathbf{x}, \\theta, \\mathbf{y})}{ \\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})} \\bigg|_{\\mathbf{x} = \\mathbf{x}^*(\\theta)}\n\\]\navec \\(\\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})\\) une approximation gaussienne et \\(\\mathbf{x}^*(\\theta)\\) le mode de la conditionnelle."
-  },
-  {
-    "objectID": "04_inla.html#approximations-finales",
-    "href": "04_inla.html#approximations-finales",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Approximations Finales",
-    "text": "Approximations Finales\nLa marginale \\(\\pi(\\theta_k \\mid \\mathbf{y})\\) est obtenue par intégration de \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\).\nL’approximation de \\(\\pi(x_i \\mid \\mathbf{y})\\) utilise l’intégration numérique, avec la méthode de Laplace donnant de meilleurs résultats."
-  },
-  {
-    "objectID": "04_inla.html#la-flexibilité-de-cette-approche",
-    "href": "04_inla.html#la-flexibilité-de-cette-approche",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "La flexibilité de cette approche",
-    "text": "La flexibilité de cette approche\n\nOn rendre compte d’effets non linéaires de covariables en modélisant l’effet de la covariabble comme un processus gaussien (dont il faudra préciser la forme)\nLes temps de calcul son imbattables : quelques secondes pour un champs spatial\n\nEt le spatial dans tout ca ?"
-  },
-  {
-    "objectID": "04_inla.html#inla-et-modèles-spatiaux",
-    "href": "04_inla.html#inla-et-modèles-spatiaux",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "INLA et modèles spatiaux",
-    "text": "INLA et modèles spatiaux\n\nLe terme d’effets aléatoires peut rendre compte des aspects spatiaux.\n\nLes limites\nSi le nombre de données est important, le vecteur \\(\\boldsymbol{x}\\) devient trop grand et lestemps de calcul augmentent rapidement"
-  },
-  {
-    "objectID": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
-    "href": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Limiter l’impact du nombre de points : l’approche SPDE",
-    "text": "Limiter l’impact du nombre de points : l’approche SPDE\nLe nombre de points important en géostatistique.\nIl se trouve qu’un champs gaussien de Matern peut s’écrire comme la solution d’une équation aux dérivées partielles stochastique\nProcessus Gaussiens avec Covariance de Matérn\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité."
-  },
-  {
-    "objectID": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
-    "href": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Processus Gaussiens avec Covariance de Matérn",
-    "text": "Processus Gaussiens avec Covariance de Matérn\nFonction de Corrélation de Matérn\nRappel est définie par un paramètre d’échelle \\(\\kappa &gt; 0\\) et un paramètre de régularité \\(\\nu &gt; 0\\). Pour deux positions \\(s_i\\) et \\(s_j\\), la fonction de corrélation stationnaire et isotrope de Matérn est donnée par :\n\\[\n\\text{Cor}_M(U(s_i), U(s_j)) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)} (\\kappa \\|s_i - s_j\\|)^\\nu K_\\nu (\\kappa \\|s_i - s_j\\|)\n\\]\noù \\(K_\\nu\\) est la fonction de Bessel modifiée de seconde espèce et \\(\\Gamma(\\nu)\\) est la fonction gamma.\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité.\nRésolution de l’EDPS sur un maillage\nC’est une technique classique des numériciens on se donne un maillage et on résoud l’EDPS sur les points du maillage. On interpole ensuite au sein du maillage.\nLa finesse du maillage contrôle la complexité du problème et sa précision"
-  },
-  {
-    "objectID": "04_inla.html#conclusion",
-    "href": "04_inla.html#conclusion",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Conclusion",
-    "text": "Conclusion\n\nOn dispose d’un outil rapide pour des modèles à variable latente y compris spatiaux (et même spatio temporels)\ndes contraintes dans la modélisation\ndes habitudes de modélisation à acquérir."
-  },
-  {
-    "objectID": "04_inla.html#références",
-    "href": "04_inla.html#références",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Références",
-    "text": "Références\n\n\n\n\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, Amanda Lenzi, Daniela Castro-Camilo, Daniel Simpson, Finn Lindgren, and Håvard Rue. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
-  },
-  {
-    "objectID": "03_lattice.html#sources",
-    "href": "03_lattice.html#sources",
-    "title": "Données spatiales sur réseau",
-    "section": "Sources",
-    "text": "Sources\nCe cours est construit à partir du livre de Cressie (2015) et de l’article Ver Hoef, Hanks, and Hooten (2018)"
-  },
-  {
-    "objectID": "03_lattice.html#exemple-illustratif",
-    "href": "03_lattice.html#exemple-illustratif",
-    "title": "Données spatiales sur réseau",
-    "section": "Exemple illustratif",
-    "text": "Exemple illustratif\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\n\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\nOn cherche typiquement à ajuster un modèle de régression pour trouver des covariables liées au phénomène d’intérêt."
-  },
-  {
-    "objectID": "03_lattice.html#pourquoi-faire-attention-à-la-corrélation-spatiale",
-    "href": "03_lattice.html#pourquoi-faire-attention-à-la-corrélation-spatiale",
-    "title": "Données spatiales sur réseau",
-    "section": "Pourquoi faire attention à la corrélation spatiale",
-    "text": "Pourquoi faire attention à la corrélation spatiale\nUn exemple\n\\[Y_t = \\rho Y_{t-1} +\\varepsilon_t\\]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n            Estimate Std. Error  t value     Pr(&gt;|t|)\n(Intercept) 1.871456  0.3667672 5.102571 1.619417e-06\n\n\n\nVariance de \\(\\hat{\\mu}\\) :\n\nCas indépendant \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2\\)\nCas corrélé \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2 \\left(1 + 2\\left( \\frac{\\rho}{1-\\rho}\\right)\\left( 1 -\\frac{1}{n}\\right)  - 2 \\left( \\frac{\\rho}{1-\\rho}\\right)^2 \\left( \\frac{1-\\rho^{n-1}}{n}\\right)    \\right)\\)\n\nIci on sous estime l’incertitude"
-  },
-  {
-    "objectID": "03_lattice.html#quelques-remarques",
-    "href": "03_lattice.html#quelques-remarques",
-    "title": "Données spatiales sur réseau",
-    "section": "Quelques remarques",
-    "text": "Quelques remarques\n\nProcessus spatial est défini sur une grille : pas de réalisation possible entre deux localisation.\non note \\(D\\) l’ensemble des points de la grille\nOn souhaite construire un modèle pour décrire la distribution du processus \\(Z\\) en tout point \\(s\\) de \\(D\\)"
-  },
-  {
-    "objectID": "03_lattice.html#modèle-sar---cadre-gaussien",
-    "href": "03_lattice.html#modèle-sar---cadre-gaussien",
-    "title": "Données spatiales sur réseau",
-    "section": "Modèle SAR - Cadre Gaussien",
-    "text": "Modèle SAR - Cadre Gaussien\n\\[Z = BZ + \\nu\\]\n\n\\(B\\) : Matrice de poids spatiaux\n\\(\\nu\\) : Bruit normal \\(\\nu \\sim N(0, \\Omega)\\)\n\n\\(\\Omega\\) est une matrice diagonale dont tous les termes diagonaux sont stritecement positifs.\nPar convention les termes \\(b_{ii}\\) de la matrice sont nuls (les sites ne dépendent pas d’eux-mêmes)\n\nModèle simultané : chaque variable dépend directement de ses voisines\n\nPuisque \\(Z - BZ = \\nu\\), \\[ \\Sigma_{SAR} = (I - B)^{-1} \\Omega (I - B^T)^{-1} \\]\nRemarques\n\nLa dépendance spatiale est due à B.\n\\(B\\) n’est pas obligatoirement symétrique, en effet la forme quadratique \\((I - B)^{-1} \\Omega (I - B^T)^{-1}\\) est symétrique même si \\(B\\) ne l’est pas\nIl faut que \\(I-B\\) soit inversible"
-  },
-  {
-    "objectID": "03_lattice.html#modèle-car",
-    "href": "03_lattice.html#modèle-car",
-    "title": "Données spatiales sur réseau",
-    "section": "Modèle CAR",
-    "text": "Modèle CAR\n\\[ Z_i | Z_{-i} \\sim N \\left( \\sum_{j \\neq i} c_{ij} Z_j, \\sigma^2 / m_{ii} \\right) \\]\n\\(Z_{-i}\\) désigne l’ensemble des \\(Z_j\\) pour \\(j\\ne i\\).\n\nLa matrice \\(C\\) est la matrice des poids spatiaux et on impose \\(C_{ii}=0\\) (on ne définit pas \\(Z_i\\) conditionnellement à lui même)\nLa matrice \\(M\\) est diagonal et ses termes diagonaux sont positifs.\nDépendance conditionnelle : chaque variable est conditionnée aux voisines\nMatrice de covariance :\n\n\\[\\Sigma_{CAR} = (I - C)^{-1} M\\]\nRemarques\nLa loi conditionnelle de \\(Z_i\\) est une combinaison linéaire des autres variables.\nLes valeurs de \\(m_{ii}\\) se sont pas toutes identiques\nCe n’est pas évident que ca définit une loi jointe qui existe"
-  },
-  {
-    "objectID": "03_lattice.html#modèle-car-1",
-    "href": "03_lattice.html#modèle-car-1",
-    "title": "Données spatiales sur réseau",
-    "section": "Modèle CAR",
-    "text": "Modèle CAR\n\nExistence du modèle CAR sous réserve que \\((I-C)^{-1} M\\) est définie positive (Besag (1974)) et alors\n\n\\[Z \\sim \\mathcal{N}(0, \\Sigma_{CAR}), \\quad \\Sigma_{CAR} = (I-C)^{-1} M\\] Puisque \\(\\Sigma_{CAR}\\) doit être symétrique alors \\[\\frac{C_{ij}}{m_{ii}} =\\frac{C_{ji}}{m_{jj}}\\]\nDans Ver Hoef, Hanks, and Hooten (2018), on trouve une caractérisation intéressante qui permet de faire le lien entre SAR et CAR\nPour que \\(\\Sigma_{CAR}\\) soit une matrice de covariance valide il faut\n\n\\((I-C)\\) a ses valeurs propres positives\n\\(M\\) est diagonal avec ses termes diagonaux positifs\n\\(C_{ii} = 0\\) pour tout \\(i\\)\n\\(C_{ij}/m_{ii} = C_{ji}/m_{jj}\\) pour tout i,j"
-  },
-  {
-    "objectID": "03_lattice.html#les-matrices-de-poids",
-    "href": "03_lattice.html#les-matrices-de-poids",
-    "title": "Données spatiales sur réseau",
-    "section": "Les matrices de poids",
-    "text": "Les matrices de poids\nEn pratique, on choist la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
-  },
-  {
-    "objectID": "03_lattice.html#la-notion-de-voisinage",
-    "href": "03_lattice.html#la-notion-de-voisinage",
-    "title": "Données spatiales sur réseau",
-    "section": "La notion de voisinage",
-    "text": "La notion de voisinage\nRappel Chaîne de Markov\nSoit \\(Z\\) une chaine de Markov alors\n\\[{\\mathbb{P}}(Z_t,  Z_{t-1}, \\ldots Z_1 \\vert Z_0) = \\prod_{s=1}^t Q_s(Z_s; Z_{s-1})\\] Quel est l’intérêt d’une chaîne de Markov dans le traitement de la dépendance\n. . .\nLes indépendances conditionelles \\(Z_t\\) et \\(Z_{t-2}\\) sont indépendant si on conditionne par \\(Z_{t-1}\\) et dans ce cas le terme \\(\\Sigma_{t, t-2}^{-1}=0\\)\nOn veut copier l’idée pour les CAR"
-  },
-  {
-    "objectID": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
-    "href": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
-    "title": "Données spatiales sur réseau",
-    "section": "Des exemples de voisinage sur une grille régulière",
-    "text": "Des exemples de voisinage sur une grille régulière"
-  },
-  {
-    "objectID": "03_lattice.html#impact-du-voisinage",
-    "href": "03_lattice.html#impact-du-voisinage",
-    "title": "Données spatiales sur réseau",
-    "section": "Impact du voisinage",
-    "text": "Impact du voisinage\n\nOn souhaite définir un CAR sous la forme\n\\[Z_i \\vert Z_{-i} \\sim \\mathcal{N}(\\sum_{j, j\\in V(i)} Z_j, \\sigma^2/m_{ii})\\]\nEst-ce un modèle CAR valide ?"
-  },
-  {
-    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
-    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
-    "title": "Données spatiales sur réseau",
-    "section": "Que faire dans le cas des counties – grille non régulière",
-    "text": "Que faire dans le cas des counties – grille non régulière\n\n\nReading layer `LDNSuicides' from data source \n  `/__w/statspat/statspat/data/LondonSuicide/LDNSuicides.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 32 features and 18 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 503568.2 ymin: 155850.8 xmax: 561957.5 ymax: 200933.9\nCRS:           NA"
-  },
-  {
-    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-1",
-    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-1",
-    "title": "Données spatiales sur réseau",
-    "section": "Que faire dans le cas des counties – grille non régulière",
-    "text": "Que faire dans le cas des counties – grille non régulière\nOn est voisin si on se touche"
-  },
-  {
-    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-2",
-    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-2",
-    "title": "Données spatiales sur réseau",
-    "section": "Que faire dans le cas des counties – grille non régulière",
-    "text": "Que faire dans le cas des counties – grille non régulière\nOn est voisin si on se touche"
-  },
-  {
-    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-3",
-    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-3",
-    "title": "Données spatiales sur réseau",
-    "section": "Que faire dans le cas des counties – grille non régulière",
-    "text": "Que faire dans le cas des counties – grille non régulière\nOn a au plus 3 voisins"
-  },
-  {
-    "objectID": "03_lattice.html#estmation-des-modèles-car-et-sar",
-    "href": "03_lattice.html#estmation-des-modèles-car-et-sar",
-    "title": "Données spatiales sur réseau",
-    "section": "Estmation des modèles CAR et SAR",
-    "text": "Estmation des modèles CAR et SAR\nEn général CAR et SAR ne sont utilisés que pour le bruit\non a donc des modèles\n\\(Y = X\\beta + Z\\) où \\(Z\\) a une structure SAR ou CAR.\nDans la pratique\n\nOn estime \\(\\tilde{\\beta}\\) comme si il n’y avait pas de dépendanc, et on calcule les résidus \\(\\tilde{Z} = Y- X \\tilde{\\beta}\\).\non ajuste la structure de covariance sur les résidus\nOn en déduit une estimation de la covariance et on peut estimer les paramètres \\(\\beta\\)"
-  },
-  {
-    "objectID": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
-    "href": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
-    "title": "Données spatiales sur réseau",
-    "section": "Que se passe t il si on n’est plus dans un cadre gaussien ?",
-    "text": "Que se passe t il si on n’est plus dans un cadre gaussien ?\nOn compte le nombre de personnes atteintes de cancer soigné dans les hopitaux.\nChaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.\nQuel modèle proposez vous ?"
-  },
-  {
-    "objectID": "03_lattice.html#références",
-    "href": "03_lattice.html#références",
-    "title": "Données spatiales sur réseau",
-    "section": "Références",
-    "text": "Références\n\n\n\n\n\n\n\n\nBesag, Julian. 1974. “Spatial Interaction and the Statistical Analysis of Lattice Systems.” Journal of the Royal Statistical Society: Series B (Methodological) 36 (2): 192–225.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nVer Hoef, Jay M., Ephraim M. Hanks, and Mevin B. Hooten. 2018. “On the Relationship Between Conditional (CAR) and Simultaneous (SAR) Autoregressive Models.” Spatial Statistics 25: 68–85. https://doi.org/https://doi.org/10.1016/j.spasta.2018.04.006."
+    "objectID": "02_tpintro_inla.html#la-réussite-en-maths",
+    "href": "02_tpintro_inla.html#la-réussite-en-maths",
+    "title": "TD2 - Introduction INLA",
+    "section": "La réussite en maths",
+    "text": "La réussite en maths\n\nChargement de packages\n\n# Chargement des packages\nlibrary(tidyverse)\nlibrary(INLA)\nlibrary(lme4) # pour comparer avec l'approche frequentiste \n\nLe jeu de données awards contient le nombre de récompenses (num_awards) obtenues en fonction des résultats en mathématique (math) pour une classe de 200 élèves.\nLa réponse mesurée est un comptage.\n\n# Chargement des donnees\nload(\"data/awards.RData\")\nhead(awards)\n\n\n\n\n\n\n\n\n\n\n\n\nOn souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique\n\n\n #| eval: false\n #| echo: false\n #| label: awards_pres\nawards |&gt; ggplot() + aes(x= math, y = num_awards) + geom_point()\n\n\nProposer un modèle.\n\n\n\nAjustement du modèle\n\n\n #| eval: false\n #| label: awards_first_model\n# Application de la formule avec un modèle de Poisson\nm.pois.lin1 &lt;- inla(num_awards ~ math,\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin1)\n#Vous pouvez éventuellement comparer à ce que donneraitjags\n\n\nQuelle est la distribution a posteriori pour l’effet des mathématiques\n\n\n #| echo: true\n #| label: awards_first_post\nm.pois.lin1$marginals.fixed$math |&gt; \n  ggplot() + aes(x=x, y = y) + geom_line() + \n  stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = \"red\")\n\n\nComparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance\n\n\n\n\n\n\nPour prendre en compte le problème classique de surdispersion dans les données de comptages, il peut être intéressant de rajouter un effet aléatoire de la manière suivante. Identifier tous les hyper paramètres et toutes les variables latentes.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i+E_i)) \\quad \\text{avec}\\quad E_i\\overset{ind}{\\sim}\\mathcal{N}(0,\\sigma^2).\\]\n\n #| echo: true\n #| label: awards_ranef\n \nawards &lt;- awards |&gt; mutate(ID = 1:nrow(awards))\nm.pois.lin_surd &lt;- inla(num_awards ~ math + f(ID, model = \"iid\"),\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin_surd)\n\n\nDiscuter les distributions a posteriori des effets fixes\non peut regarder la loi a posteriori de la précision sur les effets alétaoires\n\n\n m.pois.lin_surd$summary.hyperpar\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nSi une variable aléatoire V est strictement positive et admet une densité \\(f\\), quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l’effet aléatoire.\n\n\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  as.data.frame() |&gt;  mutate(u = 1/x, fu = x^2 ) |&gt; \n  ggplot() + aes(x=u, y = fu) + geom_line()\n\n\nOn peut accéder aux effets aléatoires a posteriori, par exemple pour l’élève 1.\n\n\n #| echo: true\n #| label: awards_post_ranef\nm.pois.lin_surd$marginals.random$ID$index.1\nm.pois.lin_surd$marginals.random$ID$index.1 |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nOn peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?\n\n\nfit4.glmm&lt;-glmer(num_awards ~ math + (1|id), family = poisson, data = awards)\nsummary(fit4.glmm)\n\n\nQuels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande inla.doc(\"iid\"). Quelle différence entre prior et postérior ?\nOn souhaite changer le prior en une loi gamma de parametre 1,2 (Attention les priors sont codés dans le format interne d’inla cf Table 5.3 Gómez-Rubio (2020)\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nOn peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nIntégrer un effet non linéaire de la note en mathématique\n\n\nm.pois.nonlin &lt;- inla(num_awards ~ f(math,  model = \"rw1\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")\n\n\nIl existe un modèle RW2, en vous référrant au chapitre Mixed-effects Models du livre Gómez-Rubio (2020), expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?\n\n\nm.pois.nonlin2 &lt;- inla(num_awards ~ f(math,  model = \"rw2\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin2)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_nonlin2 = m.pois.nonlin2$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]\n) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\",\"pred_nonlin2\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")"
   }
 ]
