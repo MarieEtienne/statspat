@@ -398,15 +398,16 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 <p>Dans les approches INLA, le champs gaussien caché est vu comme la solution d’une Equation aux Dérivées Partielles Stochastiques (EDPS) qui va être résolue sur un maillage. On peut définir le maillage.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>hull <span class="ot">=</span> <span class="fu">inla.nonconvex.hull</span>(gambia_sf,<span class="at">convex =</span> <span class="sc">-</span><span class="fl">0.1</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>(<span class="at">boundary =</span> hull, <span class="at">max.edge =</span> <span class="fl">0.2</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>(<span class="at">boundary =</span> hull, <span class="at">max.edge=</span> <span class="fl">0.2</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gambia_mesh,<span class="at">main=</span><span class="st">""</span>,<span class="at">asp=</span><span class="dv">1</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(gambia,<span class="at">pch=</span><span class="dv">21</span>,<span class="at">bg=</span><span class="st">"white"</span>,<span class="at">cex=</span><span class="fl">1.5</span>,<span class="at">lwd=</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>coo <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(gambia_sf)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(coo, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mais pour résoudre l’EDPS, on a besoin de mettre des conditions de nullité au bord du domaine ce qui a des conséquences forte sur la solution. Pour limiter l’impact on ajoute buffer autour avec une maille plus large.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hull <span class="ot">=</span> <span class="fu">inla.nonconvex.hull</span>(gambia_sf,<span class="at">convex =</span> <span class="sc">-</span><span class="fl">0.1</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>( <span class="at">boundary =</span> hull,<span class="at">max.edge =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="dv">2</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>( <span class="at">boundary =</span> hull,<span class="at">max.edge =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="dv">2</span>), <span class="at">offset =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.2</span>))</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gambia_mesh,<span class="at">main=</span><span class="st">""</span>,<span class="at">asp=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="1">
@@ -470,7 +471,7 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  age <span class="sc">+</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  green <span class="sc">+</span></span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  phc <span class="sc">+</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">f</span>(s, <span class="at">model =</span> spde)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">f</span>(s, <span class="at">model =</span> gambia_spde)</span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">inla</span>(formula,</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
