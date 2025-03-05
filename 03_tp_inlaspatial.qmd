@@ -129,7 +129,7 @@ plot(gambia_mesh,main="",asp=1)
 En général, l'utilisation des paramètres du maillage est assez complexe. 
 
 
-4. Il est naturel d'espèrer un résulatt plus fin aux endroits où l'on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l'argument `loc`. Que constatez vous ?
+4. Il est naturel d'espèrer un résultat plus fin aux endroits où l'on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l'argument `loc`. Que constatez vous ?
 
 
 
