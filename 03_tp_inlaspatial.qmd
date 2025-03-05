@@ -102,6 +102,7 @@ gambia_sf |> ggplot() + geom_sf()
 Dans les approches INLA, le champs gaussien caché est vu comme la solution d'une Equation aux Dérivées Partielles Stochastiques (EDPS) qui va être résolue sur un maillage. On peut définir le maillage.
 
 
+<<<<<<< HEAD
 ```{r}
 #| eval: false
 
@@ -116,8 +117,8 @@ points(gambia,pch=21,bg="white",cex=1.5,lwd=1.5)
 Mais pour résoudre l'EDPS, on a besoin de mettre des conditions de nullité au bord du domaine ce qui a des conséquences forte sur la solution. Pour limiter l'impact on ajoute buffer autour avec une maille plus large.
 
 
-```{r}
-#| eval: false
+
+```{r,eval=FALSE}
 hull = inla.nonconvex.hull(gambia_sf,convex = -0.1)
 gambia_mesh <- inla.mesh.2d( boundary = hull,max.edge = c(0.2, 2))
 plot(gambia_mesh,main="",asp=1)
@@ -131,9 +132,8 @@ En général, l'utilisation des paramètres du maillage est assez complexe.
 4. Il est naturel d'espèrer un résulatt plus fin aux endroits où l'on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l'argument `loc`. Que constatez vous ?
 
 
-```{r}
-#| eval: false
 
+```{r,eval=FALSE}
 gambia_mesh <- inla.mesh.2d( boundary = hull,loc = gambia_sf, max.edge = c(0.2, 2) )
 plot(gambia_mesh,main="",asp=1)
 coo <- st_coordinates(gambia_sf)
@@ -142,6 +142,7 @@ points(coo, col = "red")
 
 
 On définit à partir du maillage le champ spatial SPDE qui correspond à un champ spatial gaussien avec une covariance Matérn. Nous considérons les lois a priori par défaut sur les paramètres de variance et de portée du champ spatial.
+
 
 ```{r}
 #| eval: false
@@ -234,6 +235,7 @@ fit$summary.hyperpar
 9. Tacer les distributions a posteriori marginales des effets, par exemple pour l'effet de l'âge ou de l'utilisation de la moustiquaire :
 
 ```{r,eval=FALSE, echo=FALSE}
+558fe3f31d9feddc
 ggplot(data.frame(inla.smarginal(fit$marginals.fixed$age)), aes(x, y)) +
   geom_line() +
   theme_bw()
