@@ -102,7 +102,6 @@ gambia_sf |> ggplot() + geom_sf()
 Dans les approches INLA, le champs gaussien caché est vu comme la solution d'une Equation aux Dérivées Partielles Stochastiques (EDPS) qui va être résolue sur un maillage. On peut définir le maillage.
 
 
-<<<<<<< HEAD
 ```{r}
 #| eval: false
 
