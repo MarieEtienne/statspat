@@ -415,7 +415,7 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 </ol>
 <p>En général, l’utilisation des paramètres du maillage est assez complexe.</p>
 <ol start="4" type="1">
-<li>Il est naturel d’espèrer un résulatt plus fin aux endroits où l’on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l’argument <code>loc</code>. Que constatez vous ?</li>
+<li>Il est naturel d’espèrer un résultat plus fin aux endroits où l’on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l’argument <code>loc</code>. Que constatez vous ?</li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gambia_mesh <span class="ot">&lt;-</span> <span class="fu">inla.mesh.2d</span>( <span class="at">boundary =</span> hull,<span class="at">loc =</span> gambia_sf, <span class="at">max.edge =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="dv">2</span>) )</span>
