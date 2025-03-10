@@ -19,6 +19,7 @@ jobs:
         run: |
           Rscript -e "install.packages(c('gstat', 'ggforce'))"
           Rscript -e "install.packages(c('usmap'))"
+          Rscript -e "install.packages(c('inlabru'))"
       - name: Generate slides
         run: "quarto render"
       - name: GitHub Pages action
