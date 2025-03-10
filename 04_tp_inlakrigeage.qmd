@@ -8,8 +8,8 @@ author:
 date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
 institute: https://marieetienne.github.io/statspat
 execute: 
-  freeze: true
-  eval: true
+  freeze: false
+  eval: false
 editor: 
   markdown: 
     wrap: 72
