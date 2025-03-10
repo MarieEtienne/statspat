@@ -1,0 +1,362 @@
+---
+title: "TD4 - Krigeage avec INLA"
+author:
+  - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+  eval: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format: html
+bibliography: spatstat.bib
+---
+
+::: hidden
+\$\$
+
+\newcommand\E{{\mathbb{E}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Cov{{\mathbb{C}\text{ov}}}
+\newcommand\Var{{\mathbb{V}\text{ar}}}
+\newcommand\Zchap{\widehat{Z}}
+
+\$\$
+:::
+
+```{r}
+# Base de R INLA
+library(tidyverse)
+library(INLA)
+library(sf)
+library(gstat)
+
+```
+
+### Etude des précipitations à Parana au Brésil
+
+Comme dans l'exemple des pluies suisses nous allons chercher à prédire
+les précipitation à Parana au Brésil.
+
+### Présentation des données
+
+Les données sont disponibles dan ls le pakage \`geoR et contiennent
+
+-   parana\$coords les coordonnées en km dans un système arbitraire,
+
+-   parana\$borders les contours de l'état dans le même système,
+
+-   parana\$data les données de précipitation
+
+Nous allons mettre ces données au standar `sf` et créer une grille de
+prédiction.
+
+```{r}
+#| label: load_data
+#| echo: true
+
+# load data
+data(parana, package = "geoR")
+
+# locations data and reprsentation
+locations <-as.data.frame(parana$coords) |>  st_as_sf(coords = c('east', 'north')) 
+locations |> ggplot() + geom_sf()
+
+# rainfall data
+pluies <- parana$data |> as.data.frame() |> rename(precip = `parana$data`) 
+
+
+# join rainfall and locations data
+pluies_sf <- pluies |> bind_cols(locations) |> st_as_sf()
+pluies_sf |> ggplot() + geom_sf(aes(geometry = geometry, col = precip)) + 
+  scale_colour_gradient(low = "#ffd433",high = "#052265")
+
+# parana state limit
+border_sf <- st_polygon(list(parana$borders))
+pluies_sf |> ggplot() + geom_sf(aes(geometry = geometry, col = precip)) + 
+  scale_colour_gradient(low = "#ffd433",high = "#052265") + geom_sf(data = border_sf, fill = NA)
+
+
+# define prediction grid
+mycell <- 20 #km2
+
+my_grid <-  st_make_grid(border_sf, cellsize = mycell) |>  st_as_sf() |> mutate(center = st_centroid(x))
+pluies_sf |> ggplot() + geom_sf(aes(geometry = geometry, col = precip)) + 
+  scale_colour_gradient(low = "#ffd433",high = "#052265") + geom_sf(data = border_sf, fill = NA) + geom_sf(data = my_grid, fill = NA, aes(geometry = x))  +geom_sf(data = my_grid,  aes(geometry = center), col = "red")  
+```
+
+### On souhaite prédire la pluviométrie en tout point avec INLA
+
+On est dans le cadre de données géostatistiques, on va donc procéder par
+krigeage. Avant de kriger il faut estimer les paramètres du champs
+spatial. On l'avait par ajustement du variaogramme dans la version
+géostatistique classique.
+
+1.  Ajuster un variogramme exponentiel sur les données de pluies.
+    Discuter l'ajustement.
+
+```{r}
+#| label: geostat_clasique
+#| echo: false
+
+vario.iso <- variogram(precip~1, data = pluies_sf)
+v.fit <- fit.variogram(vario.iso, vgm(model = "Exp"))
+vario_fit_exp <- variogramLine(v.fit, maxdist = 250)
+
+ggplot(data = vario.iso, aes(x=dist, y=gamma)) + 
+    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))
+```
+
+Il serait possible de rajouter un effet pépite pour tenir compte d'une
+variabilité à très faible échelle. On la le faire dans un cadre
+hiérarchique.
+
+On note $Y_i$ la précipitation au point $s_i$
+
+$$Y_i \overset{ind}{\sim}\mathcal{N}(\mu_i, \sigma^2)$$
+
+$\$mu_i = \beta_0 + Z(s_i).$\$
+
+On suppose que $Z(s)$ est un champs gaussien de fonction de covariance
+de Matern pour pouvoir appliquer l'approche INLA-SPDE.
+
+### Quelques rappels
+
+**Matèrn model**
+
+$$Cov(Z(s_i), Z(s_j)) = \frac{\sigma^2_Z}{2^{v-1}\Gamma(v)}(k||s_i - s_j||)^vK_v(k||s_i-s_j||)$$
+
+Ici, $\sigma^2_z$ représente la variance marginale du champ spatial, et
+$K_{\nu}(\cdot)$ est la fonction de Bessel modifiée de deuxième espèce
+et d'ordre \$\nu \> 0 \$.
+
+La valeur de $\nu$ détermine la différentiabilité au sens des moindres
+carrés du processus et est généralement fixée, car elle est mal
+identifiée dans les applications.\
+Pour $\nu = \frac{1}{2}$, la fonction de covariance de Matérn est
+équivalente à la fonction de covariance exponentielle.\
+Le paramètre $\kappa > 0$ est lié au **portée spatiale** $\rho$,
+c'est-à-dire la distance à laquelle la corrélation entre deux points est
+approximativement nulle. Plus précisément,\
+$\rho = \frac{\sqrt{8\nu}}{\kappa}$ et à cette distance, la corrélation
+spatiale est proche de 0.1.
+
+**SPDE et Covariance de Matern**
+
+Un **champ de markov gaussien (GRF)** $z(s)$ sur un domaine
+$D \sub {\mathbb{R}}^2$ avec une matrice de covariance de Matérn peut
+être exprimé comme la solution de l'**équation différentielle
+stochastique aux dérivées partielles (SPDE)** suivante dans un domaine
+continu :
+
+$$
+(\kappa^2 - \Delta)^{\alpha/2} (\tau z(s)) = W(s).
+$$
+
+Ici $W(s)$ est un **bruit blanc spatial gaussien**. Le paramètre
+\$\alpha \$contrôle la **régularité** du champ $z(s)$ ,
+\$\tau \$contrôle la **variance**, et \$\kappa \> 0
+$est un **paramètre d'échelle**.$\Delta \$ représente le **laplacien**
+
+Les paramètres de la **fonction de covariance de Matérn** et ceux de
+l’**équation SPDE** sont couplés de la manière suivante :
+
+-   Le **paramètre de régularité** $\nu$ de la fonction de covariance de
+    Matérn est lié au paramètre $\alpha$ de l’équation SPDE par la
+    relation (valable sur ${\mathbb{R}}^2$):
+
+    $$
+    \nu = \alpha - 1.
+    $$
+
+-   La **variance marginale** $\sigma^2_Z$ est reliée aux paramètres de
+    l'équation SPDE par :
+
+    $$
+    \sigma^2_Z = \frac{\Gamma(\nu)}{\Gamma(\alpha)} \frac{1}{(4\pi)^{d/2}} \frac{1}{\kappa^{2\nu} \tau^2}.
+    $$
+
+Pour $\nu = \frac{1}{2}$ (ce qui correspond à la fonction de covariance
+exponentielle), on obtient $\alpha = 3/2$. Dans le package **R-INLA**,
+la valeur par défaut est $\alpha = 2$ , bien que des options dans
+l'intervalle $0 \leq \alpha < 2$ soient également disponibles.
+
+3.  Construire un premier maillage sans tenir compte des points de
+    localisation. On peut choisir 50 et 150 comme distance au noeud le
+    plus proche.
+
+```{r}
+#| label: inla_mesh
+#| echo: false
+
+max_dist_inside <- 50
+max_dist_outside <- 150
+
+hull = inla.nonconvex.hull(pluies_sf)
+pluies_mesh <- inla.mesh.2d(boundary = hull, max.edge= c(max_dist_inside, max_dist_outside))
+plot(pluies_mesh,main="",asp=1)
+```
+
+3.  Construire un second maillage plus raffiné aux endroits où des
+    données sont disponibles
+
+```{r}
+#| label: inla_mesh2
+#| echo: false
+
+hull = inla.nonconvex.hull(pluies_sf)
+pluies_mesh <- inla.mesh.2d(boundary = hull, loc = pluies_sf, max.edge= c(max_dist_inside, max_dist_outside))
+plot(pluies_mesh,main="",asp=1)
+
+```
+
+4.  Pour représenter la maillage, il est possible d'utiliser les
+    facilités du package inlabru
+
+```{r}
+#| label: visu_mesh
+#| echo: false
+
+library(inlabru)
+ggplot() +
+    gg(pluies_mesh) + coord_fixed()
+ggplot() +
+    gg(pluies_mesh) + coord_fixed() +
+  geom_sf(data = pluies_sf, aes(geometry = geometry, col = precip)) + 
+  scale_colour_gradient(low = "#ffd433",high = "#052265")
+```
+
+5.  Quel est le nombre de noeuds du maillage
+
+6.  Preparation inla
+
+6.1 Définir l'équation SPDE à partir du maillage avec un paramètre
+$alpha = 2$ et en imposant la contrainte que la moyenne du champs soit
+nulle
+
+```{r}
+#| label: spde_def
+#| echo: false
+
+pluies_spde <- inla.spde2.matern(mesh = pluies_mesh, alpha = 2, constr = TRUE)
+
+```
+
+6.2 Créer les données pour un effet spatial nommé `s` dans inla
+(ìnla.spde.make.index\`)
+
+```{r}
+#| label: spde_index
+#| echo: false
+
+pluies_indexs <- inla.spde.make.index("s", pluies_spde$n.spde)
+```
+
+6.3 Créer la matrice de projection qui fait le lien entre les données et
+les points du maillage. Quelles sont les dimensions de cette matrice, à
+quoi correspondent elles ?
+
+```{r}
+#| label: spde_A
+#| echo: false
+#| 
+pluies_A <- inla.spde.make.A(mesh = pluies_mesh, loc = pluies_sf)
+```
+
+6.4 Construire la pile (`stack`) inla pour ajuster le modèle
+
+```{r}
+#| label: spde_stack
+#| echo: false
+#| 
+#| # stack for estimation stk.e
+stk.e <- inla.stack(
+  tag = "est",
+  data = list(precip = pluies_sf$precip),
+  A = list(1, pluies_A),
+  effects = list(data.frame(b0 = rep(1, nrow(pluies_sf))), s = pluies_indexs)
+)
+```
+
+6.5 Appeler inla pour ajuster un modèle spatial comme spécifier au début
+du TP.
+
+```{r}
+#| label: inla_call
+#| echo: false
+
+formula <- precip ~ 0 + b0 + f(s, model = pluies_spde)
+
+res <- inla(formula,  
+             family = "gaussian",
+            data = inla.stack.data(stk.e),   
+            control.compute = list(dic = TRUE, return.marginals.predictor = TRUE),
+            control.family = list(hyper = list(prec = list(prior = "loggamma", param = c(1, 1), initial = 0.0015 ))),
+            control.predictor = list( compute = TRUE,     A = inla.stack.A(stk.e)  ) )
+summary(res)
+```
+
+L'optimisation numérique ne se passe pas très bien. pour aider
+l'estimation on va modifier le prior, pour contraindre la variance
+d'observation dans des gammes de valeurs raisonnables. La variogramme
+initial laisse supposer une pépite d'environ 600, donc on peut
+s'attendre à une estimation de la précision de l'observation d'environ
+$1/600\approx0.0015$. On va spécifier une loi gamma sur la précision de
+moyenne 1 et variance 1 pour contraindre le problème d'optimisation. on
+peut aussi donner notre estimation de la prcision comme valeur initiale.
+
+Il suffit d'ajouter
+`control.family = list(hyper = list(prec = list(prior = "loggamma", param = c(1, 1), initial = 0.0015 )))`
+dans l'appel à INLA.
+
+6.6 Predire sur la grille. Ajouter sur la pile inla la grille comme jeu
+de données de prédiction.
+
+```{r}
+#| label: spde_stack_pred
+#| echo: false
+#| 
+
+pluies_A_pred <- inla.spde.make.A(mesh = pluies_mesh, loc = my_grid$center)
+
+# stack for estimation stk.e
+stk.p <- inla.stack(
+  tag = "pred",
+  data = list(precip = NA),
+  A = list(1, pluies_A_pred),
+  effects = list(data.frame(b0 = rep(1, nrow(my_grid))), s = pluies_indexs)
+)
+
+
+stk.full <- inla.stack(stk.e, stk.p)
+
+fit <- inla(formula,
+            data = inla.stack.data(stk.full),
+            control.predictor = list(compute = TRUE, link = 1,
+                                     A = inla.stack.A(stk.full)),
+            control.family = list(hyper = list(prec = list(prior = "loggamma", param = c(1, 1), initial = 0.0015 ))),
+            control.compute = list(dic = TRUE, return.marginals.predictor = TRUE)
+            )
+
+
+summary(fit)
+
+index <- inla.stack.index(stack = stk.full, tag = "pred")$data
+prev_mean <- fit$summary.fitted.values[index, "mean"]
+
+
+my_grid |> mutate(prev_mean = prev_mean) |>  
+ggplot() + geom_sf( aes(fill = prev_mean )) +   
+  geom_sf(data = pluies_sf, aes(geometry = geometry, col = precip)) + 
+  scale_colour_gradient(low = "#ffd433",high = "#052265")+ 
+  scale_fill_gradient(low = "#ffd433",high = "#052265")
+
+```
+
+## References
