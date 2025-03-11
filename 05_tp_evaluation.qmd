@@ -1,0 +1,219 @@
+---
+title: "TD5 Evaluation de l'abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale"
+author:
+  - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+  eval: true
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format: html
+bibliography: spatstat.bib
+---
+
+::: hidden
+\$\$
+
+\newcommand\E{{\mathbb{E}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Cov{{\mathbb{C}\text{ov}}}
+\newcommand\Var{{\mathbb{V}\text{ar}}}
+\newcommand\Zchap{\widehat{Z}}
+
+\$\$
+:::
+
+```{r}
+# Base de R INLA
+library(tidyverse)
+library(INLA)
+library(sf)
+library(gstat)
+library(mapdata)
+
+```
+
+## Objectif de l'étude : Estimer l'abondance de merlus à partir d'un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.
+
+
+Dans le cadre de l'étude d'une population marine, l'Institut Français de Recherche pour l'Exploitation de la Mer (IFREMER) organise  chaque année des campagnes océanographiques qui permettent de récolter des données et d'obtenir des estimations de l'abondance. 
+
+Ces données sont cruciales pour le suivi des espèces marines afin d'évaluer le bon état écologique des populations exploitées. Pour ce TP, nous allons étudier la campagne EVHOE dont un déscriptif est donné au lien: https://campagnes.flotteoceanographique.fr/series/8/fr/.
+
+## Données
+
+Les données EVHOE (Evaluation Halieutique Ouest de l'Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L'échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC 
+
+(voir le shapefile `Agreed_Strata_EVHOE_Polyg_WGS84.shp` et l'objet `evhoe_shp`)datr.
+
+Les poissons sont échantillonnées à l'aide d'un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier `EVHOE_2008_2019.RData`. Il est constitué de trois data frame:
+
+- `Save_Datras$datras_HH.full` regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)
+
+  - Year: année
+  - long: longitude
+  - lati: latitude
+  - StNo: numéro de station
+  - HaulNo: numéro du trait de chalut
+  - Depth: profondeur
+  - Distance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.
+
+- `Save_Datras$datras_sp.HL.full` regroupe le poids et les abondances sur l'ensemble d'un trait de chalut de chaque combinaison 'trait de chalut x espèce x classe de taille x sexe' (données ré-haussées)
+
+  - Year: année
+  - long: longitude
+  - lati: latitude
+  - StNo: numéro de station
+  - HaulNo: numéro du trait de chalut
+  - scientificname: nom scientifique
+  - LngtClass: classe de taille
+  - TotalNo: comptages (nombre d'individus par combinaison de facteur)
+
+![Récolte des données EVHOE.](images/evhoe.png){#id .class width=80%}
+
+
+## Chargement des données
+
+### La zone d'intérêt 
+Le jeu de donées `evhoe_shp` défini ci-dessous contient les contours de la zone de suivi.
+
+```{r}
+#| echo: true
+
+xlims <- c(-12,0)
+ylims <- c(42,52)
+
+# Charger les données EVHOE et les strates de la campagne
+load("data/EVHOE_2008_2019.RData")
+# Definir la zone d'intérêt
+evhoe_shp <- st_read("data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp") %>% 
+  dplyr::select(STRATE) |> 
+  mutate(area_strata = as.numeric(st_area(geometry)/1e6)) |> ##surface en km2
+  summarise(area_zone_evohe = sum(area_strata))
+
+# Tracé de côte
+mapBase <- map("worldHires", fill = T, plot = F) |> st_as_sf() |> 
+  filter(ID %in% c("France", "Spain", "UK", "Ireland", "Germany", "Belgium", "Netherlands", "Denmark" ))
+mapBase |> ggplot() + geom_sf(aes(geometry = geom)) +
+  geom_sf(data=evhoe_shp, fill = "#5f98a3", alpha =0.5) +
+  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5,face = "bold",size=14),
+        panel.spacing.x = unit(4, "mm"))+
+  ylab("")+xlab("")
+
+# Espèce pour l'analyse
+species <- "Merluccius_merluccius"
+```
+
+
+### Données de traits de chaluts
+
+
+```{r}
+# Pour le calcul de la taille de l'échantillon:
+# --> l'ouverture du chalut est de 10 m
+# l'aire balayé par le chalut correspond 
+# à la distance parcourue (Distance) x l'ouverture du chalut (10m)
+Haul_df <- Save_Datras $datras_HH.full %>%
+  dplyr::select(Year,long,lati,StNo,HaulNo,Depth,Distance) %>% 
+  mutate(Area_swept = Distance * 10) # aire chalutée par chaque trait 
+Haul_df$Area_swept[which(is.na(Haul_df$Area_swept))] <- mean(Haul_df$Area_swept,na.rm = T)
+
+# on renumérote les années de 1 à 12
+Haul_df <- Haul_df |>  mutate(annee_suivi = as.numeric(as.factor(Year)))
+n_year <- max(Haul_df$annee_suivi)
+
+# Converti en sf et jointure avec le shapefile EVHOE
+Haul_sf <- st_as_sf(Haul_df,coords=c("long","lati"),crs = st_crs(evhoe_shp))
+Haul_sf_evohe <- st_intersection(Haul_sf,evhoe_shp)
+
+
+
+# Plot des points échantillonnés
+ggplot(Haul_sf_evohe)+
+  facet_wrap(~as.factor(annee_suivi))+
+  geom_sf(aes(col=as.factor(annee_suivi)))+
+  geom_sf(data=mapBase)+
+  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5,face = "bold",size=14),
+        panel.spacing.x = unit(4, "mm"))+
+  ylab("")+xlab("")
+
+```
+
+
+### Données de captures
+
+```{r,fig.asp=1,fig.align='center'}
+
+# Niveau d'aggrégation --> trait de chalut, 
+Catch_df <- Save_Datras$datras_sp.HL.full %>%
+  dplyr::select(Year,long,lati,HaulNo, scientificname,TotalNo) %>% 
+  group_by(Year,long,lati,HaulNo,scientificname) %>%
+  dplyr::summarise(TotalNo = sum(TotalNo)) |> 
+  filter(scientificname == species) |> 
+  full_join(Haul_df) |> 
+  mutate(haul_id = paste0(StNo,"-",HaulNo,"-",Year)) 
+
+
+# Ne garder que le traits de chalut au sein de la zone evohe
+Catch_sf_2 <- st_as_sf(Catch_df,
+                       coords = c("long","lati"),
+                       crs=st_crs(evhoe_shp)) %>% 
+  st_intersection(evhoe_shp)
+
+# Filtrer sur les espèces
+Catch_sf_3 <- Catch_sf_2 %>% 
+  select_at(vars(Year,HaulNo,Area_swept,TotalNo, StNo, Depth))
+Catch_sf_3$TotalNo[which(is.na(Catch_sf_3$TotalNo))] <- 0
+
+# Plot
+ggplot(Catch_sf_3)+
+  geom_sf(aes(col=TotalNo))+
+  scale_color_distiller(palette="Spectral",trans = 'log10')+
+  facet_wrap(.~Year)+
+  geom_sf(data=mapBase)+
+  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5,face = "bold",size=14),
+        panel.spacing.x = unit(4, "mm"))+
+  ggtitle("Données de captures (en effectif)")+
+  ylab("")+xlab("")
+
+```
+
+
+
+Nous souhaitons ajuster un modèle liant l'abondance (i.e le nombre de merlus pechés ) à la profondeur, en prenant en compte une éventuelle struture spatiale dans le but d'estimer l'abondance sur l'ensemble de la zone pour chaque année.
+
+On veut obtenir pour chaque année une carte d"abondance spatialisée et une abondance totale sur la zone d'intérêt. 
+On souhaite également mesuré l'effet de la profondeur (bathymétrie) sur l'abondance et regarder si cet effet potentiel est constant d'une année sur l'autre. 
+Pour obtenir l'abondance totale, nous allons prédire l'abondance en tout point d'une grille et approcher l'abondance totale par la somme de l'abondance sur les points de la grille multiplié par la taille d'une celleule de grille.
+
+
+Programme de travail :
+
+1. Si l'abondance dépend de la profondeur on va avoir besoin de la profondeur en tout point de la  grille sur laquelle on souhaite prédire. Commencer par utiliser l'ensemble des points du jeu de données pour estimer la profondeur en tout point d'une grille que vous aurez choisi.
+
+2. Ajuster pour chaque année un modèle spatial faisait le lien entre le nombre de merlus pêchés et la profondeur tout en intégrant une dépendance spatiale.
+
+3. Prédire l'abondance en tout point de la grille et calculer l'abondance totale sur la zone pour chaque année. Représenter la série des abondances estimées sur un graphique (années x abondance). Comment se porte le stock de merlu ?
+
+4. La série des abondances estimées est-elle sensible à la finesse de la grille ? A la finesse du maillage utilisé dans INLA ?
+
+Rendu : vous me rendrez un document en pdf (avec le code R annexe ) présentant votre démarche, les modèles choisis et vous discuterez les résultats obtenus. Le document (hors annexe) doit faire 10 pages maximum. Faites attention à la lisibilité de vos sorties R.
+
+## References
+

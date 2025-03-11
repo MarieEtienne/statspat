@@ -31,6 +31,7 @@ website:
           - href: 02_tpintro_inla.qmd
           - href: 03_tp_inlaspatial.qmd
           - href: 04_tp_inlakrigeage.qmd
+          - href: 05_tp_evaluation.qmd
 
           
 format:
