@@ -231,60 +231,39 @@
     "text": "Références\n\n\n\n\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
   },
   {
-    "objectID": "references_statspat.html",
-    "href": "references_statspat.html",
-    "title": "References",
+    "objectID": "05_tp_evaluation.html",
+    "href": "05_tp_evaluation.html",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
     "section": "",
-    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+    "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nThis is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.\n - See www.r-inla.org/contact-us for how to get help.\n - List available models/likelihoods/etc with inla.list.models()\n - Use inla.doc(&lt;NAME&gt;) to access documentation\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(gstat)\nlibrary(mapdata)\n\nLoading required package: maps\n\nAttaching package: 'maps'\n\nThe following object is masked from 'package:purrr':\n\n    map"
   },
   {
-    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "title": "References",
-    "section": "Pour approfondir ou compléter le cours",
-    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
+    "objectID": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
+    "href": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.",
+    "text": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.\nDans le cadre de l’étude d’une population marine, l’Institut Français de Recherche pour l’Exploitation de la Mer (IFREMER) organise chaque année des campagnes océanographiques qui permettent de récolter des données et d’obtenir des estimations de l’abondance.\nCes données sont cruciales pour le suivi des espèces marines afin d’évaluer le bon état écologique des populations exploitées. Pour ce TP, nous allons étudier la campagne EVHOE dont un déscriptif est donné au lien: https://campagnes.flotteoceanographique.fr/series/8/fr/."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistique Spatiale",
-    "section": "",
-    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+    "objectID": "05_tp_evaluation.html#données",
+    "href": "05_tp_evaluation.html#données",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Données",
+    "text": "Données\nLes données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC\n(voir le shapefile Agreed_Strata_EVHOE_Polyg_WGS84.shp et l’objet evhoe_shp)datr.\nLes poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier EVHOE_2008_2019.RData. Il est constitué de trois data frame:\n\nSave_Datras$datras_HH.full regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nDepth: profondeur\nDistance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.\n\nSave_Datras$datras_sp.HL.full regroupe le poids et les abondances sur l’ensemble d’un trait de chalut de chaque combinaison ‘trait de chalut x espèce x classe de taille x sexe’ (données ré-haussées)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nscientificname: nom scientifique\nLngtClass: classe de taille\nTotalNo: comptages (nombre d’individus par combinaison de facteur)\n\n\n\n\n\nRécolte des données EVHOE."
   },
   {
-    "objectID": "01_pluies.html",
-    "href": "01_pluies.html",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+    "objectID": "05_tp_evaluation.html#chargement-des-données",
+    "href": "05_tp_evaluation.html#chargement-des-données",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Chargement des données",
+    "text": "Chargement des données\n\nLa zone d’intérêt\nLe jeu de donées evhoe_shp défini ci-dessous contient les contours de la zone de suivi.\n\nxlims &lt;- c(-12,0)\nylims &lt;- c(42,52)\n\n# Charger les données EVHOE et les strates de la campagne\nload(\"data/EVHOE_2008_2019.RData\")\n# Definir la zone d'intérêt\nevhoe_shp &lt;- st_read(\"data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp\") %&gt;% \n  dplyr::select(STRATE) |&gt; \n  mutate(area_strata = as.numeric(st_area(geometry)/1e6)) |&gt; ##surface en km2\n  summarise(area_zone_evohe = sum(area_strata))\n\nReading layer `Agreed_Strata_EVHOE_Polyg_WGS84' from data source \n  `/__w/statspat/statspat/data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 29 features and 7 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -11.6487 ymin: 43.61471 xmax: -1.109647 ymax: 52.19023\nGeodetic CRS:  WGS 84\n\n# Tracé de côte\nmapBase &lt;- map(\"worldHires\", fill = T, plot = F) |&gt; st_as_sf() |&gt; \n  filter(ID %in% c(\"France\", \"Spain\", \"UK\", \"Ireland\", \"Germany\", \"Belgium\", \"Netherlands\", \"Denmark\" ))\nmapBase |&gt; ggplot() + geom_sf(aes(geometry = geom)) +\n  geom_sf(data=evhoe_shp, fill = \"#5f98a3\", alpha =0.5) +\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n# Espèce pour l'analyse\nspecies &lt;- \"Merluccius_merluccius\"\n\n\n\nDonnées de traits de chaluts\n\n# Pour le calcul de la taille de l'échantillon:\n# --&gt; l'ouverture du chalut est de 10 m\n# l'aire balayé par le chalut correspond \n# à la distance parcourue (Distance) x l'ouverture du chalut (10m)\nHaul_df &lt;- Save_Datras $datras_HH.full %&gt;%\n  dplyr::select(Year,long,lati,StNo,HaulNo,Depth,Distance) %&gt;% \n  mutate(Area_swept = Distance * 10) # aire chalutée par chaque trait \nHaul_df$Area_swept[which(is.na(Haul_df$Area_swept))] &lt;- mean(Haul_df$Area_swept,na.rm = T)\n\n# on renumérote les années de 1 à 12\nHaul_df &lt;- Haul_df |&gt;  mutate(annee_suivi = as.numeric(as.factor(Year)))\nn_year &lt;- max(Haul_df$annee_suivi)\n\n# Converti en sf et jointure avec le shapefile EVHOE\nHaul_sf &lt;- st_as_sf(Haul_df,coords=c(\"long\",\"lati\"),crs = st_crs(evhoe_shp))\nHaul_sf_evohe &lt;- st_intersection(Haul_sf,evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Plot des points échantillonnés\nggplot(Haul_sf_evohe)+\n  facet_wrap(~as.factor(annee_suivi))+\n  geom_sf(aes(col=as.factor(annee_suivi)))+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n\n\n\nDonnées de captures\n\n# Niveau d'aggrégation --&gt; trait de chalut, \nCatch_df &lt;- Save_Datras$datras_sp.HL.full %&gt;%\n  dplyr::select(Year,long,lati,HaulNo, scientificname,TotalNo) %&gt;% \n  group_by(Year,long,lati,HaulNo,scientificname) %&gt;%\n  dplyr::summarise(TotalNo = sum(TotalNo)) |&gt; \n  filter(scientificname == species) |&gt; \n  full_join(Haul_df) |&gt; \n  mutate(haul_id = paste0(StNo,\"-\",HaulNo,\"-\",Year)) \n\n`summarise()` has grouped output by 'Year', 'long', 'lati', 'HaulNo'. You can\noverride using the `.groups` argument.\nJoining with `by = join_by(Year, long, lati, HaulNo)`\n\n# Ne garder que le traits de chalut au sein de la zone evohe\nCatch_sf_2 &lt;- st_as_sf(Catch_df,\n                       coords = c(\"long\",\"lati\"),\n                       crs=st_crs(evhoe_shp)) %&gt;% \n  st_intersection(evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Filtrer sur les espèces\nCatch_sf_3 &lt;- Catch_sf_2 %&gt;% \n  select_at(vars(Year,HaulNo,Area_swept,TotalNo, StNo, Depth))\nCatch_sf_3$TotalNo[which(is.na(Catch_sf_3$TotalNo))] &lt;- 0\n\n# Plot\nggplot(Catch_sf_3)+\n  geom_sf(aes(col=TotalNo))+\n  scale_color_distiller(palette=\"Spectral\",trans = 'log10')+\n  facet_wrap(.~Year)+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ggtitle(\"Données de captures (en effectif)\")+\n  ylab(\"\")+xlab(\"\")\n\nWarning in scale_color_distiller(palette = \"Spectral\", trans = \"log10\"): log-10\ntransformation introduced infinite values.\n\n\n\n\n\n\n\n\n\nNous souhaitons ajuster un modèle liant l’abondance (i.e le nombre de merlus pechés ) à la profondeur, en prenant en compte une éventuelle struture spatiale dans le but d’estimer l’abondance sur l’ensemble de la zone pour chaque année.\nOn veut obtenir pour chaque année une carte d”abondance spatialisée et une abondance totale sur la zone d’intérêt. On souhaite également mesuré l’effet de la profondeur (bathymétrie) sur l’abondance et regarder si cet effet potentiel est constant d’une année sur l’autre. Pour obtenir l’abondance totale, nous allons prédire l’abondance en tout point d’une grille et approcher l’abondance totale par la somme de l’abondance sur les points de la grille multiplié par la taille d’une celleule de grille.\nProgramme de travail :\n\nSi l’abondance dépend de la profondeur on va avoir besoin de la profondeur en tout point de la grille sur laquelle on souhaite prédire. Commencer par utiliser l’ensemble des points du jeu de données pour estimer la profondeur en tout point d’une grille que vous aurez choisi.\nAjuster pour chaque année un modèle spatial faisait le lien entre le nombre de merlus pêchés et la profondeur tout en intégrant une dépendance spatiale.\nPrédire l’abondance en tout point de la grille et calculer l’abondance totale sur la zone pour chaque année. Représenter la série des abondances estimées sur un graphique (années x abondance). Comment se porte le stock de merlu ?\nLa série des abondances estimées est-elle sensible à la finesse de la grille ? A la finesse du maillage utilisé dans INLA ?\n\nRendu : vous me rendrez un document en pdf (avec le code R annexe ) présentant votre démarche, les modèles choisis et vous discuterez les résultats obtenus. Le document (hors annexe) doit faire 10 pages maximum. Faites attention à la lisibilité de vos sorties R."
   },
   {
-    "objectID": "01_pluies.html#présentation",
-    "href": "01_pluies.html#présentation",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
-  },
-  {
-    "objectID": "01_pluies.html#objectifs",
-    "href": "01_pluies.html#objectifs",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Objectifs",
-    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
-  },
-  {
-    "objectID": "01_pluies.html#directives",
-    "href": "01_pluies.html#directives",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Directives",
-    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
-  },
-  {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
-    "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+    "objectID": "05_tp_evaluation.html#references",
+    "href": "05_tp_evaluation.html#references",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "References",
+    "text": "References"
   },
   {
     "objectID": "01_intro.html#cadre",
@@ -355,6 +334,62 @@
     "title": "Introduction",
     "section": "References",
     "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
+  },
+  {
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
+    "section": "",
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+  },
+  {
+    "objectID": "01_pluies.html",
+    "href": "01_pluies.html",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#présentation",
+    "href": "01_pluies.html#présentation",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#objectifs",
+    "href": "01_pluies.html#objectifs",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Objectifs",
+    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+  },
+  {
+    "objectID": "01_pluies.html#directives",
+    "href": "01_pluies.html#directives",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Directives",
+    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  },
+  {
+    "objectID": "references_statspat.html",
+    "href": "references_statspat.html",
+    "title": "References",
+    "section": "",
+    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+  },
+  {
+    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "title": "References",
+    "section": "Pour approfondir ou compléter le cours",
+    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
   },
   {
     "objectID": "04_inla.html#sources",
