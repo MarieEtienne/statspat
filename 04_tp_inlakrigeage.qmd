@@ -150,7 +150,7 @@ spatiale est proche de 0.1.
 **SPDE et Covariance de Matern**
 
 Un **champ de markov gaussien (GRF)** $z(s)$ sur un domaine
-$D \sub {\mathbb{R}}^2$ avec une matrice de covariance de Matérn peut
+$D \subset {\mathbb{R}}^2$ avec une matrice de covariance de Matérn peut
 être exprimé comme la solution de l'**équation différentielle
 stochastique aux dérivées partielles (SPDE)** suivante dans un domaine
 continu :
