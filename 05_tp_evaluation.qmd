@@ -1,5 +1,6 @@
 ---
 title: "TD5 Evaluation de l'abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale"
+subtitle: "Sur la base des données Evohé utilisées dans la thèse de B. ALglave"
 author:
   - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
     affiliation: 
