@@ -41,7 +41,7 @@ myBib <- ReadBib("./spatstat.bib", check = FALSE)
 
 ## Cadre
 
-{La statistique spatiale}\[.rouge\] est une branche de la statistique
+[La statistique spatiale]{.rouge} est une branche de la statistique
 qui se concentre sur l'analyse et la modélisation de données localisées
 géographiquement ou spatialement.
 
@@ -191,9 +191,9 @@ ggplot() +
 Figure extraite de @renner2015point
 
 ::: {#fig-eucalyptus}
-![Présence de Eucalyptus sparsifolia](eucalyptus.png){height="60%",width="40%"} 
-**Figure 2** : Présence d'Eucalyptus sparsifolia @renner2015point
-
+![Présence de Eucalyptus
+sparsifolia](eucalyptus.png){height="60%",width="40%"} **Figure 2** :
+Présence d'Eucalyptus sparsifolia @renner2015point
 :::
 
 ## Exercice
@@ -225,4 +225,3 @@ deux premières dans ce cours.
 
 ::: {#refs}
 :::
-
