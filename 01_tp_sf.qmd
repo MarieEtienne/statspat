@@ -1,0 +1,235 @@
+---
+title: "TD2 - Manipulation de données spatiales avec R"
+author:
+  - name: Marie-Pierre Etienne 
+    affiliation: 
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  freeze: true
+  eval: false
+editor: 
+  markdown: 
+    wrap: 72
+css: mpe_pres_revealjs.css
+format: html
+bibliography: spatstat.bib
+---
+
+
+
+## Objectifs du TP
+
+L'objectif de ce TP est d'acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour
+
+-   lire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;
+-   comprendre et manipuler les systèmes de coordonnées (CRS) ;
+-   transformer des données de WGS84 (lat/long) vers un système projeté adapté ;
+-   créer des buffers autour de géométries (points, polygones) ;
+-   réaliser des unions et intersections spatiales ;
+-   calculer des surfaces ;
+-   construire une grille régulière (fishnet) et agréger une variable par mailles.
+
+## Packages
+
+-   Packages : `sf`, `dplyr`, `ggplot2`, `readr`.
+
+```{r}
+# install.packages(c("sf", "dplyr", "ggplot2", "readr"))
+```
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
+
+## Données utilisées dans le TP
+
+Nous utiliserons :
+
+1.  le shapefile d’exemple `nc.shp` fourni par le package **sf** (comtés de Caroline du Nord) ;
+2.  un fichier CSV `nc_cities.csv` contenant des points en **longitude/latitude (WGS84)** et disponibles [ici](nc_cities.csv)
+
+
+
+## Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel
+
+
+### 1.1 Lecture de données en WGS84
+
+
+1.  Lire le fichier `nc_cities.csv` dans un objet `data.frame` nommé `nc_cities.df`
+2.  Convertir ce tableau en objet `sf` en utilisant les colonnes `lon` et `lat` comme coordonnées, avec le CRS WGS84 (`EPSG:4326`) et stocker le résultat dans `nc_cities.sf`
+3.  Vérifier la structure de l’objet obtenu et son CRS.
+4. Cartographier les données 
+
+```{r}
+#| label: nc_cities_plot
+#| echo: true
+
+nc_cities.sf |> ggplot() + geom_sf() +   geom_sf_text( aes(label = name))
+
+```
+
+Des fonctions utiles :`read_csv()`, `st_as_sf()`, `st_crs()`, `glimpse()`.
+
+### 1.2 Lecture du shapefile projeté et comparaison des CRS
+
+On utilisera le shapefile `nc` fourni par `sf`.
+
+
+1.  Charger le shapefile `nc.shp` dans un object `nc.sf` en utilisant le chemin renvoyé par `system.file("shape/nc.shp", package = "sf")`.
+2.  Inspecter sa structure (`glimpse`) et vérifier son CRS.
+3   Afficher la classe de l’objet `nc`.
+4.  Afficher les premières lignes de `nc`.
+5.  Lister les noms de colonnes disponibles et repérer au moins une variable numérique.
+6.  Comparer le CRS de `nc` et celui de vos stations (`stations_wgs84`).
+4.  Cartographier les données `nc.sf`
+
+Des fonctions utiles :`st_read()`, `st_crs()`, `glimpse()`.
+
+### 1.3 Transformation des stations vers le CRS de `nc`
+
+
+1. Représenter les deux types de données sur une même carte.
+2.  Transformer les données de `nc_cities.sf` de WGS84 (`EPSG:4326`) vers le CRS de `nc`.
+3.  Vérifier le CRS de l’objet transformé.
+4.  Afficher une carte rapide montrant les comtés (`nc`) et les villes.
+5.  Représenter une variable quantitative (par exemple `BIR74`) en choroplèthe.
+
+Des fonctions utiles :`st_transform()`, `st_crs()`. `ggplot() + geom_sf(aes(fill = ...))`.
+
+
+
+## Partie 2 — Buffers et opérations géométriques
+
+
+### 2.1 Centroïdes des polygones
+
+**Question 2.1**
+
+1.  Calculer les centroïdes des polygones de `nc`.
+2.  Visualiser les centroïdes superposés aux polygones.
+
+Des fonctions utiles : `st_centroid()`, `plot()`.
+
+### 2.2 Buffers autour des points
+
+On souhaite créer un buffer de 20 km autour de chaque centroïde.
+
+**Question 2.2**
+
+1.  Créer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.
+2.  Visualiser les buffers et les polygones sur une même carte.
+3.  Discuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.
+
+ 
+
+Des fonctions utiles : : `st_buffer()` (argument `dist` en mètres).
+
+
+### 2.3 Buffers autour des polygones
+
+**Question 2.3**
+
+1.  Créer un buffer de 5 km autour de chaque polygone de `nc`.
+2.  Visualiser la différence entre les polygones originaux et les buffers.
+3.  Expliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.
+
+
+
+Des fonctions utiles : : `st_buffer()` appliquée directement à `nc`.
+
+## Partie 3 — Unions spatiales et calcul de surfaces
+
+
+### 3.1 Union de polygones (dissolve)
+
+On souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest) 
+
+1. Calculer le centroid de la Caroline du Nord.
+2. Créer une nouvelle variable `region` dans `nc` qui prend deux modalités (`"Est"`, `"Ouest"`) en fonction de sa position par rapport au centroide et vérifier graphiquement.
+3.  Regrouper les comtés par `region` et réaliser l’union géométrique des polygones pour obtenir un polygone par région.
+4.  Calculer, pour chaque région, le total de la variable `BIR74`.
+5.  Visualiser les 2 régions obtenues et le nombre de naissances.
+
+ 
+Les fonctions utiles : `st_union`, `st_coordinates`, `mutate()`, `case_when()`, `summarise()`;
+
+### 3.2 Calcul de surfaces
+
+
+1.  Calculer la surface de chaque comté de `nc` (en m²), puis convertir cette surface en km².
+2.  Ajouter ces deux colonnes (`area_m2`, `area_km2`) à l’objet `nc`.
+3.  Afficher les noms de quelques comtés et leur surface (en km²).
+4.  Représenter la surface des comtés sur une carte (choroplèthe).
+
+ 
+
+Les fonctions utiles :  `st_area()`
+
+
+## Partie 4 — Grille régulière et moyenne par maille
+
+
+### 4.1 Définir une grille régulière
+
+On souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.
+
+1.  Récupérer l’étendue spatiale (bounding box) de `nc`.
+2.  Créer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.
+3.  Convertir cette grille en objet `sf` avec un identifiant de maille (`id_cell`).
+4.  Visualiser la grille et les comtés superposés.
+
+ 
+
+Les fonctions utiles `st_bbox()`, `st_make_grid()`, `st_sf()`.
+
+### 4.2 Intersections comtés / grille
+
+Nous voulons découper les comtés selon la grille.
+
+1.  Intersecter `nc` (ou `nc_area` si vous avez déjà les surfaces) avec la grille.
+2.  Examiner la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?
+
+ 
+
+Des fonctions utiles : : `st_intersection()`.
+
+### 4.3 Surface des morceaux de polygones
+
+
+1.  Calculer la surface de chaque polygone issu de l’intersection (en km²).
+2.  Ajouter cette surface comme colonne (`area_piece_km2`).
+
+
+### 4.4 Moyenne simple de `BIR74` par maille
+
+Dans un premier temps, on calcule la moyenne **simple** de `BIR74` pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.
+
+1.  Extraire la partie attributaire (non spatiale) des données intersectées.
+2.  Calculer, pour chaque maille (`id_cell`), la moyenne simple de `BIR74` (ignorer les valeurs manquantes si besoin).
+3.  Joindre ce résultat à l’objet `sf` représentant la grille.
+4.  Représenter cartographiquement la moyenne simple de `BIR74` par maille.
+
+Des fonctions utiles : `st_drop_geometry()`, `left_join()`
+
+### 4.5 Moyenne pondérée par surface
+
+On souhaite maintenant calculer une moyenne de `BIR74` pondérée par la surface des morceaux de comtés dans chaque maille.
+
+1.  Utiliser la surface des morceaux (`area_piece_km2`) comme poids.
+2.  Pour chaque maille (`id_cell`), calculer la moyenne pondérée de `BIR74` : \[ \text{moyenne pondérée} = \frac{\sum (BIR74 \times \text{surface})}{\sum \text{surface}} \]
+3.  Joindre ce résultat à la grille.
+4.  Comparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?
+
+ 
+## Pour aller plus loin (facultatif)
+
+- Tirer uniformément 1000 points en Caroline du nord (Acceptation rejet)
+- Calculer le nombre de points par comté et comparer à la superficie du comté
+- Qu s'attend on à constater

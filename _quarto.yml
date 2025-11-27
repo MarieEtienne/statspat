@@ -28,6 +28,7 @@ website:
       - text: "TP"
         menu: 
           - href: 01_pluies.qmd
+          - href: 01_tp_sf.qmd
           - href: 02_tpintro_inla.qmd
           - href: 03_tp_inlaspatial.qmd
           - href: 04_tp_inlakrigeage.qmd
