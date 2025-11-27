@@ -266,6 +266,111 @@
     "text": "References"
   },
   {
+    "objectID": "01_tp_sf.html",
+    "href": "01_tp_sf.html",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "L’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
+  },
+  {
+    "objectID": "01_tp_sf.html#objectifs-du-tp",
+    "href": "01_tp_sf.html#objectifs-du-tp",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "L’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
+  },
+  {
+    "objectID": "01_tp_sf.html#packages",
+    "href": "01_tp_sf.html#packages",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Packages",
+    "text": "Packages\n\nPackages : sf, dplyr, ggplot2, readr.\n\n\n# install.packages(c(\"sf\", \"dplyr\", \"ggplot2\", \"readr\"))\n\n\nlibrary(sf)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)"
+  },
+  {
+    "objectID": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "href": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Données utilisées dans le TP",
+    "text": "Données utilisées dans le TP\nNous utiliserons :\n\nle shapefile d’exemple nc.shp fourni par le package sf (comtés de Caroline du Nord) ;\nun fichier CSV nc_cities.csv contenant des points en longitude/latitude (WGS84) et disponibles ici"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "href": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel",
+    "text": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel\n\n1.1 Lecture de données en WGS84\n\nLire le fichier nc_cities.csv dans un objet data.frame nommé nc_cities.df\nConvertir ce tableau en objet sf en utilisant les colonnes lon et lat comme coordonnées, avec le CRS WGS84 (EPSG:4326) et stocker le résultat dans nc_cities.sf\nVérifier la structure de l’objet obtenu et son CRS.\nCartographier les données\n\n\nnc_cities.sf |&gt; ggplot() + geom_sf() +   geom_sf_text( aes(label = name))\n\nDes fonctions utiles :read_csv(), st_as_sf(), st_crs(), glimpse().\n\n\n1.2 Lecture du shapefile projeté et comparaison des CRS\nOn utilisera le shapefile nc fourni par sf.\n\nCharger le shapefile nc.shp dans un object nc.sf en utilisant le chemin renvoyé par system.file(\"shape/nc.shp\", package = \"sf\").\nInspecter sa structure (glimpse) et vérifier son CRS. 3 Afficher la classe de l’objet nc.\nAfficher les premières lignes de nc.\nLister les noms de colonnes disponibles et repérer au moins une variable numérique.\nComparer le CRS de nc et celui de vos stations (stations_wgs84).\nCartographier les données nc.sf\n\nDes fonctions utiles :st_read(), st_crs(), glimpse().\n\n\n1.3 Transformation des stations vers le CRS de nc\n\nReprésenter les deux types de données sur une même carte.\nTransformer les données de nc_cities.sf de WGS84 (EPSG:4326) vers le CRS de nc.\nVérifier le CRS de l’objet transformé.\nAfficher une carte rapide montrant les comtés (nc) et les villes.\nReprésenter une variable quantitative (par exemple BIR74) en choroplèthe.\n\nDes fonctions utiles :st_transform(), st_crs(). ggplot() + geom_sf(aes(fill = ...))."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "href": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Partie 2 — Buffers et opérations géométriques",
+    "text": "Partie 2 — Buffers et opérations géométriques\n\n2.1 Centroïdes des polygones\nQuestion 2.1\n\nCalculer les centroïdes des polygones de nc.\nVisualiser les centroïdes superposés aux polygones.\n\nDes fonctions utiles : st_centroid(), plot().\n\n\n2.2 Buffers autour des points\nOn souhaite créer un buffer de 20 km autour de chaque centroïde.\nQuestion 2.2\n\nCréer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.\nVisualiser les buffers et les polygones sur une même carte.\nDiscuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.\n\nDes fonctions utiles : : st_buffer() (argument dist en mètres).\n\n\n2.3 Buffers autour des polygones\nQuestion 2.3\n\nCréer un buffer de 5 km autour de chaque polygone de nc.\nVisualiser la différence entre les polygones originaux et les buffers.\nExpliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.\n\nDes fonctions utiles : : st_buffer() appliquée directement à nc."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "href": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Partie 3 — Unions spatiales et calcul de surfaces",
+    "text": "Partie 3 — Unions spatiales et calcul de surfaces\n\n3.1 Union de polygones (dissolve)\nOn souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest)\n\nCalculer le centroid de la Caroline du Nord.\nCréer une nouvelle variable region dans nc qui prend deux modalités (\"Est\", \"Ouest\") en fonction de sa position par rapport au centroide et vérifier graphiquement.\nRegrouper les comtés par region et réaliser l’union géométrique des polygones pour obtenir un polygone par région.\nCalculer, pour chaque région, le total de la variable BIR74.\nVisualiser les 2 régions obtenues et le nombre de naissances.\n\nLes fonctions utiles : st_union, st_coordinates, mutate(), case_when(), summarise();\n\n\n3.2 Calcul de surfaces\n\nCalculer la surface de chaque comté de nc (en m²), puis convertir cette surface en km².\nAjouter ces deux colonnes (area_m2, area_km2) à l’objet nc.\nAfficher les noms de quelques comtés et leur surface (en km²).\nReprésenter la surface des comtés sur une carte (choroplèthe).\n\nLes fonctions utiles : st_area()"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "href": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Partie 4 — Grille régulière et moyenne par maille",
+    "text": "Partie 4 — Grille régulière et moyenne par maille\n\n4.1 Définir une grille régulière\nOn souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.\n\nRécupérer l’étendue spatiale (bounding box) de nc.\nCréer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.\nConvertir cette grille en objet sf avec un identifiant de maille (id_cell).\nVisualiser la grille et les comtés superposés.\n\nLes fonctions utiles st_bbox(), st_make_grid(), st_sf().\n\n\n4.2 Intersections comtés / grille\nNous voulons découper les comtés selon la grille.\n\nIntersecter nc (ou nc_area si vous avez déjà les surfaces) avec la grille.\nExaminer la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?\n\nDes fonctions utiles : : st_intersection().\n\n\n4.3 Surface des morceaux de polygones\n\nCalculer la surface de chaque polygone issu de l’intersection (en km²).\nAjouter cette surface comme colonne (area_piece_km2).\n\n\n\n4.4 Moyenne simple de BIR74 par maille\nDans un premier temps, on calcule la moyenne simple de BIR74 pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.\n\nExtraire la partie attributaire (non spatiale) des données intersectées.\nCalculer, pour chaque maille (id_cell), la moyenne simple de BIR74 (ignorer les valeurs manquantes si besoin).\nJoindre ce résultat à l’objet sf représentant la grille.\nReprésenter cartographiquement la moyenne simple de BIR74 par maille.\n\nDes fonctions utiles : st_drop_geometry(), left_join()\n\n\n4.5 Moyenne pondérée par surface\nOn souhaite maintenant calculer une moyenne de BIR74 pondérée par la surface des morceaux de comtés dans chaque maille.\n\nUtiliser la surface des morceaux (area_piece_km2) comme poids.\nPour chaque maille (id_cell), calculer la moyenne pondérée de BIR74 : [ = ]\nJoindre ce résultat à la grille.\nComparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?"
+  },
+  {
+    "objectID": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "href": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "title": "Manipulation de données spatiales avec R",
+    "section": "Pour aller plus loin (facultatif)",
+    "text": "Pour aller plus loin (facultatif)\n\nTirer uniformément 1000 points en Caroline du nord (Acceptation rejet)\nCalculer le nombre de points par comté et comparer à la superficie du comté\nQu s’attend on à constater"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
+  },
+  {
+    "objectID": "01_pluies.html",
+    "href": "01_pluies.html",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#présentation",
+    "href": "01_pluies.html#présentation",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+  },
+  {
+    "objectID": "01_pluies.html#objectifs",
+    "href": "01_pluies.html#objectifs",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Objectifs",
+    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+  },
+  {
+    "objectID": "01_pluies.html#directives",
+    "href": "01_pluies.html#directives",
+    "title": "TD1 - Statistique Spatiale",
+    "section": "Directives",
+    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
+    "section": "",
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+  },
+  {
     "objectID": "01_intro.html#cadre",
     "href": "01_intro.html#cadre",
     "title": "Introduction",
@@ -334,48 +439,6 @@
     "title": "Introduction",
     "section": "References",
     "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
-  },
-  {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
-    "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
-  },
-  {
-    "objectID": "01_pluies.html",
-    "href": "01_pluies.html",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
-  },
-  {
-    "objectID": "01_pluies.html#présentation",
-    "href": "01_pluies.html#présentation",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
-  },
-  {
-    "objectID": "01_pluies.html#objectifs",
-    "href": "01_pluies.html#objectifs",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Objectifs",
-    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
-  },
-  {
-    "objectID": "01_pluies.html#directives",
-    "href": "01_pluies.html#directives",
-    "title": "TD1 - Statistique Spatiale",
-    "section": "Directives",
-    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistique Spatiale",
-    "section": "",
-    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
   },
   {
     "objectID": "references_statspat.html",
