@@ -1,5 +1,5 @@
 ---
-title: "TD2 - Manipulation de données spatiales avec R"
+title: "TD2 -Manipulation de données spatiales avec R"
 author:
   - name: Marie-Pierre Etienne 
     affiliation: 
@@ -52,7 +52,7 @@ library(readr)
 Nous utiliserons :
 
 1.  le shapefile d’exemple `nc.shp` fourni par le package **sf** (comtés de Caroline du Nord) ;
-2.  un fichier CSV `nc_cities.csv` contenant des points en **longitude/latitude (WGS84)** et disponibles [ici](nc_cities.csv)
+2.  un fichier CSV `nc_cities.csv` contenant des points en **longitude/latitude (WGS84)** et disponibles [ici](https://raw.githubusercontent.com/MarieEtienne/statspat/refs/heads/master/nc_cities.csv)
 
 
 
