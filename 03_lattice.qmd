@@ -30,6 +30,7 @@ library(wesanderson)
 library(gstat)
 library(ggpubr)
 library(sf)
+library(igraph)
 
 BibOptions(check.entries = FALSE,
            bib.style = "authoryear",
@@ -49,6 +50,7 @@ myBib <- ReadBib("./spatstat.bib", check = FALSE)
 \newcommand\Cov{{\mathbb{C}\text{ov}}}
 \newcommand\Var{{\mathbb{V}\text{ar}}}
 \newcommand\Zchap{\widehat{Z}}
+\newcommand\Xbf{\boldsymbol{X}}
 
 \$\$
 :::
@@ -196,7 +198,10 @@ ggtitle("Mean estimation")
 p2 <- resid |> ggplot() + geom_point(aes(x=X, y = r, col = pos), size = 2) + geom_line(aes(x=X, y = r), alpha = 0.5) + ggtitle('Residuals') + theme(legend.position = "none")
 ggarrange(p1, p2, ncol = 2)
 ```
+::::: columns
+::: {.column width="48%"}
 
+### Conséquence sur l'estimation
 Variance de $\hat{\mu}$ :
 
 -   Cas indépendant $Var(\hat{\mu})= n^{-1} \sigma^2$
@@ -205,6 +210,22 @@ Variance de $\hat{\mu}$ :
     $Var(\hat{\mu})= n^{-1} \sigma^2 \left(1 + 2\left( \frac{\rho}{1-\rho}\right)\left( 1 -\frac{1}{n}\right)  - 2 \left( \frac{\rho}{1-\rho}\right)^2 \left( \frac{1-\rho^{n-1}}{n}\right)    \right)$
 
 Ici on sous estime l'incertitude
+
+:::
+
+::: {.column width="48%"}
+### Conséquence sur la prédiction
+
+
+-   Cas indépendant $\E{\hat{Y_{t+1}\vert Y_{0:t}} = 0 $
+
+
+-   Cas corrélé $\E{\hat{Y_{t+1}\vert Y_{0:t}} = \rho Y_{t} $
+:::
+
+::::: 
+### Conséquence sur l'estimation
+
 
 ## Quelques remarques
 
@@ -218,109 +239,22 @@ Ici on sous estime l'incertitude
 
 # Les modèles spatiaux sur grille et leur estimation
 
-## Modèle SAR - Cadre Gaussien
 
-$$Z = BZ + \nu$$
+## Champs de Markov sur un réseau
 
--   $B$ : Matrice de poids spatiaux
--   $\nu$ : Bruit normal $\nu \sim N(0, \Omega)$
-    -   $\Omega$ est une matrice diagonale dont tous les termes
-        diagonaux sont stritecement positifs.
-    -   Par convention les termes $b_{ii}$ de la matrice sont nuls (les
-        sites ne dépendent pas d'eux-mêmes)
--   Modèle simultané : chaque variable dépend directement de ses
-    voisines
+Rappel: Si $(X_0,\ldots ,X_n, \ldots)$ est une chaîne de Markov, alors 
+$$\mathcal{L} \left ( X_{n+1} \vert X_{0:n}\right) = \mathcal{L} \left ( X_{n+1} \vert X_{n}\right)$$
 
-Puisque $Z - BZ = \nu$,
-$$ \Sigma_{SAR} = (I - B)^{-1} \Omega (I - B^T)^{-1} $$
-
-### Remarques
-
--   La dépendance spatiale est due à B.
--   $B$ n'est pas obligatoirement symétrique, en effet la forme
-    quadratique $(I - B)^{-1} \Omega (I - B^T)^{-1}$ est symétrique même
-    si $B$ ne l'est pas
--   Il faut que $I-B$ soit inversible
-
-## Modèle CAR
-
-$$ Z_i | Z_{-i} \sim N \left( \sum_{j \neq i} c_{ij} Z_j, \sigma^2 / m_{ii} \right) $$
-
-$Z_{-i}$ désigne l'ensemble des $Z_j$ pour $j\ne i$.
-
--   La matrice $C$ est la matrice des poids spatiaux et on impose
-    $C_{ii}=0$ (on ne définit pas $Z_i$ conditionnellement à lui même)
-
--   La matrice $M$ est diagonal et ses termes diagonaux sont positifs.
-
--   Dépendance conditionnelle : chaque variable est conditionnée aux
-    voisines
-
--   Matrice de covariance :
-
-$$\Sigma_{CAR} = (I - C)^{-1} M$$
-
-### Remarques
-
-La loi conditionnelle de $Z_i$ est une combinaison linéaire des autres
-variables.
-
-Les valeurs de $m_{ii}$ se sont pas toutes identiques
-
-[Ce n'est pas évident que ca définit une loi jointe qui existe]{.rouge}
-
-## Modèle CAR
-
--   Existence du modèle CAR sous réserve que $(I-C)^{-1} M$ est définie
-    positive (@besag1974spatial) et alors
-
-$$Z \sim \mathcal{N}(0, \Sigma_{CAR}), \quad \Sigma_{CAR} = (I-C)^{-1} M$$
-Puisque $\Sigma_{CAR}$ doit être symétrique alors
-$$\frac{C_{ij}}{m_{ii}} =\frac{C_{ji}}{m_{jj}}$$
-
-Dans @verhoef2018relationship, on trouve une caractérisation
-intéressante qui permet de faire le lien entre SAR et CAR
-
-Pour que $\Sigma_{CAR}$ soit une matrice de covariance valide il faut
-
--   $(I-C)$ a ses valeurs propres positives
-
--   $M$ est diagonal avec ses termes diagonaux positifs
-
--   $C_{ii} = 0$ pour tout $i$
-
--   $C_{ij}/m_{ii} = C_{ji}/m_{jj}$ pour tout i,j
-
-## Les matrices de poids
-
-En pratique, on choist la matrice $B$ du modèle SAR sous la forme
-$B = \rho_s W$ et
-
-la matrice $C$ du CAR sous la forme $C=\rho_C W$.
-
-La matrice $W$ est une matrice de poids tels que
-
--   $W_{ij}\ne 0$ si $i$ et $j$ sont voisins
-
-## La notion de voisinage
-
-### Rappel Chaîne de Markov
-
-Soit $Z$ une chaine de Markov alors
-
-$${\mathbb{P}}(Z_t,  Z_{t-1}, \ldots Z_1 \vert Z_0) = \prod_{s=1}^t Q_s(Z_s; Z_{s-1})$$
-[Quel est l'intérêt d'une chaîne de Markov dans le traitement de la
-dépendance]{.rouge}
+Question : Etendre la propriété de Markov lorsque l'on n'a pas le sents du temps.
 
 . . .
 
-Les indépendances conditionelles $Z_t$ et $Z_{t-2}$ sont indépendant si
-on conditionne par $Z_{t-1}$ et dans ce cas le terme
-$\Sigma_{t, t-2}^{-1}=0$
+On va avoir besoin de la notion de voisins spatialement, que l'on peut représenter sous forme de graphe.
+ 
 
-On veut copier l'idée pour les CAR
+## Structure de graphes sur une grille régulière
 
-## Des exemples de voisinage sur une grille régulière
+
 
 ```{r}
 
@@ -339,7 +273,9 @@ p1 <- ggplot(grid_points, aes(x, y, color = color)) +
   theme(axis.title = element_blank(), 
         axis.text = element_blank(),
         axis.ticks = element_blank()) +
-  coord_fixed()  # Pour garder des proportions carrées
+  coord_fixed()  +  # Pour garder des proportions carrées +
+  ggtitle(' 4 PVV')
+
 
 
 grid_points <- grid_points  |> 
@@ -354,40 +290,14 @@ p2 <- ggplot(grid_points, aes(x, y, color = color)) +
   theme(axis.title = element_blank(), 
         axis.text = element_blank(),
         axis.ticks = element_blank()) +
-  coord_fixed()  # Pour garder des proportions carrées
-
+  coord_fixed()  +# Pour garder des proportions carrées
+  ggtitle(' 8 PVV')
 ggarrange(p1, p2, ncol = 2) + ggtitle("2 structures de voisinage")
 ```
 
-## Impact du voisinage
+Représentation sous forme de graphe 
 
-```{r}
-
-# Création des coordonnées des points de la grille
-grid_points <- expand.grid(x = 1:3, y = 1:3)
-
-# Ajout d'une colonne pour différencier le point central
-grid_points <- grid_points |> mutate(color = ifelse(grid_points$x == 2 & grid_points$y == 2, "#C94326", "#0c324e")) |> 
-  mutate(color = ifelse(abs(grid_points$x -2) + abs(grid_points$y -2) == 1 , "#F7A913", color))
-
-# Création du graphique
-ggplot(grid_points, aes(x, y, color = color)) +
-  geom_point(size = 5) +
-  scale_color_identity() + 
-  theme_minimal() +
-  theme(axis.title = element_blank(), 
-        axis.text = element_blank(),
-        axis.ticks = element_blank()) +
-  coord_fixed()  # Pour garder des proportions carrées
-```
-
-On souhaite définir un CAR sous la forme
-
-$$Z_i \vert Z_{-i} \sim \mathcal{N}(\sum_{j, j\in V(i)} Z_j, \sigma^2/m_{ii})$$
-
-Est-ce un modèle CAR valide ?
-
-## Que faire dans le cas des counties -- grille non régulière
+# Que faire dans le cas des counties -- grille non régulière
 
 ```{r}
 load("data/LondonSuicides.RData")
@@ -472,7 +382,315 @@ london.gen |> ggplot() +
 
 ```
 
-# Relations entre CAR et SAR
+
+
+## Champs de Markov
+
+**Definition**
+* $(X_s, s\in D)$ est un champs de Markov si
+
+$$\mathcal{L} \left ( X_{s} \vert X^s \right) = \mathcal{L} \left ( X_{s} \vert X_{\partial_s}\right)$$
+* Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut il que la loi jointe exsite !
+
+## Conditionnelles locales $\ne$ loi conjointe : un contre-exemple
+
+```{dot}
+graph MarkovTriangle {
+    node [shape=circle, style=filled, fillcolor=lightblue];
+
+    X1 -- X2;
+    X2 -- X3;
+    X3 -- X1;
+}
+```
+
+
+Variables dans {0,1} et conditionnelles imposées :
+
+$$P(X_1 = X_2 \mid X_3) = 1,\;
+P(X_2 = X_3 \mid X_1) = 1,\;
+P(X_3 = X_1 \mid X_2) = 1$$
+
+i.e chaque site **doit être égal** à ses deux voisins.
+
+. . .
+
+### Pourquoi c'est impossible ?
+
+Si une loi conjointe existait, elle serait supportée par :
+
+$$(0,0,0) \text{ ou } (1,1,1)$$
+
+mais les trois conditionnelles imposent des contraintes **sur-déterminées** :
+
+- elles doivent être vraies **quelle que soit** la valeur du troisième site
+** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**
+
+
+## Notion de cliques 
+
+
+* On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.
+
+**Exemple**
+
+```{r}
+#|label: clique
+#|echo: false
+#|eval: true
+
+# 1. Construire une grille 3x3 avec voisinage rook (haut, bas, gauche, droite)
+g <- make_lattice(c(3, 3), nei = 1, directed = FALSE)
+
+# Coordonnées pour affichage
+coords <- expand.grid(x = 1:3, y = 3:1)
+
+plot(g, layout = as.matrix(coords),
+     vertex.size = 30,
+     vertex.label = V(g)$name,
+     main = "Graphe spatial 3x3 (voisinage rook)")
+```
+
+
+Quelles sont les cliques de ce graphe de voisinage 
+
+. . .
+
+
+```{r}
+#|label: clique_reponse
+#|echo: true
+#|eval: false
+#|
+cliques_list <- cliques(g)
+max_cliques_list <- max_cliques(g)
+
+lapply(cliques_list, function(d) d |> as.list() |> unlist()) 
+```
+
+## Champs de Gibbs - une sous famille des champs de Markov
+
+
+**Definition** Soit $\mathcal{E}$ un espace fini, $\Xbf =\left (X_s, s\in D\right)$ à valeurs dans $\mathcal{E}^{|D|}$. $\Xbf$ est un champs de Gibbs si 
+$$\P\left (\Xbf \right ) = Z^{-1} e^{- \sum_c \Phi_c(X_c) },$$
+où la somme est prise sur toutes les cliques $c$, $\Phi_c$ est un potentiel i.e une fonction définie sur une partie de $D$ et à valeurs dans $\R$ et $X_c =  \lvert X_s, s \in c\rVert$ et $Z$ est une constante de normalisation en général inconnue.
+
+
+## Loi conditionnelle  pour un champs de Gibbs
+
+
+$$ \P(x_F \vert x^F) = \P (x_F \vert x_{\partial{F}}) = Z^{-1}_F e^{U_\phi(x_F\vert   x_{\partial{F}})}$$
+avec $U_\phi(x_F\vert   x_{\partial{F}}) = \sum_{c, F\cup c \ne \emptyset} \Phi_c(X_c)$.
+
+Pour définir un champs de Gibbs il faut donc 
+
+* Un voisinage qui définit les cliques et donc les parties de $D$ sur lesquelles sont définies mes potentiels.
+
+* les potentiels $\Phi_c$ et on définit l'énergie $U(\phi) = \sum_c \Phi_c(X_c)$ 
+
+* il faut s'assurer que 
+
+
+
+## Champs gaussiens et  Champs de Gibbs
+
+<!-- ### Fait fondamental -->
+
+<!-- Un **champ gaussien markovien** (GMRF), en particulier un modèle **CAR**, -->
+<!-- est un **champ de Gibbs** au sens de la théorie des champs aléatoires. -->
+
+<!-- --- -->
+
+Soit $\Xbf$ un champs gaussien sur $D$ de loi $\mathcal{N}(\mu, \Sigma)$,
+
+
+
+* Quelle est la loi de $\Xbf$ ? (on peut utiliser la précision, inverse de la covarainec pour plus de simplicité)
+
+
+<!-- $$\tfrac{1}{2} (x-\mu)^\top Q (x-\mu) -->
+<!-- = -->
+<!-- \sum_{i\in V} -->
+<!-- \underbrace{\tfrac{Q_{ii}}{2} (x_i-\mu_i)^2}_{\psi_i(x_i)} -->
+<!-- + -->
+<!-- \sum_{(i,j)\in E} -->
+<!-- \underbrace{Q_{ij} (x_i-\mu_i)(x_j-\mu_j)}_{\psi_{ij}(x_i,x_j)}$$ -->
+
+* En faisant le lien avec la forme d'un champs de Gibbs, identifier des cliques 
+
+* En déduire la décomposition de l'énergie sous forme de cliques
+
+* Ecrire la loi de $X_i$ sachant tout le reste
+
+* Que signifie que $Q_{ij}= 0$ ? 
+
+## Résumé sur les champs de Gibbs
+
+Pour définir un champs de Gibbs
+
+* on se donne les parties $A$ de $D$ 
+
+* on se donne des potentiels $\Phi_A$
+
+* Vérifier que $exp U_\phi$ est intégrable
+
+
+## Theorem de Hammersley Clifford
+
+Si $\pi$ est un champs de Markov pour un graphe $G$ symétrique et pour tout $x$, $\pi(x)>0$ alors $\pi$ est un champs de Gibbs dont les potentiels sont limités aux cliques de $G$. 
+
+Tout champs de Gibbs est un champs de markov pour le graphe engendré par les potentiels de Gibbs
+
+
+## Cas particulier de la famille exponentielle
+
+On se donne un graphe de voisinage $G$ et on définit les lois conditionnelles sous la forme de la famille exponentielle.
+
+$$log\pi(x_i\vert  \partial{x_i}) = A_i(\partial{x_i}) B_i(x_i) + C_i(x_i) + D_i(\partial{x_i})$$
+où $A_i(\partial{x_i}) = \alpha_i + \sum_{j\in \partial_i} \beta_{ij} x_j$ et pour assurer la symétrie $\beta_{ij}=\beta_{ji}$
+
+
+Alors $\pi$ est un champs de Gibbs avec 
+
+$$\Phi_i(x_i) = \alpha_i B_i(x_i) + C_i(x_i), \quad \Phi_{i,j}(x_i,x_j) = \beta_{ij}B_i(x_i)B_j(x_j)$$
+
+
+# Des cas particuliers fréquents
+
+## Modèle SAR - Cadre Gaussien
+
+$$Z = BZ + \nu$$
+
+
+-   $B$ : Matrice de poids spatiaux
+-   $\nu$ : Bruit normal $\nu \sim N(0, \Omega)$
+    -   $\Omega$ est une matrice diagonale dont tous les termes
+        diagonaux sont strictement positifs.
+    -   Par convention les termes $b_{ii}$ de la matrice sont nuls (les
+        sites ne dépendent pas d'eux-mêmes)
+-   Modèle simultané : chaque variable dépend directement de ses
+    voisines
+
+Puisque $Z - BZ = \nu$,
+$$ \Sigma_{SAR} = (I - B)^{-1} \Omega (I - B^T)^{-1} $$
+
+### Remarques
+
+-   La dépendance spatiale est due à B.
+-   $B$ n'est pas obligatoirement symétrique, en effet la forme
+    quadratique $(I - B)^{-1} \Omega (I - B^T)^{-1}$ est symétrique même
+    si $B$ ne l'est pas
+-   Il faut que $I-B$ soit inversible
+
+## Modèle CAR
+
+$$ Z_i | Z_{-i} \sim N \left( \sum_{j \neq i} c_{ij} Z_j, \sigma^2 / m_{ii} \right) $$
+
+$Z_{-i}$ désigne l'ensemble des $Z_j$ pour $j\ne i$.
+
+-   La matrice $C$ est la matrice des poids spatiaux et on impose
+    $C_{ii}=0$ (on ne définit pas $Z_i$ conditionnellement à lui même)
+
+-   La matrice $M$ est diagonal et ses termes diagonaux sont positifs.
+
+-   Dépendance conditionnelle : chaque variable est conditionnée aux
+    voisines
+
+-   Matrice de covariance :
+
+$$\Sigma_{CAR} = (I - C)^{-1} M$$
+
+### Remarques
+
+La loi conditionnelle de $Z_i$ est une combinaison linéaire des autres
+variables.
+
+Les valeurs de $m_{ii}$ se sont pas toutes identiques
+
+[Ce n'est pas évident que ca définit une loi jointe qui existe]{.rouge}
+
+## Modèle CAR
+
+-   Existence du modèle CAR sous réserve que $(I-C)^{-1} M$ est définie
+    positive (@besag1974spatial) et alors
+
+$$Z \sim \mathcal{N}(0, \Sigma_{CAR}), \quad \Sigma_{CAR} = (I-C)^{-1} M$$
+Puisque $\Sigma_{CAR}$ doit être symétrique alors
+$$\frac{C_{ij}}{m_{ii}} =\frac{C_{ji}}{m_{jj}}$$
+
+<!-- Dans @verhoef2018relationship, on trouve une caractérisation -->
+<!-- intéressante qui permet de faire le lien entre SAR et CAR -->
+
+<!-- Pour que $\Sigma_{CAR}$ soit une matrice de covariance valide il faut -->
+
+<!-- -   $(I-C)$ a ses valeurs propres positives -->
+
+<!-- -   $M$ est diagonal avec ses termes diagonaux positifs -->
+
+<!-- -   $C_{ii} = 0$ pour tout $i$ -->
+
+<!-- -   $C_{ij}/m_{ii} = C_{ji}/m_{jj}$ pour tout i,j -->
+
+## Les matrices de poids
+
+En pratique, on choist la matrice $B$ du modèle SAR sous la forme
+$B = \rho_s W$ et
+
+la matrice $C$ du CAR sous la forme $C=\rho_C W$.
+
+La matrice $W$ est une matrice de poids tels que
+
+-   $W_{ij}\ne 0$ si $i$ et $j$ sont voisins
+
+<!-- ## La notion de voisinage -->
+
+<!-- ### Rappel Chaîne de Markov -->
+
+<!-- Soit $Z$ une chaine de Markov alors -->
+
+<!-- $${\mathbb{P}}(Z_t,  Z_{t-1}, \ldots Z_1 \vert Z_0) = \prod_{s=1}^t Q_s(Z_s; Z_{s-1})$$ -->
+<!-- [Quel est l'intérêt d'une chaîne de Markov dans le traitement de la -->
+<!-- dépendance]{.rouge} -->
+
+<!-- . . . -->
+
+<!-- Les indépendances conditionelles $Z_t$ et $Z_{t-2}$ sont indépendant si -->
+<!-- on conditionne par $Z_{t-1}$ et dans ce cas le terme -->
+<!-- $\Sigma_{t, t-2}^{-1}=0$ -->
+
+<!-- On veut copier l'idée pour les CAR -->
+
+## Impact du voisinage
+
+```{r}
+
+# Création des coordonnées des points de la grille
+grid_points <- expand.grid(x = 1:3, y = 1:3)
+
+# Ajout d'une colonne pour différencier le point central
+grid_points <- grid_points |> mutate(color = ifelse(grid_points$x == 2 & grid_points$y == 2, "#C94326", "#0c324e")) |> 
+  mutate(color = ifelse(abs(grid_points$x -2) + abs(grid_points$y -2) == 1 , "#F7A913", color))
+
+# Création du graphique
+ggplot(grid_points, aes(x, y, color = color)) +
+  geom_point(size = 5) +
+  scale_color_identity() + 
+  theme_minimal() +
+  theme(axis.title = element_blank(), 
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  coord_fixed()  # Pour garder des proportions carrées
+```
+
+On souhaite définir un CAR sous la forme
+
+$$Z_i \vert Z_{-i} \sim \mathcal{N}(\sum_{j, j\in V(i)} Z_j, \sigma^2/m_{ii})$$
+
+Est-ce un modèle CAR valide ?
+
+
+
+## Relations entre CAR et SAR
 
 **Théorème** @verhoef2018relationship :
 
@@ -487,19 +705,70 @@ En général CAR et SAR ne sont utilisés que pour le bruit
 
 on a donc des modèles
 
-$Y = X\beta + Z$ où $Z$ a une structure SAR ou CAR.
+$Y = X\beta + Z + \epsilon$ où $Z$ a une structure SAR ou CAR et $\epsilon$ un bruit pur.
 
-Dans la pratique
 
--   On estime $\tilde{\beta}$ comme si il n'y avait pas de dépendanc, et
-    on calcule les résidus $\tilde{Z} = Y- X \tilde{\beta}$.
+Pour l'estimation, on utilise un algorithme itératif
 
--   on ajuste la structure de covariance sur les résidus
+-   On estime $\tilde{\beta}$ par les MCO 
 
--   On en déduit une estimation de la covariance et on peut estimer les
-    paramètres $\beta$
+-  On calcule les résidus $\tilde{Z} = Y- X \tilde{\beta}$ et on estime $\hat{\Sigma}$ la structure de covariance, 
 
-## Que se passe t il si on n'est plus dans un cadre gaussien ?
+- on injecte cette structure dans la vraisemblance et on estime  $\tilde{\beta}$ par les moindres carrés généralisés 
+
+- on recommence jusqu'à stabilisation.
+
+## Tester si il y dépendance - Indice de Moran
+
+## Indice de Moran $I$
+
+**Définition**
+$$I = \frac{n}{\sum_{i\neq j} w_{ij}} \frac{\sum_{i\neq j} w_{ij}(x_i-\bar x)(x_j-\bar x)} {\sum_i (x_i-\bar x)^2}$$
+  
+
+- $w_{ij}$ : poids spatiaux (voisinage, distance, contiguïté)
+- $\bar x$ : moyenne globale
+
+### Interprétation
+
+- $I > 0$ : valeurs similaires regroupées (**clustering**)  
+- $I < 0$ : voisinage contrasté (**dispersion**)  
+- $I = 0$ : absence de structure spatiale  
+
+### Test de Moran
+
+$$H_0 : \text{pas d'autocorrélation spatiale}$$
+$$\frac{I- \E (I)}{\sqrt{Var(I)}} \approx \mathcal{N}(0, 1)$$
+avec $\E (I) = (n-1)^{-1}$ et 
+$$Var(I) = \frac{s_1}{s_0^2}, \quad s_0 =\sum_{i,j} w_{ij},  \quad s_1 = \sum_{i,j} w_{ij}^2 +w_{ij}w_{ji}$$
+
+## Tester si il y dépendance - Indice de Geary $C$
+
+Mesurer l’**autocorrélation spatiale locale**, plus sensible aux **abruptes variations**.
+
+### Définition
+
+$$C = \frac{(n-1)}{2\sum_{i\neq j} w_{ij}}
+    \frac{\sum_{i\neq j} w_{ij}(x_i - x_j)^2}
+         {\sum_i (x_i-\bar x)^2}$$
+
+### Interprétation
+
+- $C < 1$ : autocorrélation **positive**  
+- $C > 1$ : autocorrélation **négative**  
+- $C = 1$ : absence de structure spatiale  
+
+**Plus C est grand, moins les valeurs voisines se ressemblent**
+
+### Test de Geary
+
+$$H_0 : \text{pas d'autocorrélation spatiale}$$
+
+approche de la loi sous $H_0$ par permutation 
+
+
+
+## Que se passe-t-il si on n'est plus dans un cadre gaussien ?
 
 On compte le nombre de personnes atteintes de cancer soigné dans les
 hopitaux.
