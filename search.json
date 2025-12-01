@@ -606,7 +606,7 @@
     "href": "03_lattice.html#pourquoi-faire-attention-à-la-corrélation-spatiale",
     "title": "Données spatiales sur réseau",
     "section": "Pourquoi faire attention à la corrélation spatiale",
-    "text": "Pourquoi faire attention à la corrélation spatiale\nUn exemple\n\\[Y_t = \\rho Y_{t-1} +\\varepsilon_t\\]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n            Estimate Std. Error  t value     Pr(&gt;|t|)\n(Intercept) 1.871456  0.3667672 5.102571 1.619417e-06\n\n\n\nVariance de \\(\\hat{\\mu}\\) :\n\nCas indépendant \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2\\)\nCas corrélé \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2 \\left(1 + 2\\left( \\frac{\\rho}{1-\\rho}\\right)\\left( 1 -\\frac{1}{n}\\right)  - 2 \\left( \\frac{\\rho}{1-\\rho}\\right)^2 \\left( \\frac{1-\\rho^{n-1}}{n}\\right)    \\right)\\)\n\nIci on sous estime l’incertitude"
+    "text": "Pourquoi faire attention à la corrélation spatiale\nUn exemple\n\\[Y_t = \\rho Y_{t-1} +\\varepsilon_t\\]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n            Estimate Std. Error  t value     Pr(&gt;|t|)\n(Intercept) 1.871456  0.3667672 5.102571 1.619417e-06\n\n\n\n\n\nConséquence sur l’estimation\nVariance de \\(\\hat{\\mu}\\) :\n\nCas indépendant \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2\\)\nCas corrélé \\(Var(\\hat{\\mu})= n^{-1} \\sigma^2 \\left(1 + 2\\left( \\frac{\\rho}{1-\\rho}\\right)\\left( 1 -\\frac{1}{n}\\right)  - 2 \\left( \\frac{\\rho}{1-\\rho}\\right)^2 \\left( \\frac{1-\\rho^{n-1}}{n}\\right)    \\right)\\)\n\nIci on sous estime l’incertitude\n\nConséquence sur la prédiction\n\nCas indépendant $\\E{ = 0 $\nCas corrélé $\\E{ = Y_{t} $\n\n\nConséquence sur l’estimation"
   },
   {
     "objectID": "03_lattice.html#quelques-remarques",
@@ -616,60 +616,18 @@
     "text": "Quelques remarques\n\nProcessus spatial est défini sur une grille : pas de réalisation possible entre deux localisation.\non note \\(D\\) l’ensemble des points de la grille\nOn souhaite construire un modèle pour décrire la distribution du processus \\(Z\\) en tout point \\(s\\) de \\(D\\)"
   },
   {
-    "objectID": "03_lattice.html#modèle-sar---cadre-gaussien",
-    "href": "03_lattice.html#modèle-sar---cadre-gaussien",
+    "objectID": "03_lattice.html#champs-de-markov-sur-un-réseau",
+    "href": "03_lattice.html#champs-de-markov-sur-un-réseau",
     "title": "Données spatiales sur réseau",
-    "section": "Modèle SAR - Cadre Gaussien",
-    "text": "Modèle SAR - Cadre Gaussien\n\\[Z = BZ + \\nu\\]\n\n\\(B\\) : Matrice de poids spatiaux\n\\(\\nu\\) : Bruit normal \\(\\nu \\sim N(0, \\Omega)\\)\n\n\\(\\Omega\\) est une matrice diagonale dont tous les termes diagonaux sont stritecement positifs.\nPar convention les termes \\(b_{ii}\\) de la matrice sont nuls (les sites ne dépendent pas d’eux-mêmes)\n\nModèle simultané : chaque variable dépend directement de ses voisines\n\nPuisque \\(Z - BZ = \\nu\\), \\[ \\Sigma_{SAR} = (I - B)^{-1} \\Omega (I - B^T)^{-1} \\]\nRemarques\n\nLa dépendance spatiale est due à B.\n\\(B\\) n’est pas obligatoirement symétrique, en effet la forme quadratique \\((I - B)^{-1} \\Omega (I - B^T)^{-1}\\) est symétrique même si \\(B\\) ne l’est pas\nIl faut que \\(I-B\\) soit inversible"
+    "section": "Champs de Markov sur un réseau",
+    "text": "Champs de Markov sur un réseau\nRappel: Si \\((X_0,\\ldots ,X_n, \\ldots)\\) est une chaîne de Markov, alors \\[\\mathcal{L} \\left ( X_{n+1} \\vert X_{0:n}\\right) = \\mathcal{L} \\left ( X_{n+1} \\vert X_{n}\\right)\\]\nQuestion : Etendre la propriété de Markov lorsque l’on n’a pas le sents du temps.\n\nOn va avoir besoin de la notion de voisins spatialement, que l’on peut représenter sous forme de graphe."
   },
   {
-    "objectID": "03_lattice.html#modèle-car",
-    "href": "03_lattice.html#modèle-car",
+    "objectID": "03_lattice.html#structure-de-graphes-sur-une-grille-régulière",
+    "href": "03_lattice.html#structure-de-graphes-sur-une-grille-régulière",
     "title": "Données spatiales sur réseau",
-    "section": "Modèle CAR",
-    "text": "Modèle CAR\n\\[ Z_i | Z_{-i} \\sim N \\left( \\sum_{j \\neq i} c_{ij} Z_j, \\sigma^2 / m_{ii} \\right) \\]\n\\(Z_{-i}\\) désigne l’ensemble des \\(Z_j\\) pour \\(j\\ne i\\).\n\nLa matrice \\(C\\) est la matrice des poids spatiaux et on impose \\(C_{ii}=0\\) (on ne définit pas \\(Z_i\\) conditionnellement à lui même)\nLa matrice \\(M\\) est diagonal et ses termes diagonaux sont positifs.\nDépendance conditionnelle : chaque variable est conditionnée aux voisines\nMatrice de covariance :\n\n\\[\\Sigma_{CAR} = (I - C)^{-1} M\\]\nRemarques\nLa loi conditionnelle de \\(Z_i\\) est une combinaison linéaire des autres variables.\nLes valeurs de \\(m_{ii}\\) se sont pas toutes identiques\nCe n’est pas évident que ca définit une loi jointe qui existe"
-  },
-  {
-    "objectID": "03_lattice.html#modèle-car-1",
-    "href": "03_lattice.html#modèle-car-1",
-    "title": "Données spatiales sur réseau",
-    "section": "Modèle CAR",
-    "text": "Modèle CAR\n\nExistence du modèle CAR sous réserve que \\((I-C)^{-1} M\\) est définie positive (Besag (1974)) et alors\n\n\\[Z \\sim \\mathcal{N}(0, \\Sigma_{CAR}), \\quad \\Sigma_{CAR} = (I-C)^{-1} M\\] Puisque \\(\\Sigma_{CAR}\\) doit être symétrique alors \\[\\frac{C_{ij}}{m_{ii}} =\\frac{C_{ji}}{m_{jj}}\\]\nDans Ver Hoef, Hanks, and Hooten (2018), on trouve une caractérisation intéressante qui permet de faire le lien entre SAR et CAR\nPour que \\(\\Sigma_{CAR}\\) soit une matrice de covariance valide il faut\n\n\\((I-C)\\) a ses valeurs propres positives\n\\(M\\) est diagonal avec ses termes diagonaux positifs\n\\(C_{ii} = 0\\) pour tout \\(i\\)\n\\(C_{ij}/m_{ii} = C_{ji}/m_{jj}\\) pour tout i,j"
-  },
-  {
-    "objectID": "03_lattice.html#les-matrices-de-poids",
-    "href": "03_lattice.html#les-matrices-de-poids",
-    "title": "Données spatiales sur réseau",
-    "section": "Les matrices de poids",
-    "text": "Les matrices de poids\nEn pratique, on choist la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
-  },
-  {
-    "objectID": "03_lattice.html#la-notion-de-voisinage",
-    "href": "03_lattice.html#la-notion-de-voisinage",
-    "title": "Données spatiales sur réseau",
-    "section": "La notion de voisinage",
-    "text": "La notion de voisinage\nRappel Chaîne de Markov\nSoit \\(Z\\) une chaine de Markov alors\n\\[{\\mathbb{P}}(Z_t,  Z_{t-1}, \\ldots Z_1 \\vert Z_0) = \\prod_{s=1}^t Q_s(Z_s; Z_{s-1})\\] Quel est l’intérêt d’une chaîne de Markov dans le traitement de la dépendance\n. . .\nLes indépendances conditionelles \\(Z_t\\) et \\(Z_{t-2}\\) sont indépendant si on conditionne par \\(Z_{t-1}\\) et dans ce cas le terme \\(\\Sigma_{t, t-2}^{-1}=0\\)\nOn veut copier l’idée pour les CAR"
-  },
-  {
-    "objectID": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
-    "href": "03_lattice.html#des-exemples-de-voisinage-sur-une-grille-régulière",
-    "title": "Données spatiales sur réseau",
-    "section": "Des exemples de voisinage sur une grille régulière",
-    "text": "Des exemples de voisinage sur une grille régulière"
-  },
-  {
-    "objectID": "03_lattice.html#impact-du-voisinage",
-    "href": "03_lattice.html#impact-du-voisinage",
-    "title": "Données spatiales sur réseau",
-    "section": "Impact du voisinage",
-    "text": "Impact du voisinage\n\nOn souhaite définir un CAR sous la forme\n\\[Z_i \\vert Z_{-i} \\sim \\mathcal{N}(\\sum_{j, j\\in V(i)} Z_j, \\sigma^2/m_{ii})\\]\nEst-ce un modèle CAR valide ?"
-  },
-  {
-    "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
-    "href": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière",
-    "title": "Données spatiales sur réseau",
-    "section": "Que faire dans le cas des counties – grille non régulière",
-    "text": "Que faire dans le cas des counties – grille non régulière\n\n\nReading layer `LDNSuicides' from data source \n  `/__w/statspat/statspat/data/LondonSuicide/LDNSuicides.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 32 features and 18 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 503568.2 ymin: 155850.8 xmax: 561957.5 ymax: 200933.9\nCRS:           NA"
+    "section": "Structure de graphes sur une grille régulière",
+    "text": "Structure de graphes sur une grille régulière\n\nReprésentation sous forme de graphe"
   },
   {
     "objectID": "03_lattice.html#que-faire-dans-le-cas-des-counties-grille-non-régulière-1",
@@ -693,18 +651,144 @@
     "text": "Que faire dans le cas des counties – grille non régulière\nOn a au plus 3 voisins"
   },
   {
+    "objectID": "03_lattice.html#champs-de-markov",
+    "href": "03_lattice.html#champs-de-markov",
+    "title": "Données spatiales sur réseau",
+    "section": "Champs de Markov",
+    "text": "Champs de Markov\nDefinition * \\((X_s, s\\in D)\\) est un champs de Markov si\n\\[\\mathcal{L} \\left ( X_{s} \\vert X^s \\right) = \\mathcal{L} \\left ( X_{s} \\vert X_{\\partial_s}\\right)\\] * Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut il que la loi jointe exsite !"
+  },
+  {
+    "objectID": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
+    "href": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
+    "title": "Données spatiales sur réseau",
+    "section": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple",
+    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n\n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
+  },
+  {
+    "objectID": "03_lattice.html#notion-de-cliques",
+    "href": "03_lattice.html#notion-de-cliques",
+    "title": "Données spatiales sur réseau",
+    "section": "Notion de cliques",
+    "text": "Notion de cliques\n\nOn appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.\n\nExemple\n\nQuelles sont les cliques de ce graphe de voisinage\n\n\n\n[[1]]\n[1] 5\n\n[[2]]\n[1] 9\n\n[[3]]\n[1] 7\n\n[[4]]\n[1] 3\n\n[[5]]\n[1] 1\n\n[[6]]\n[1] 8\n\n[[7]]\n[1] 7 8\n\n[[8]]\n[1] 8 9\n\n[[9]]\n[1] 5 8\n\n[[10]]\n[1] 6\n\n[[11]]\n[1] 3 6\n\n[[12]]\n[1] 6 9\n\n[[13]]\n[1] 5 6\n\n[[14]]\n[1] 4\n\n[[15]]\n[1] 1 4\n\n[[16]]\n[1] 4 7\n\n[[17]]\n[1] 4 5\n\n[[18]]\n[1] 2\n\n[[19]]\n[1] 1 2\n\n[[20]]\n[1] 2 3\n\n[[21]]\n[1] 2 5"
+  },
+  {
+    "objectID": "03_lattice.html#champs-de-gibbs---une-sous-famille-des-champs-de-markov",
+    "href": "03_lattice.html#champs-de-gibbs---une-sous-famille-des-champs-de-markov",
+    "title": "Données spatiales sur réseau",
+    "section": "Champs de Gibbs - une sous famille des champs de Markov",
+    "text": "Champs de Gibbs - une sous famille des champs de Markov\nDefinition Soit \\(\\mathcal{E}\\) un espace fini, \\(\\boldsymbol{X}=\\left (X_s, s\\in D\\right)\\) à valeurs dans \\(\\mathcal{E}^{|D|}\\). \\(\\boldsymbol{X}\\) est un champs de Gibbs si \\[{\\mathbb{P}}\\left (\\boldsymbol{X}\\right ) = Z^{-1} e^{- \\sum_c \\Phi_c(X_c) },\\] où la somme est prise sur toutes les cliques \\(c\\), \\(\\Phi_c\\) est un potentiel i.e une fonction définie sur une partie de \\(D\\) et à valeurs dans \\({\\mathbb{R}}\\) et \\(X_c =  \\lvert X_s, s \\in c\\rVert\\) et \\(Z\\) est une constante de normalisation en général inconnue."
+  },
+  {
+    "objectID": "03_lattice.html#loi-conditionnelle-pour-un-champs-de-gibbs",
+    "href": "03_lattice.html#loi-conditionnelle-pour-un-champs-de-gibbs",
+    "title": "Données spatiales sur réseau",
+    "section": "Loi conditionnelle pour un champs de Gibbs",
+    "text": "Loi conditionnelle pour un champs de Gibbs\n\\[ {\\mathbb{P}}(x_F \\vert x^F) = {\\mathbb{P}}(x_F \\vert x_{\\partial{F}}) = Z^{-1}_F e^{U_\\phi(x_F\\vert   x_{\\partial{F}})}\\] avec \\(U_\\phi(x_F\\vert   x_{\\partial{F}}) = \\sum_{c, F\\cup c \\ne \\emptyset} \\Phi_c(X_c)\\).\nPour définir un champs de Gibbs il faut donc\n\nUn voisinage qui définit les cliques et donc les parties de \\(D\\) sur lesquelles sont définies mes potentiels.\nles potentiels \\(\\Phi_c\\) et on définit l’énergie \\(U(\\phi) = \\sum_c \\Phi_c(X_c)\\)\nil faut s’assurer que"
+  },
+  {
+    "objectID": "03_lattice.html#champs-gaussiens-et-champs-de-gibbs",
+    "href": "03_lattice.html#champs-gaussiens-et-champs-de-gibbs",
+    "title": "Données spatiales sur réseau",
+    "section": "Champs gaussiens et Champs de Gibbs",
+    "text": "Champs gaussiens et Champs de Gibbs\n\n\n\n\nSoit \\(\\boldsymbol{X}\\) un champs gaussien sur \\(D\\) de loi \\(\\mathcal{N}(\\mu, \\Sigma)\\),\n\nQuelle est la loi de \\(\\boldsymbol{X}\\) ? (on peut utiliser la précision, inverse de la covarainec pour plus de simplicité)\n\n\n\n\n\n\n\n\n\nEn faisant le lien avec la forme d’un champs de Gibbs, identifier des cliques\nEn déduire la décomposition de l’énergie sous forme de cliques\nEcrire la loi de \\(X_i\\) sachant tout le reste\nQue signifie que \\(Q_{ij}= 0\\) ?"
+  },
+  {
+    "objectID": "03_lattice.html#résumé-sur-les-champs-de-gibbs",
+    "href": "03_lattice.html#résumé-sur-les-champs-de-gibbs",
+    "title": "Données spatiales sur réseau",
+    "section": "Résumé sur les champs de Gibbs",
+    "text": "Résumé sur les champs de Gibbs\nPour définir un champs de Gibbs\n\non se donne les parties \\(A\\) de \\(D\\)\non se donne des potentiels \\(\\Phi_A\\)\nVérifier que \\(exp U_\\phi\\) est intégrable"
+  },
+  {
+    "objectID": "03_lattice.html#theorem-de-hammersley-clifford",
+    "href": "03_lattice.html#theorem-de-hammersley-clifford",
+    "title": "Données spatiales sur réseau",
+    "section": "Theorem de Hammersley Clifford",
+    "text": "Theorem de Hammersley Clifford\nSi \\(\\pi\\) est un champs de Markov pour un graphe \\(G\\) symétrique et pour tout \\(x\\), \\(\\pi(x)&gt;0\\) alors \\(\\pi\\) est un champs de Gibbs dont les potentiels sont limités aux cliques de \\(G\\).\nTout champs de Gibbs est un champs de markov pour le graphe engendré par les potentiels de Gibbs"
+  },
+  {
+    "objectID": "03_lattice.html#cas-particulier-de-la-famille-exponentielle",
+    "href": "03_lattice.html#cas-particulier-de-la-famille-exponentielle",
+    "title": "Données spatiales sur réseau",
+    "section": "Cas particulier de la famille exponentielle",
+    "text": "Cas particulier de la famille exponentielle\nOn se donne un graphe de voisinage \\(G\\) et on définit les lois conditionnelles sous la forme de la famille exponentielle.\n\\[log\\pi(x_i\\vert  \\partial{x_i}) = A_i(\\partial{x_i}) B_i(x_i) + C_i(x_i) + D_i(\\partial{x_i})\\] où \\(A_i(\\partial{x_i}) = \\alpha_i + \\sum_{j\\in \\partial_i} \\beta_{ij} x_j\\) et pour assurer la symétrie \\(\\beta_{ij}=\\beta_{ji}\\)\nAlors \\(\\pi\\) est un champs de Gibbs avec\n\\[\\Phi_i(x_i) = \\alpha_i B_i(x_i) + C_i(x_i), \\quad \\Phi_{i,j}(x_i,x_j) = \\beta_{ij}B_i(x_i)B_j(x_j)\\]"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-sar---cadre-gaussien",
+    "href": "03_lattice.html#modèle-sar---cadre-gaussien",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle SAR - Cadre Gaussien",
+    "text": "Modèle SAR - Cadre Gaussien\n\\[Z = BZ + \\nu\\]\n\n\\(B\\) : Matrice de poids spatiaux\n\\(\\nu\\) : Bruit normal \\(\\nu \\sim N(0, \\Omega)\\)\n\n\\(\\Omega\\) est une matrice diagonale dont tous les termes diagonaux sont strictement positifs.\nPar convention les termes \\(b_{ii}\\) de la matrice sont nuls (les sites ne dépendent pas d’eux-mêmes)\n\nModèle simultané : chaque variable dépend directement de ses voisines\n\nPuisque \\(Z - BZ = \\nu\\), \\[ \\Sigma_{SAR} = (I - B)^{-1} \\Omega (I - B^T)^{-1} \\]\nRemarques\n\nLa dépendance spatiale est due à B.\n\\(B\\) n’est pas obligatoirement symétrique, en effet la forme quadratique \\((I - B)^{-1} \\Omega (I - B^T)^{-1}\\) est symétrique même si \\(B\\) ne l’est pas\nIl faut que \\(I-B\\) soit inversible"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-car",
+    "href": "03_lattice.html#modèle-car",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle CAR",
+    "text": "Modèle CAR\n\\[ Z_i | Z_{-i} \\sim N \\left( \\sum_{j \\neq i} c_{ij} Z_j, \\sigma^2 / m_{ii} \\right) \\]\n\\(Z_{-i}\\) désigne l’ensemble des \\(Z_j\\) pour \\(j\\ne i\\).\n\nLa matrice \\(C\\) est la matrice des poids spatiaux et on impose \\(C_{ii}=0\\) (on ne définit pas \\(Z_i\\) conditionnellement à lui même)\nLa matrice \\(M\\) est diagonal et ses termes diagonaux sont positifs.\nDépendance conditionnelle : chaque variable est conditionnée aux voisines\nMatrice de covariance :\n\n\\[\\Sigma_{CAR} = (I - C)^{-1} M\\]\nRemarques\nLa loi conditionnelle de \\(Z_i\\) est une combinaison linéaire des autres variables.\nLes valeurs de \\(m_{ii}\\) se sont pas toutes identiques\nCe n’est pas évident que ca définit une loi jointe qui existe"
+  },
+  {
+    "objectID": "03_lattice.html#modèle-car-1",
+    "href": "03_lattice.html#modèle-car-1",
+    "title": "Données spatiales sur réseau",
+    "section": "Modèle CAR",
+    "text": "Modèle CAR\n\nExistence du modèle CAR sous réserve que \\((I-C)^{-1} M\\) est définie positive (Besag (1974)) et alors\n\n\\[Z \\sim \\mathcal{N}(0, \\Sigma_{CAR}), \\quad \\Sigma_{CAR} = (I-C)^{-1} M\\] Puisque \\(\\Sigma_{CAR}\\) doit être symétrique alors \\[\\frac{C_{ij}}{m_{ii}} =\\frac{C_{ji}}{m_{jj}}\\]"
+  },
+  {
+    "objectID": "03_lattice.html#les-matrices-de-poids",
+    "href": "03_lattice.html#les-matrices-de-poids",
+    "title": "Données spatiales sur réseau",
+    "section": "Les matrices de poids",
+    "text": "Les matrices de poids\nEn pratique, on choist la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
+  },
+  {
+    "objectID": "03_lattice.html#impact-du-voisinage",
+    "href": "03_lattice.html#impact-du-voisinage",
+    "title": "Données spatiales sur réseau",
+    "section": "Impact du voisinage",
+    "text": "Impact du voisinage\n\nOn souhaite définir un CAR sous la forme\n\\[Z_i \\vert Z_{-i} \\sim \\mathcal{N}(\\sum_{j, j\\in V(i)} Z_j, \\sigma^2/m_{ii})\\]\nEst-ce un modèle CAR valide ?"
+  },
+  {
+    "objectID": "03_lattice.html#relations-entre-car-et-sar",
+    "href": "03_lattice.html#relations-entre-car-et-sar",
+    "title": "Données spatiales sur réseau",
+    "section": "Relations entre CAR et SAR",
+    "text": "Relations entre CAR et SAR\nThéorème Ver Hoef, Hanks, and Hooten (2018) :\n\nTout modèle SAR peut s’écrire de manière unique comme un modèle CAR\nTout modèle CAR peut s’écrire de manière comme un modèle SAR mais cette écriture n’est pas unique"
+  },
+  {
     "objectID": "03_lattice.html#estmation-des-modèles-car-et-sar",
     "href": "03_lattice.html#estmation-des-modèles-car-et-sar",
     "title": "Données spatiales sur réseau",
     "section": "Estmation des modèles CAR et SAR",
-    "text": "Estmation des modèles CAR et SAR\nEn général CAR et SAR ne sont utilisés que pour le bruit\non a donc des modèles\n\\(Y = X\\beta + Z\\) où \\(Z\\) a une structure SAR ou CAR.\nDans la pratique\n\nOn estime \\(\\tilde{\\beta}\\) comme si il n’y avait pas de dépendanc, et on calcule les résidus \\(\\tilde{Z} = Y- X \\tilde{\\beta}\\).\non ajuste la structure de covariance sur les résidus\nOn en déduit une estimation de la covariance et on peut estimer les paramètres \\(\\beta\\)"
+    "text": "Estmation des modèles CAR et SAR\nEn général CAR et SAR ne sont utilisés que pour le bruit\non a donc des modèles\n\\(Y = X\\beta + Z + \\epsilon\\) où \\(Z\\) a une structure SAR ou CAR et \\(\\epsilon\\) un bruit pur.\nPour l’estimation, on utilise un algorithme itératif\n\nOn estime \\(\\tilde{\\beta}\\) par les MCO\nOn calcule les résidus \\(\\tilde{Z} = Y- X \\tilde{\\beta}\\) et on estime \\(\\hat{\\Sigma}\\) la structure de covariance,\non injecte cette structure dans la vraisemblance et on estime \\(\\tilde{\\beta}\\) par les moindres carrés généralisés\non recommence jusqu’à stabilisation."
+  },
+  {
+    "objectID": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran",
+    "href": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran",
+    "title": "Données spatiales sur réseau",
+    "section": "Tester si il y dépendance - Indice de Moran",
+    "text": "Tester si il y dépendance - Indice de Moran"
+  },
+  {
+    "objectID": "03_lattice.html#indice-de-moran-i",
+    "href": "03_lattice.html#indice-de-moran-i",
+    "title": "Données spatiales sur réseau",
+    "section": "Indice de Moran \\(I\\)",
+    "text": "Indice de Moran \\(I\\)\nDéfinition \\[I = \\frac{n}{\\sum_{i\\neq j} w_{ij}} \\frac{\\sum_{i\\neq j} w_{ij}(x_i-\\bar x)(x_j-\\bar x)} {\\sum_i (x_i-\\bar x)^2}\\]\n\n\\(w_{ij}\\) : poids spatiaux (voisinage, distance, contiguïté)\n\\(\\bar x\\) : moyenne globale\n\nInterprétation\n\n\\(I &gt; 0\\) : valeurs similaires regroupées (clustering)\n\n\\(I &lt; 0\\) : voisinage contrasté (dispersion)\n\n\\(I = 0\\) : absence de structure spatiale\n\nTest de Moran\n\\[H_0 : \\text{pas d'autocorrélation spatiale}\\] \\[\\frac{I- {\\mathbb{E}}(I)}{\\sqrt{Var(I)}} \\approx \\mathcal{N}(0, 1)\\] avec \\({\\mathbb{E}}(I) = (n-1)^{-1}\\) et \\[Var(I) = \\frac{s_1}{s_0^2}, \\quad s_0 =\\sum_{i,j} w_{ij},  \\quad s_1 = \\sum_{i,j} w_{ij}^2 +w_{ij}w_{ji}\\]"
+  },
+  {
+    "objectID": "03_lattice.html#tester-si-il-y-dépendance---indice-de-geary-c",
+    "href": "03_lattice.html#tester-si-il-y-dépendance---indice-de-geary-c",
+    "title": "Données spatiales sur réseau",
+    "section": "Tester si il y dépendance - Indice de Geary \\(C\\)",
+    "text": "Tester si il y dépendance - Indice de Geary \\(C\\)\nMesurer l’autocorrélation spatiale locale, plus sensible aux abruptes variations.\nDéfinition\n\\[C = \\frac{(n-1)}{2\\sum_{i\\neq j} w_{ij}}\n    \\frac{\\sum_{i\\neq j} w_{ij}(x_i - x_j)^2}\n         {\\sum_i (x_i-\\bar x)^2}\\]\nInterprétation\n\n\\(C &lt; 1\\) : autocorrélation positive\n\n\\(C &gt; 1\\) : autocorrélation négative\n\n\\(C = 1\\) : absence de structure spatiale\n\nPlus C est grand, moins les valeurs voisines se ressemblent\nTest de Geary\n\\[H_0 : \\text{pas d'autocorrélation spatiale}\\]\napproche de la loi sous \\(H_0\\) par permutation"
   },
   {
     "objectID": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
     "href": "03_lattice.html#que-se-passe-t-il-si-on-nest-plus-dans-un-cadre-gaussien",
     "title": "Données spatiales sur réseau",
-    "section": "Que se passe t il si on n’est plus dans un cadre gaussien ?",
-    "text": "Que se passe t il si on n’est plus dans un cadre gaussien ?\nOn compte le nombre de personnes atteintes de cancer soigné dans les hopitaux.\nChaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.\nQuel modèle proposez vous ?"
+    "section": "Que se passe-t-il si on n’est plus dans un cadre gaussien ?",
+    "text": "Que se passe-t-il si on n’est plus dans un cadre gaussien ?\nOn compte le nombre de personnes atteintes de cancer soigné dans les hopitaux.\nChaque hopital est associé à un sercteur géographique, pour lequel on a des descripteurs environnementaux.\nQuel modèle proposez vous ?"
   },
   {
     "objectID": "03_lattice.html#références",
