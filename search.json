@@ -662,14 +662,14 @@
     "href": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
     "title": "Données spatiales sur réseau",
     "section": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple",
-    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n This is a simple graphviz graph. \n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n. . .\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
+    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n\n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
   },
   {
     "objectID": "03_lattice.html#notion-de-cliques",
     "href": "03_lattice.html#notion-de-cliques",
     "title": "Données spatiales sur réseau",
     "section": "Notion de cliques",
-    "text": "Notion de cliques\nDefinition On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.\nExemple\n\nQuelles sont les cliques de ce graphe de voisinage\n. . ."
+    "text": "Notion de cliques\nDefinition On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.\nExemple\n\nQuelles sont les cliques de ce graphe de voisinage"
   },
   {
     "objectID": "03_lattice.html#champs-de-gibbs---une-sous-famille-des-champs-de-markov",
@@ -739,7 +739,7 @@
     "href": "03_lattice.html#les-matrices-de-poids",
     "title": "Données spatiales sur réseau",
     "section": "Les matrices de poids",
-    "text": "Les matrices de poids\nEn pratique, on choist la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
+    "text": "Les matrices de poids\nEn pratique, on choisit la matrice \\(B\\) du modèle SAR sous la forme \\(B = \\rho_s W\\) et\nla matrice \\(C\\) du CAR sous la forme \\(C=\\rho_C W\\).\nLa matrice \\(W\\) est une matrice de poids tels que\n\n\\(W_{ij}\\ne 0\\) si \\(i\\) et \\(j\\) sont voisins"
   },
   {
     "objectID": "03_lattice.html#impact-du-voisinage",
@@ -763,18 +763,11 @@
     "text": "Estmation des modèles CAR et SAR\nEn général CAR et SAR ne sont utilisés que pour le bruit\non a donc des modèles\n\\(Y = X\\beta + Z + \\epsilon\\) où \\(Z\\) a une structure SAR ou CAR et \\(\\epsilon\\) un bruit pur.\nPour l’estimation, on utilise un algorithme itératif\n\nOn estime \\(\\tilde{\\beta}\\) par les MCO\nOn calcule les résidus \\(\\tilde{Z} = Y- X \\tilde{\\beta}\\) et on estime \\(\\hat{\\Sigma}\\) la structure de covariance,\non injecte cette structure dans la vraisemblance et on estime \\(\\tilde{\\beta}\\) par les moindres carrés généralisés\non recommence jusqu’à stabilisation."
   },
   {
-    "objectID": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran",
-    "href": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran",
+    "objectID": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran-i",
+    "href": "03_lattice.html#tester-si-il-y-dépendance---indice-de-moran-i",
     "title": "Données spatiales sur réseau",
-    "section": "Tester si il y dépendance - Indice de Moran",
-    "text": "Tester si il y dépendance - Indice de Moran"
-  },
-  {
-    "objectID": "03_lattice.html#indice-de-moran-i",
-    "href": "03_lattice.html#indice-de-moran-i",
-    "title": "Données spatiales sur réseau",
-    "section": "Indice de Moran \\(I\\)",
-    "text": "Indice de Moran \\(I\\)\nDéfinition \\[I = \\frac{n}{\\sum_{i\\neq j} w_{ij}} \\frac{\\sum_{i\\neq j} w_{ij}(x_i-\\bar x)(x_j-\\bar x)} {\\sum_i (x_i-\\bar x)^2}\\]\n\n\\(w_{ij}\\) : poids spatiaux (voisinage, distance, contiguïté)\n\\(\\bar x\\) : moyenne globale\n\nInterprétation\n\n\\(I &gt; 0\\) : valeurs similaires regroupées (clustering)\n\n\\(I &lt; 0\\) : voisinage contrasté (dispersion)\n\n\\(I = 0\\) : absence de structure spatiale\n\nTest de Moran\n\\[H_0 : \\text{pas d'autocorrélation spatiale}\\] \\[\\frac{I- {\\mathbb{E}}(I)}{\\sqrt{Var(I)}} \\approx \\mathcal{N}(0, 1)\\] avec \\({\\mathbb{E}}(I) = (n-1)^{-1}\\) et \\[Var(I) = \\frac{s_1}{s_0^2}, \\quad s_0 =\\sum_{i,j} w_{ij},  \\quad s_1 = \\sum_{i,j} w_{ij}^2 +w_{ij}w_{ji}\\]"
+    "section": "Tester si il y dépendance - Indice de Moran \\(I\\)",
+    "text": "Tester si il y dépendance - Indice de Moran \\(I\\)\nDéfinition \\[I = \\frac{n}{\\sum_{i\\neq j} w_{ij}} \\frac{\\sum_{i\\neq j} w_{ij}(x_i-\\bar x)(x_j-\\bar x)} {\\sum_i (x_i-\\bar x)^2}\\]\n\n\\(w_{ij}\\) : poids spatiaux (voisinage, distance, contiguïté)\n\\(\\bar x\\) : moyenne globale\n\nInterprétation\n\n\\(I &gt; 0\\) : valeurs similaires regroupées (clustering)\n\n\\(I &lt; 0\\) : voisinage contrasté (dispersion)\n\n\\(I = 0\\) : absence de structure spatiale\n\nTest de Moran\n\\[H_0 : \\text{pas d'autocorrélation spatiale}\\] \\[\\frac{I- {\\mathbb{E}}(I)}{\\sqrt{Var(I)}} \\approx \\mathcal{N}(0, 1)\\] avec \\({\\mathbb{E}}(I) = (n-1)^{-1}\\) et \\[Var(I) = \\frac{s_1}{s_0^2}, \\quad s_0 =\\sum_{i,j} w_{ij},  \\quad s_1 = \\sum_{i,j} w_{ij}^2 +w_{ij}w_{ji}\\]"
   },
   {
     "objectID": "03_lattice.html#tester-si-il-y-dépendance---indice-de-geary-c",
