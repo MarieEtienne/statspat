@@ -669,14 +669,14 @@
     "href": "03_lattice.html#notion-de-cliques",
     "title": "Données spatiales sur réseau",
     "section": "Notion de cliques",
-    "text": "Notion de cliques\n\nOn appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.\n\nExemple\n\nQuelles sont les cliques de ce graphe de voisinage\n\n\n\n[[1]]\n[1] 5\n\n[[2]]\n[1] 9\n\n[[3]]\n[1] 7\n\n[[4]]\n[1] 3\n\n[[5]]\n[1] 1\n\n[[6]]\n[1] 8\n\n[[7]]\n[1] 7 8\n\n[[8]]\n[1] 8 9\n\n[[9]]\n[1] 5 8\n\n[[10]]\n[1] 6\n\n[[11]]\n[1] 3 6\n\n[[12]]\n[1] 6 9\n\n[[13]]\n[1] 5 6\n\n[[14]]\n[1] 4\n\n[[15]]\n[1] 1 4\n\n[[16]]\n[1] 4 7\n\n[[17]]\n[1] 4 5\n\n[[18]]\n[1] 2\n\n[[19]]\n[1] 1 2\n\n[[20]]\n[1] 2 3\n\n[[21]]\n[1] 2 5"
+    "text": "Notion de cliques\nDefinition On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.\nExemple\n\nQuelles sont les cliques de ce graphe de voisinage\n. . ."
   },
   {
     "objectID": "03_lattice.html#champs-de-gibbs---une-sous-famille-des-champs-de-markov",
     "href": "03_lattice.html#champs-de-gibbs---une-sous-famille-des-champs-de-markov",
     "title": "Données spatiales sur réseau",
     "section": "Champs de Gibbs - une sous famille des champs de Markov",
-    "text": "Champs de Gibbs - une sous famille des champs de Markov\nDefinition Soit \\(\\mathcal{E}\\) un espace fini, \\(\\boldsymbol{X}=\\left (X_s, s\\in D\\right)\\) à valeurs dans \\(\\mathcal{E}^{|D|}\\). \\(\\boldsymbol{X}\\) est un champs de Gibbs si \\[{\\mathbb{P}}\\left (\\boldsymbol{X}\\right ) = Z^{-1} e^{- \\sum_c \\Phi_c(X_c) },\\] où la somme est prise sur toutes les cliques \\(c\\), \\(\\Phi_c\\) est un potentiel i.e une fonction définie sur une partie de \\(D\\) et à valeurs dans \\({\\mathbb{R}}\\) et \\(X_c =  \\lvert X_s, s \\in c\\rVert\\) et \\(Z\\) est une constante de normalisation en général inconnue."
+    "text": "Champs de Gibbs - une sous famille des champs de Markov\nDefinition Soit \\(\\mathcal{E}\\) un espace fini, \\(\\boldsymbol{X}=\\left (X_s, s\\in D\\right)\\) à valeurs dans \\(\\mathcal{E}^{|D|}\\). \\(\\boldsymbol{X}\\) est un champs de Gibbs si \\[{\\mathbb{P}}\\left (\\boldsymbol{X}\\right ) = Z^{-1} e^{- \\sum_c \\Phi_c(X_c) },\\] où la somme est prise sur toutes les cliques \\(c\\), \\(\\Phi_c\\) est un potentiel i.e une fonction définie sur une partie de \\(D\\) et à valeurs dans \\({\\mathbb{R}}\\) et \\(X_c =  \\lvert X_s, s \\in c \\lVert\\) et \\(Z\\) est une constante de normalisation en général inconnue."
   },
   {
     "objectID": "03_lattice.html#loi-conditionnelle-pour-un-champs-de-gibbs",
