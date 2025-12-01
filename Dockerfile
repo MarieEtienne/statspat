@@ -12,4 +12,5 @@ RUN apt-get update \
   mercurial gdal-bin libgdal-dev gsl-bin libgsl-dev \
   libc6-i386
 RUN R -e "install.packages('SpatialExtremes')"
+RUN R -e "install.packages('igraph')"
 
