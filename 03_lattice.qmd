@@ -198,10 +198,12 @@ ggtitle("Mean estimation")
 p2 <- resid |> ggplot() + geom_point(aes(x=X, y = r, col = pos), size = 2) + geom_line(aes(x=X, y = r), alpha = 0.5) + ggtitle('Residuals') + theme(legend.position = "none")
 ggarrange(p1, p2, ncol = 2)
 ```
+
 ::::: columns
 ::: {.column width="48%"}
 
 ### Conséquence sur l'estimation
+
 Variance de $\hat{\mu}$ :
 
 -   Cas indépendant $Var(\hat{\mu})= n^{-1} \sigma^2$
@@ -224,7 +226,6 @@ Ici on sous estime l'incertitude
 :::
 
 ::::: 
-### Conséquence sur l'estimation
 
 
 ## Quelques remarques
@@ -387,15 +388,23 @@ london.gen |> ggplot() +
 ## Champs de Markov
 
 **Definition**
+
 * $(X_s, s\in D)$ est un champs de Markov si
 
 $$\mathcal{L} \left ( X_{s} \vert X^s \right) = \mathcal{L} \left ( X_{s} \vert X_{\partial_s}\right)$$
-* Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut il que la loi jointe exsite !
+* Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut-il que la loi jointe existe !
 
 ## Conditionnelles locales $\ne$ loi conjointe : un contre-exemple
 
+::::: columns
+::: {.column width="48%"}
+
 ```{dot}
+//| fig-width: 2.5
+//| fig-align: center
+//| 
 graph MarkovTriangle {
+    layout=circo;
     node [shape=circle, style=filled, fillcolor=lightblue];
 
     X1 -- X2;
@@ -413,7 +422,10 @@ P(X_3 = X_1 \mid X_2) = 1$$
 
 i.e chaque site **doit être égal** à ses deux voisins.
 
-. . .
+:::
+
+
+::: {.column width="48%"}
 
 ### Pourquoi c'est impossible ?
 
@@ -426,13 +438,17 @@ mais les trois conditionnelles imposent des contraintes **sur-déterminées** :
 - elles doivent être vraies **quelle que soit** la valeur du troisième site
 ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**
 
+:::
+
+:::::
+
 
 ## Notion de cliques 
 
 
-* On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.
+**Definition**  On appelle Clique un ensemble de points tels que chaque paire de points du sous-ensemble est connectée est voisin.
 
-**Exemple**
+### Exemple 
 
 ```{r}
 #|label: clique
@@ -454,7 +470,6 @@ plot(g, layout = as.matrix(coords),
 
 Quelles sont les cliques de ce graphe de voisinage 
 
-. . .
 
 
 ```{r}
@@ -465,7 +480,7 @@ Quelles sont les cliques de ce graphe de voisinage
 cliques_list <- cliques(g)
 max_cliques_list <- max_cliques(g)
 
-lapply(cliques_list, function(d) d |> as.list() |> unlist()) 
+# lapply(cliques_list, function(d) d |> as.list() |> unlist()) 
 ```
 
 ## Champs de Gibbs - une sous famille des champs de Markov
@@ -473,7 +488,7 @@ lapply(cliques_list, function(d) d |> as.list() |> unlist())
 
 **Definition** Soit $\mathcal{E}$ un espace fini, $\Xbf =\left (X_s, s\in D\right)$ à valeurs dans $\mathcal{E}^{|D|}$. $\Xbf$ est un champs de Gibbs si 
 $$\P\left (\Xbf \right ) = Z^{-1} e^{- \sum_c \Phi_c(X_c) },$$
-où la somme est prise sur toutes les cliques $c$, $\Phi_c$ est un potentiel i.e une fonction définie sur une partie de $D$ et à valeurs dans $\R$ et $X_c =  \lvert X_s, s \in c\rVert$ et $Z$ est une constante de normalisation en général inconnue.
+où la somme est prise sur toutes les cliques $c$, $\Phi_c$ est un potentiel i.e une fonction définie sur une partie de $D$ et à valeurs dans $\R$ et $X_c =  \lvert X_s, s \in c \lVert$ et $Z$ est une constante de normalisation en général inconnue.
 
 
 ## Loi conditionnelle  pour un champs de Gibbs
@@ -633,7 +648,7 @@ $$\frac{C_{ij}}{m_{ii}} =\frac{C_{ji}}{m_{jj}}$$
 
 ## Les matrices de poids
 
-En pratique, on choist la matrice $B$ du modèle SAR sous la forme
+En pratique, on choisit la matrice $B$ du modèle SAR sous la forme
 $B = \rho_s W$ et
 
 la matrice $C$ du CAR sous la forme $C=\rho_C W$.
@@ -718,9 +733,8 @@ Pour l'estimation, on utilise un algorithme itératif
 
 - on recommence jusqu'à stabilisation.
 
-## Tester si il y dépendance - Indice de Moran
+## Tester si il y dépendance - Indice de Moran $I$
 
-## Indice de Moran $I$
 
 **Définition**
 $$I = \frac{n}{\sum_{i\neq j} w_{ij}} \frac{\sum_{i\neq j} w_{ij}(x_i-\bar x)(x_j-\bar x)} {\sum_i (x_i-\bar x)^2}$$
