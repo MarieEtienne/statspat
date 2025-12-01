@@ -655,14 +655,14 @@
     "href": "03_lattice.html#champs-de-markov",
     "title": "Données spatiales sur réseau",
     "section": "Champs de Markov",
-    "text": "Champs de Markov\nDefinition * \\((X_s, s\\in D)\\) est un champs de Markov si\n\\[\\mathcal{L} \\left ( X_{s} \\vert X^s \\right) = \\mathcal{L} \\left ( X_{s} \\vert X_{\\partial_s}\\right)\\] * Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut il que la loi jointe exsite !"
+    "text": "Champs de Markov\nDefinition\n\n\\((X_s, s\\in D)\\) est un champs de Markov si\n\n\\[\\mathcal{L} \\left ( X_{s} \\vert X^s \\right) = \\mathcal{L} \\left ( X_{s} \\vert X_{\\partial_s}\\right)\\] * Pour définir un champs de Markov, on définit des lois conditionnelles mais encore faut-il que la loi jointe existe !"
   },
   {
     "objectID": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
     "href": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
     "title": "Données spatiales sur réseau",
     "section": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple",
-    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n\n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
+    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n This is a simple graphviz graph. \n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
   },
   {
     "objectID": "03_lattice.html#notion-de-cliques",
