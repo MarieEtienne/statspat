@@ -1,5 +1,5 @@
 ---
-title: "TD2 - Introduction INLA"
+title: "TD4 - Introduction INLA"
 author:
   - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
     affiliation: 
@@ -18,12 +18,13 @@ format: html
 bibliography: spatstat.bib
 ---
 
-Ce TP est construit à partir des idées explorées durant la session [FinistR2023](https://stateofther.github.io/finistR2023/)
+Ce TP est construit à partir des idées explorées durant la session
+[FinistR2023](https://stateofther.github.io/finistR2023/)
 
 ## Introduction
 
-Présentation de la méthodologie INLA (integrated nested Laplace approximation) en utilisant les packages {INLA}.
-
+Présentation de la méthodologie INLA (integrated nested Laplace
+approximation) en utilisant les packages {INLA}.
 
 Ressources :
 
@@ -31,8 +32,8 @@ Ressources :
 
 -   <https://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf>
 
-
-[IMPORTANT : Utiliser le cluster 10 !!! INLA n'est pas installé sur les autres.]{.rouge}
+[IMPORTANT : Utiliser le cluster 10 !!! INLA n'est pas installé sur les
+autres.]{.rouge}
 
 ## Installation de INLA
 
@@ -46,7 +47,6 @@ install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-dow
 
 ## La réussite en maths
 
-
 ### Chargement de packages
 
 ```{r loading}
@@ -59,7 +59,9 @@ library(lme4) # pour comparer avec l'approche frequentiste
 
 ```
 
-Le jeu de données `awards` contient le nombre de récompenses (`num_awards`) obtenues en fonction des résultats en mathématique (`math`) pour une classe de 200 élèves. 
+Le jeu de données `awards` contient le nombre de récompenses
+(`num_awards`) obtenues en fonction des résultats en mathématique
+(`math`) pour une classe de 200 élèves.
 
 La réponse mesurée est un comptage.
 
@@ -72,18 +74,25 @@ head(awards)
 <!-- La fonction `bru_options_set` permet de fixer des options sur des paramètres spécifiques à INLA. -->
 
 <!-- ```{r set-options} -->
+
 <!-- bru_options_set(bru_verbose = TRUE, -->
+
 <!--                 control.compute = list(dic = TRUE, waic = TRUE)) -->
+
 <!-- ``` -->
 
 <!-- On peut récupérer ces paramètres avec : -->
 
 <!-- ```{r get-options} -->
+
 <!-- #| eval: false -->
+
 <!-- bru_options_get() -->
+
 <!-- ``` -->
 
-1. On souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique
+1.  On souhaite voir la note de mathématique est liée au nombre de
+    récompenses obtenues. Proposer une représentation graphique
 
 ```{r}
  #| eval: false
@@ -92,11 +101,11 @@ head(awards)
 awards |> ggplot() + aes(x= math, y = num_awards) + geom_point()
 ```
 
-2. Proposer un modèle. 
+2.  Proposer un modèle.
 
 <!-- $$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i))\,.$$ -->
 
-3. Ajustement du modèle
+3.  Ajustement du modèle
 
 ```{r}
  #| eval: false
@@ -108,7 +117,8 @@ summary(m.pois.lin1)
 #Vous pouvez éventuellement comparer à ce que donneraitjags
 ```
 
-4. Quelle est la distribution a posteriori pour l'effet des mathématiques
+4.  Quelle est la distribution a posteriori pour l'effet des
+    mathématiques
 
 ```{r}
  #| echo: true
@@ -118,15 +128,18 @@ m.pois.lin1$marginals.fixed$math |>
   stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = "red")
 ```
 
-5. Comparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance
+5.  Comparer avec les résultats obtenus en utilisant un modèle linéaire
+    généralisé estimé par max de vraisemblance
 
+```{r glm1}
+fit2.glm <- glm(num_awards ~ math, family="poisson", data = awards)
+summary(fit2.glm)
+```
 
-<!-- ```{r glm1} -->
-<!-- fit2.glm <- glm(num_awards ~ math, family="poisson", data = awards) -->
-<!-- summary(fit2.glm) -->
-<!-- ``` -->
-
-6. Pour prendre en compte le problème classique de surdispersion dans les données de comptages, il peut être intéressant de rajouter un effet aléatoire de la manière suivante. Identifier tous les hyper paramètres et toutes les variables latentes.
+6.  Pour prendre en compte le problème classique de surdispersion dans
+    les données de comptages, il peut être intéressant de rajouter un
+    effet aléatoire de la manière suivante. Identifier tous les hyper
+    paramètres et toutes les variables latentes.
 
 $$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i+E_i)) \quad \text{avec}\quad E_i\overset{ind}{\sim}\mathcal{N}(0,\sigma^2).$$
 
@@ -140,26 +153,28 @@ m.pois.lin_surd <- inla(num_awards ~ math + f(ID, model = "iid"),
 summary(m.pois.lin_surd)
 ```
 
+7.  Discuter les distributions a posteriori des effets fixes
 
-7. Discuter les distributions a posteriori des effets fixes
-
-8. on peut regarder la loi a posteriori de la précision sur les effets alétaoires 
+8.  on peut regarder la loi a posteriori de la précision sur les effets
+    alétaoires
 
 ```{r}
  m.pois.lin_surd$summary.hyperpar
 m.pois.lin_surd$marginals.hyperpar$`Precision for ID` |>  ggplot() + aes(x=x, y = y) + geom_line()
 ```
 
-9. Si une variable aléatoire V est strictement positive et admet une densité $f$, quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l'effet aléatoire.
+9.  Si une variable aléatoire V est strictement positive et admet une
+    densité $f$, quelle est la densité de 1/V ? En déduire la loi a
+    posteriore de la variance de l'effet aléatoire.
 
 ```{r}
-m.pois.lin_surd$marginals.hyperpar$`Precision for ID` |>  as.data.frame() |>  mutate(u = 1/x, fu = x^2 ) |> 
+m.pois.lin_surd$marginals.hyperpar$`Precision for ID` |>  as.data.frame() |>  
+  mutate(u = 1/x, fu = x^2 * y ) |> 
   ggplot() + aes(x=u, y = fu) + geom_line()
 ```
 
-
-10. On peut accéder aux effets aléatoires a posteriori, par exemple pour l'élève 1.
-
+10. On peut accéder aux effets aléatoires a posteriori, par exemple pour
+    l'élève 1.
 
 ```{r}
  #| echo: true
@@ -168,9 +183,8 @@ m.pois.lin_surd$marginals.random$ID$index.1
 m.pois.lin_surd$marginals.random$ID$index.1 |>  ggplot() + aes(x=x, y = y) + geom_line()
 ```
 
-
-
-11. On peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?
+11. On peut comparer un modèle à effets aléatoires généralisés en
+    fréquentiste. Que constatez vous ?
 
 ```{r}
 #| echo: true
@@ -179,11 +193,14 @@ fit4.glmm<-glmer(num_awards ~ math + (1|id), family = poisson, data = awards)
 summary(fit4.glmm)
 ```
 
-12. Quels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande `inla.doc("iid")`. Quelle différence entre prior et postérior ?
+12. Quels sont les priors utilisés par inla pour les précisions ? Vous
+    pourrez utiliser la commande `inla.doc("iid")`. Quelle différence
+    entre prior et postérior ?
 
-
-13. On souhaite changer le prior en une loi gamma de parametre  1,2 (Attention les priors sont codés dans le format interne d'inla cf [Table 5.3 @gomez2020bayesian](https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#tab:internalhyper)
-
+13. On souhaite changer le prior en une loi gamma de parametre 1,2
+    (Attention les priors sont codés dans le format interne d'inla cf
+    [Table 5.3
+    \@gomez2020bayesian](https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#tab:internalhyper)
 
 ```{r effet-aleatoire-2}
 m.pois.lin_surd2 <- inla(num_awards ~ math + 
@@ -194,9 +211,8 @@ m.pois.lin_surd2 <- inla(num_awards ~ math +
 summary(m.pois.lin_surd2)
 ```
 
-
-14. On peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC
-
+14. On peut demander à inla de calculer des critères de sélection de
+    modèle type DIC ou WAIC
 
 ```{r effet-aleatoire-3}
 #| echo: true
@@ -209,8 +225,6 @@ m.pois.lin_surd2 <- inla(num_awards ~ math +
 
 summary(m.pois.lin_surd2)
 ```
-
-
 
 15. Intégrer un effet non linéaire de la note en mathématique
 
@@ -232,8 +246,11 @@ awards |> mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],
 
 ```
 
-16. Il existe un modèle RW2, en vous référrant au chapitre [Mixed-effects Models du livre @gomez2020bayesian](https://becarioprecario.bitbucket.io/inla-gitbook/ch-mixed.html), expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?
-
+16. Il existe un modèle RW2, en vous référrant au chapitre
+    [Mixed-effects Models du livre
+    \@gomez2020bayesian](https://becarioprecario.bitbucket.io/inla-gitbook/ch-mixed.html),
+    expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle
+    différence observez vous ?
 
 ```{r rw2}
 #| echo: true
@@ -253,6 +270,5 @@ awards |> mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],
   ggplot() + geom_line(aes(x=math, y = pred, col = method)) +
   geom_point(aes(x=math, y = num_awards)) + ggtitle("Fit with linear and non linear effect (RW1)")
 ```
-
 
 ## References

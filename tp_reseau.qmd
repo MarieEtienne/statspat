@@ -1,5 +1,5 @@
 ---
-title: "TD : Modèles spatiaux et régression SAR"
+title: "TD3 : Modèles spatiaux et régression SAR"
 subtitle: "Analyse de la prédation au sein du golfe du Saint-Laurent"
 author: "Marie-Pierre Etienne"
 date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"

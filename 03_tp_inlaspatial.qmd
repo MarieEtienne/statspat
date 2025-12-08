@@ -1,5 +1,5 @@
 ---
-title: "TD3 - Ajuster un modèle hiérarchique spatial avec INLA"
+title: "TD5 - Ajuster un modèle hiérarchique spatial avec INLA"
 author:
   - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
     affiliation: 
@@ -18,7 +18,6 @@ format: html
 bibliography: spatstat.bib
 ---
 
-
 ```{r, eval=TRUE}
 # Base de R INLA
 library(tidyverse)
@@ -29,8 +28,10 @@ library(sf)
 
 ### Etude du nombre de cas de malaria en Gambie
 
-Nous nous intéressons à un jeu de données concernant la prévalence de la malaria en Gambie (disponible dans le package {geoR}). 
-Cet exemple est repris du livre "Spatial and Spatio-temporal Bayesian Models with R-INLA".
+Nous nous intéressons à un jeu de données concernant la prévalence de la
+malaria en Gambie (disponible dans le package {geoR}). Cet exemple est
+repris du livre "Spatial and Spatio-temporal Bayesian Models with
+R-INLA".
 
 ```{r, eval=TRUE}
 #| label: load_data
@@ -41,18 +42,18 @@ gambia <- gambia |>
   mutate(village_index = factor(as.numeric(factor(paste(x,y, sep="_")))))
 ```
 
-Le jeu de données contient pour chaque personne testée 
+Le jeu de données contient pour chaque personne testée
 
-* les coordonées du village (`x`, `y`)
-* le résultat du test (`pos`),
-* l'âge en jours,
-*l'utilisation d'une moustiquaire `netuse`,
-* l'administration éventuel d'un traitement sur la moustiquaire `treated`,
-* une mesure par satellite de la végétation proche `green`,
-* la présence ou non d'un centre de santé dans le village.
+-   les coordonées du village (`x`, `y`)
+-   le résultat du test (`pos`),
+-   l'âge en jours, \*l'utilisation d'une moustiquaire `netuse`,
+-   l'administration éventuel d'un traitement sur la moustiquaire
+    `treated`,
+-   une mesure par satellite de la végétation proche `green`,
+-   la présence ou non d'un centre de santé dans le village.
 
-
-1. Calculer la prévalence (proportion de cas positif) dans chaque village
+1.  Calculer la prévalence (proportion de cas positif) dans chaque
+    village
 
 ```{r}
 #| label: count_case
@@ -64,8 +65,8 @@ gambia |> group_by(village_index) |>
 
 On transforme le jeu de données en données de type `sf`.
 
-2. Indiquer ce que signifie à votre avis  `crs = "+proj=utm +zone=28"` dans la commande suivante
-
+2.  Indiquer ce que signifie à votre avis `crs = "+proj=utm +zone=28"`
+    dans la commande suivante
 
 ```{r}
 #| label: transform_sf
@@ -99,8 +100,9 @@ gambia_sf |> ggplot() + geom_sf()
 
 ```
 
-Dans les approches INLA, le champs gaussien caché est vu comme la solution d'une Equation aux Dérivées Partielles Stochastiques (EDPS) qui va être résolue sur un maillage. On peut définir le maillage.
-
+Dans les approches INLA, le champs gaussien caché est vu comme la
+solution d'une Equation aux Dérivées Partielles Stochastiques (EDPS) qui
+va être résolue sur un maillage. On peut définir le maillage.
 
 ```{r}
 #| eval: false
@@ -113,10 +115,10 @@ coo <- st_coordinates(gambia_sf)
 points(coo, col = "red")
 ```
 
-
-Mais pour résoudre l'EDPS, on a besoin de mettre des conditions de nullité au bord du domaine ce qui a des conséquences forte sur la solution. Pour limiter l'impact on ajoute buffer autour avec une maille plus large.
-
-
+Mais pour résoudre l'EDPS, on a besoin de mettre des conditions de
+nullité au bord du domaine ce qui a des conséquences forte sur la
+solution. Pour limiter l'impact on ajoute buffer autour avec une maille
+plus large.
 
 ```{r,eval=FALSE}
 hull = inla.nonconvex.hull(gambia_sf,convex = -0.1)
@@ -124,14 +126,14 @@ gambia_mesh <- inla.mesh.2d( boundary = hull,max.edge = c(0.2, 2), offset = c(1,
 plot(gambia_mesh,main="",asp=1)
 ```
 
-3. Changer la valeur de max.edge. Que se passe t il ?
+3.  Changer la valeur de max.edge. Que se passe t il ?
 
-En général, l'utilisation des paramètres du maillage est assez complexe. 
+En général, l'utilisation des paramètres du maillage est assez complexe.
 
-
-4. Il est naturel d'espèrer un résultat plus fin aux endroits où l'on a des données, on peut lui passer les localisations du jeu de données pour construire le maillage grâce à l'argument `loc`. Que constatez vous ?
-
-
+4.  Il est naturel d'espèrer un résultat plus fin aux endroits où l'on a
+    des données, on peut lui passer les localisations du jeu de données
+    pour construire le maillage grâce à l'argument `loc`. Que constatez
+    vous ?
 
 ```{r,eval=FALSE}
 gambia_mesh <- inla.mesh.2d( boundary = hull,loc = gambia_sf, max.edge = c(0.2, 2) )
@@ -140,9 +142,10 @@ coo <- st_coordinates(gambia_sf)
 points(coo, col = "red")
 ```
 
-
-On définit à partir du maillage le champ spatial SPDE qui correspond à un champ spatial gaussien avec une covariance Matérn. Nous considérons les lois a priori par défaut sur les paramètres de variance et de portée du champ spatial.
-
+On définit à partir du maillage le champ spatial SPDE qui correspond à
+un champ spatial gaussien avec une covariance Matérn. Nous considérons
+les lois a priori par défaut sur les paramètres de variance et de portée
+du champ spatial.
 
 ```{r}
 #| eval: false
@@ -150,43 +153,50 @@ On définit à partir du maillage le champ spatial SPDE qui correspond à un cha
 gambia_spde <- inla.spde2.matern(mesh = gambia_mesh, constr = TRUE)
 ```
 
-L'argument  `constr = TRUE` impose  une moyenne nulle pour le champs spatial.
+L'argument `constr = TRUE` impose une moyenne nulle pour le champs
+spatial.
 
+On souhaite ajuster le modèle suivant
 
-On souhaite ajuster le modèle suivant 
+Pour l'enfant $j$ du village $i$, on suppose que conditionnellement aux
+covariables et à un champs spatial caché, l'infection à la malaria est
+le résultat d'un tirage de bernoulli.
 
- Pour l'enfant $j$ du village $i$, on suppose que conditionnellement aux covariables et à un champs spatial caché, l'infection à la malaria est le résultat d'un tirage de bernoulli.
- 
-5. Ecrire le modèle correspondant sous forme mathématique.
+5.  Ecrire le modèle correspondant sous forme mathématique.
 
 <!-- $$Y_{ij}|\eta_{ij}\overset{ind}{\sim}b(p_{ij})$$ -->
 
 <!-- avec  -->
 
 <!-- $$S\sim GRF, \quad V_i\overset{ind}{\sim}\mathcal{N}(0,\sigma^2_V)$$ -->
+
 <!-- et  -->
+
 <!-- $$p_{ij}=\mu+\beta_1 \cdot treated_{ij}+\beta_2 \cdot netuse_{ij}+\beta_3 \cdot age_{ij}+\beta_4 \cdot green_{ij}+\beta_5\cdot phc_{ij}+S_i+V_i.$$ -->
 
-La mise en oeuvre dans INLA est ensuite un peu technique (le package inlabru permettrait de simplifier les étapes suivantes)
+La mise en oeuvre dans INLA est ensuite un peu technique (le package
+inlabru permettrait de simplifier les étapes suivantes)
 
-6. Il faut créer les éléments dont INLA a besoin
+6.  Il faut créer les éléments dont INLA a besoin
 
-6.a Un Index set 
+6.a Un Index set
 
 ```{r}
 #| eval: false
-
 indexs <- inla.spde.make.index("s", gambia_spde$n.spde)
 lengths(indexs)
 ```
 
-6.b Une matrice de projection. Cette matrice fait le lien entre les positions des observations et les noeuds du maillage. C'est une matrice très creuse.
+6.b Une matrice de projection. Cette matrice fait le lien entre les
+positions des observations et les noeuds du maillage. C'est une matrice
+très creuse.
 
 ```{r,eval=FALSE}
 A <- inla.spde.make.A(mesh = gambia_mesh, loc = coo)
 ```
 
-6.c On doit ensuite empiler ces données dans une structure spécifique à INLA
+6.c On doit ensuite empiler ces données dans une structure spécifique à
+INLA
 
 ```{r,eval=FALSE}
 gambia_effects <- gambia_sf |> 
@@ -195,13 +205,12 @@ gambia_effects <- gambia_sf |>
 stk.e <- inla.stack(
   tag = "est",
   data = list( pos = gambia_sf$pos), A = list(1, A),
-  effects = list(gambia_effects, s= indexs)
+  effects = list(gambia_effects, s = indexs)
 )
 ```
 
-
-7. On peut appeler INLA. Explorer les sorties contenues dans l'objet `fit`
-
+7.  On peut appeler INLA. Explorer les sorties contenues dans l'objet
+    `fit`
 
 ```{r,eval=FALSE}
 formula = pos ~ 0 + b0 + treated +
@@ -223,25 +232,27 @@ summary(fit)
 
 ```
 
-
-
-8. Accéder aux distributions marginales des effets aléatoires et des hyperparamètres :
+8.  Accéder aux distributions marginales des effets aléatoires et des
+    hyperparamètres :
 
 ```{r,eval=FALSE}
 fit$summary.random 
 fit$summary.hyperpar
 ```
 
-9. Tacer les distributions a posteriori marginales des effets, par exemple pour l'effet de l'âge ou de l'utilisation de la moustiquaire :
+9.  Tacer les distributions a posteriori marginales des effets, par
+    exemple pour l'effet de l'âge ou de l'utilisation de la moustiquaire
+    :
 
 ```{r,eval=FALSE, echo=FALSE}
-558fe3f31d9feddc
 ggplot(data.frame(inla.smarginal(fit$marginals.fixed$age)), aes(x, y)) +
   geom_line() +
   theme_bw()
 ```
 
-10. Représenter la composante spatiale de la malaria qui n'est pas expliquée par les covariable. Pour ceci, on peut créer un jeu de données de prédiction
+10. Représenter la composante spatiale de la malaria qui n'est pas
+    expliquée par les covariable. Pour ceci, on peut créer un jeu de
+    données de prédiction
 
 ```{r,echo = TRUE, eval = FALSE}
 gambia_pred_sf <- gambia_sf |> group_by(village_index) |> 
@@ -270,9 +281,9 @@ fit <- inla(formula,
   control.compute = list(return.marginals.predictor = TRUE)
 )
 summary(fit)
-
+ty
 index <- inla.stack.index(stack = stk.full, tag = "pred")$data
-prev_mean <- res$summary.fitted.values[index, "mean"]
+prev_mean <- fit$summary.fitted.values[index, "mean"]
 
 
 gambia_pred_sf |> mutate(prev_mean_nonet= prev_mean) |>  
@@ -280,7 +291,10 @@ ggplot() + geom_sf( aes(col = prev_mean_nonet ))
 
 ```
 
-11. le package `geodata` contient les altitudes en Gambie. Reprenez les étapes pour ajuster un modèle dans lequel on explique la prévalence de la malaria par l'altitude. On pourra alors grouper les données par village.
+11. le package `geodata` contient les altitudes en Gambie. Reprenez les
+    étapes pour ajuster un modèle dans lequel on explique la prévalence
+    de la malaria par l'altitude. On pourra alors grouper les données
+    par village.
 
 ```{r, echo = TRUE, eval = FALSE}
 library(geodata)
@@ -291,6 +305,4 @@ gambia[, c("long", "lat")] <- st_coordinates(gambia_sf)
 gambia$elev <- terra::extract(r, gambia[, c("long", "lat")])$GMB_elv_msk
 ```
 
-
 ## References
-
