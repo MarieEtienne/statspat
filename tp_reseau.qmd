@@ -28,9 +28,10 @@ Plus précisément, Les variables d'intérêt sont
 Les packages utilisés seront
 
 ```{r}
-#|label: setup
-#|include: true
-#|eval: true
+#| label: setup
+#| include: true
+#| eval: true
+
 library(tidyverse)
 library(sf)
 library(spdep)
@@ -45,8 +46,8 @@ library(purrr) # pour la validation croisée
 Les données peuvent être chargées avec 
 
 ```{r}
-#|label: dta
-#|include: true
+#| label: dta
+#| include: true
 dta <- read.csv("StLaurent.csv", sep = ";") |> mutate(log_totconsum = log(totconsum))
  
 
@@ -62,8 +63,8 @@ nrow(strates_sf)
 
   
 ```{r}
-#|label: dta_sf
-#|echo: false
+#| label: dta_sf
+#| echo: false
 
 
 strates_sf <- strates_sf |> inner_join(dta) |> mutate(center = st_centroid(geometry))
@@ -78,9 +79,9 @@ strates_sf |> ggplot() + geom_sf(aes(fill = temperature))
 Nous construisons plusieurs définitions de voisinage spatial.
 
 ```{r}
-#|label: neighborhood
-#|echo: true
-#|eval: true
+#| label: neighborhood
+#| echo: true
+#| eval: true
 
 centroids <- st_centroid(strates_sf)
 coords <- st_coordinates(centroids)
