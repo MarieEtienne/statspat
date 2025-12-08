@@ -9,7 +9,7 @@
 <meta name="author" content="Marie-Pierre Etienne (sur la base des idées expolorée dans FinistR2023 )">
 <meta name="dcterms.date" content="2025-12-08">
 
-<title>TD3 - Ajuster un modèle hiérarchique spatial avec INLA – Statistique Spatiale</title>
+<title>TD5 - Ajuster un modèle hiérarchique spatial avec INLA – Statistique Spatiale</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -208,23 +208,15 @@ window.Quarto = {
   </li>  
         <li>
     <a class="dropdown-item" href="./tp_reseau.html">
- <span class="dropdown-text">TD : Modèles spatiaux et régression SAR</span></a>
+ <span class="dropdown-text">TD3 : Modèles spatiaux et régression SAR</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./02_tpintro_inla.html">
- <span class="dropdown-text">TD2 - Introduction INLA</span></a>
+ <span class="dropdown-text">TD4 - Introduction INLA</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./03_tp_inlaspatial.html">
- <span class="dropdown-text">TD3 - Ajuster un modèle hiérarchique spatial avec INLA</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./04_tp_inlakrigeage.html">
- <span class="dropdown-text">TD4 - Krigeage avec INLA</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./05_tp_evaluation.html">
- <span class="dropdown-text">TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale</span></a>
+ <span class="dropdown-text">TD5 - Ajuster un modèle hiérarchique spatial avec INLA</span></a>
   </li>  
     </ul>
   </li>
@@ -260,7 +252,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">TD3 - Ajuster un modèle hiérarchique spatial avec INLA</h1>
+<h1 class="title">TD5 - Ajuster un modèle hiérarchique spatial avec INLA</h1>
 </div>
 
 
@@ -475,7 +467,7 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>stk.e <span class="ot">&lt;-</span> <span class="fu">inla.stack</span>(</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tag =</span> <span class="st">"est"</span>,</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">list</span>( <span class="at">pos =</span> gambia_sf<span class="sc">$</span>pos), <span class="at">A =</span> <span class="fu">list</span>(<span class="dv">1</span>, A),</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">effects =</span> <span class="fu">list</span>(gambia_effects, <span class="at">s=</span> indexs)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">effects =</span> <span class="fu">list</span>(gambia_effects, <span class="at">s =</span> indexs)</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="7" type="1">
@@ -539,9 +531,9 @@ This is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.
 <span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">return.marginals.predictor =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>ty</span>
 <span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">inla.stack.index</span>(<span class="at">stack =</span> stk.full, <span class="at">tag =</span> <span class="st">"pred"</span>)<span class="sc">$</span>data</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>prev_mean <span class="ot">&lt;-</span> res<span class="sc">$</span>summary.fitted.values[index, <span class="st">"mean"</span>]</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>prev_mean <span class="ot">&lt;-</span> fit<span class="sc">$</span>summary.fitted.values[index, <span class="st">"mean"</span>]</span>
 <span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>gambia_pred_sf <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">prev_mean_nonet=</span> prev_mean) <span class="sc">|&gt;</span>  </span>
