@@ -1,0 +1,304 @@
+---
+title: "TD : Modèles spatiaux et régression SAR"
+subtitle: "Analyse de la prédation au sein du golfe du Saint-Laurent"
+author: "Marie-Pierre Etienne"
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute: 
+  eval: true
+css: mpe_pres_revealjs.css
+format: html
+bibliography: spatstat.bib
+---
+  
+Pêches et Océans Canada conduit chaque année des campagnes de suivi dans le Golf du Saint Laurent. Le plan de suivi est construit à partir d'une stratification du golfe (strates spatiales construites pour avoir des habitats relativement homogènes). Plusieurs mesures par strates sont faites et nous avons ici accès à la valeur vomyenne de ces mesures pour chaque strate.
+  
+Plus précisément, Les variables d'intérêt sont 
+
+* dans le fichier ` StLaurent.csv `
+
+  * **totconsum** : indice de prédation total,
+  * **depth** : profondeur,
+  * **temperature** : température,
+  * **BH** : présence de Bernards-l'hermite, (pas utilisée ici)
+
+* dans le répertoire ` strates_saint_laurent ` le fichier shapefile ` strates.shp ` contient les caractéristiques spatiales des strates administratives
+
+
+Les packages utilisés seront
+
+```{r}
+#|label: setup
+#|include: true
+#|eval: true
+library(tidyverse)
+library(sf)
+library(spdep)
+library(spatialreg)
+# library(GGally) #eventuellement pour des stats desc 
+library(purrr) # pour la validation croisée
+
+```
+
+# 1. Les données
+
+Les données peuvent être chargées avec 
+
+```{r}
+#|label: dta
+#|include: true
+dta <- read.csv("StLaurent.csv", sep = ";") |> mutate(log_totconsum = log(totconsum))
+ 
+
+strates_sf <- st_read("strates_saint_laurent/strates.shp")
+strates_sf |> ggplot() + geom_sf()
+nrow(strates_sf)
+```
+
+
+1. Décrire les variables du tableau `dta`. Les classer par type (quantitatives, qualitatives, spatiales). Faire une analyse descriptive rapide des données.
+
+2. Mettre à jour la table `strates_sf` pour qu'elle contienne toutes les données et proposer une visualisation spatiale des données de température.
+
+  
+```{r}
+#|label: dta_sf
+#|echo: false
+
+
+strates_sf <- strates_sf |> inner_join(dta) |> mutate(center = st_centroid(geometry))
+strates_sf |> ggplot() + geom_sf() + geom_sf_label( aes(geometry = center, label = strate))
+strates_sf |> ggplot() + geom_sf(aes(fill = temperature))
+```
+
+
+
+# 2. Systèmes de voisinage
+  
+Nous construisons plusieurs définitions de voisinage spatial.
+
+```{r}
+#|label: neighborhood
+#|echo: true
+#|eval: true
+
+centroids <- st_centroid(strates_sf)
+coords <- st_coordinates(centroids)
+
+voisin_poly <- poly2nb(strates_sf)
+ppv <- knearneigh(coords, k=4, longlat=TRUE)
+voisin_knn4 <- knn2nb(ppv)
+voisin_dm <- dnearneigh(as.matrix(coords), d1=0, d2=100, longlat=TRUE)
+```
+
+
+3. Expliquer les différences conceptuelles entre :
+  
+* voisinage par contiguïté de polygones (`poly2nb`),
+* k plus proches voisins (`knn2nb`),
+* distance maximale (`dnearneigh`).
+
+4. Pourquoi le choix du voisinage influence-t-il les conclusions statistiques ?
+
+
+Les fonctions pour construire les graphes de voisinage proviennent du package spdep et ne sont pas directement au format `sf ` la fonction ci-dessous va nous permettre de représenter en format sf  le graphe de voisinage associé à un système de voisinage.
+
+```{r}
+#| label: utils
+#| echo: true
+#| eval: true
+
+nb_to_sflines <- function(nb, coords, crs = NA) {
+  # nb    : object of class "nb"
+  # coords: matrix n x 2 (usually st_coordinates of centroids)
+  
+  nbs <- map2(
+    rep(seq_along(nb), lengths(nb)),
+    unlist(nb),
+    \(i, j) st_linestring(rbind(coords[i, ], coords[j, ]))
+  )
+  
+  res <- st_sf(
+    from = rep(seq_along(nb), lengths(nb)),
+    to   = unlist(nb),
+    geometry = st_sfc(nbs, crs = crs)
+  )
+  return(res)
+}
+```
+
+5. Voici un exemple d'utilisation pour visualier le voisinage `voisin_poly`. comparer les différentes structures de voisinage et discuter.
+
+```{r}
+#| label: voisin_poly
+#| echo: true
+#| eval: true
+
+nb_com_sf <- nb_to_sflines(voisin_poly, coords, crs = 4326)
+
+
+strates_sf |>
+  ggplot() +
+  geom_sf(fill = "white") +
+  geom_sf(
+    data = nb_com_sf,
+    color = "red"
+  )
+```
+
+  
+# 3. Autocorrélation spatiale
+
+
+```{r}
+#| label: moran
+#| echo: true
+#| eval: true
+
+poids.vois <- nb2listw(voisin_poly,style="W")
+moran.test(dta$totconsum, poids.vois)
+geary.test(dta$totconsum, poids.vois)
+```
+
+
+6. Qu’est-ce que l’autocorrélation spatiale ?
+
+7. Interpréter le signe et la valeur du test de Moran.
+
+8. Quelle différence conceptuelle entre Moran et Geary ?
+  
+# 4. Modèle linéaire classique
+  
+9. Ajuster un modèle linéaire classique  pour expliquer l'indice de prédation en fonction de la température, de la profondeur et de la présence de Bernard l'hermite. Quelles variables vous semblent pertinentes ?
+
+```{r}
+#| label: lm
+#| echo: false
+#| eval: true
+mod_lm <- lm(totconsum ~ temperature + depth + BH, data=dta)
+mod_lm <- lm(totconsum ~ temperature + BH, data=dta)
+mod_lm <- lm(totconsum ~ temperature , data=dta)
+summary(mod_lm)
+```
+
+
+
+```{r}
+#| label: moran_res
+#| echo: false
+#| eval: true
+moran.test(residuals(mod_lm), poids.vois)
+```
+
+## Questions
+
+10. Que mesure le coefficient associé à `temperature` ?
+11. Représenter sptialement les résdus. Qu'en pensez vous ?
+12. Pourquoi tester l’autocorrélation spatiale des résidus ? Que vaut le test de Moran sur ces résidus ?
+13. Que conclure si les résidus présentent une structure spatiale ?
+  
+# 5. Régressions spatiales
+  
+Nous comparons plusieurs modèles :
+  
+```{r}
+#| label: modeles_spatiaux
+mod_err <- errorsarlm(totconsum ~ temperature, data=dta, listw=poids.vois)
+mod_lag <- lagsarlm(totconsum ~ temperature, data=dta, listw=poids.vois)
+mod_mix <- lagsarlm(totconsum ~ temperature, data=dta, listw=poids.vois, type="mixed")
+mod_car <- spautolm(totconsum ~ temperature, data=dta, listw=poids.vois, family="CAR")
+```
+
+
+
+14. Écrire les équations des modèles :
+  
+* SAR erreur,
+* SAR retard,
+* modèle mixte (Spatial Durbin),
+* modèle CAR.
+
+15. Interpréter la présence du terme `lag.temperature` dans le modèle mixte.
+
+16. En observant les résidus des modèles, lequel rend les résidus les moins autocorrélés ?
+  
+17. Comparer les modèles via `LR.sarlm()` et `AIC`. Lequel recommanderiez-vous ?
+  
+18. Etes vous vraiment satisfait ?
+
+# 6. Validation croisée
+  
+Un bon modèle spatial n’est pas seulement explicatif : il doit prédire correctement hors échantillon.
+
+Le code suivant propose une implementation possible de validation croisée sur les strates. 
+
+```{r}
+
+loo_lm <- map_dbl(1:nrow(strates_sf), \(i) {
+  mod <- lm(totconsum ~ temperature, data=strates_sf[-i, ])
+  predict(mod, newdata=dta[i, ])
+})
+RMSE_lm <- sqrt(mean((dta$totconsum - loo_lm)^2))
+
+voisin_poly <- poly2nb(strates_sf)
+poids.vois <- nb2listw(voisin_poly,style="W")
+row.names(strates_sf) <- attr(poids.vois, "region.id")
+
+loo_sar <- map_dbl(seq_len(nrow(strates_sf)), \(i) {
+  n <- nrow(strates_sf)
+  train_idx  <- setdiff(seq_len(n), i)
+  test_idx   <- i
+  tryCatch({
+    # données d'apprentissage
+    strates_train <- strates_sf[train_idx, ]
+    
+    # voisinage restreint au train pour l'estimation
+    id_train <- ((1:n) %in% train_idx)
+    voisin_train <- subset(voisin_poly, subset = id_train)
+    poids_train  <- nb2listw(voisin_train, style = "W", zero.policy = TRUE)
+    
+    # modèle SAR sur l'échantillon train
+    mod <- lagsarlm(
+      totconsum ~ temperature,
+      data  = strates_train,
+      listw = poids_train,
+      zero.policy = TRUE
+    )
+    
+    # prédiction sur l'observation i
+    # on fournit les poids COMPLETS pour que la structure spatiale apprise
+    # puisse utiliser aussi les voisins dans le train
+    pred_i <- predict(
+      mod,
+      newdata     = strates_sf,
+      listw       = poids.vois,     # structure spatiale complète
+      zero.policy = TRUE,
+      type        = "response"
+    )
+    
+    as.numeric(pred_i)[i]
+    
+  }, error = function(e) {
+    message("  -> erreur à i = ", i, " : ", conditionMessage(e))
+    NA_real_  # on retourne NA pour cette strate
+  })
+})
+
+RMSE_sar <- sqrt(mean((dta$totconsum - loo_sar)^2))
+RMSE_lm; RMSE_sar
+```
+
+
+15. Pourquoi la validation croisée est-elle nécessaire ?
+  16. Le modèle SAR améliore-t-il réellement la prédiction par rapport au modèle linéaire ?
+  17. Interprétez ce résultat : que signifie un gain faible ou fort ?
+  
+  ---
+  
+  # 7. Conclusion
+  
+  18. Quel modèle final recommandez-vous ?
+  19. Résumer en une phrase le risque d’ignorer la dépendance spatiale en statistique.
+
+
+
