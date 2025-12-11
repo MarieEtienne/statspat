@@ -301,18 +301,25 @@
     "text": "Rappel estimation bayésienne\nLes “rares” bons cas\nOn a une forme conjuguée et on connait \\(\\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y})\\)\nGénéralement\nOn approche \\(\\pi(\\theta\\vert \\boldsymbol{y})\\) par des méhodes de Monte Carlo car\n\\[\\pi(\\theta\\vert \\boldsymbol{y}) = \\frac{\\pi(\\boldsymbol{y}, \\theta)}{\\pi(\\boldsymbol{y})} =\\frac{\\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)}{\\pi(\\boldsymbol{y})}\\propto \\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)\\]\nProblème\nPeut être long car\n\nles chaînes bougent mal\nca converge mal\n\nC’est souvent le cas en spatial car la forte dépendance entre les données rend la construction d’algorithme efficace difficile."
   },
   {
-    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré",
-    "href": "04_inla.html#le-cadre-de-modélisation-considéré",
+    "objectID": "04_inla.html#quest-ce-quinla",
+    "href": "04_inla.html#quest-ce-quinla",
     "title": "INLA et Modèles Hiérarchiques",
-    "section": "Le cadre de modélisation considéré",
-    "text": "Le cadre de modélisation considéré\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
+    "section": "Qu’est ce qu’INLA ?",
+    "text": "Qu’est ce qu’INLA ?\n\nINLA pour Integrated Nested Laplace Approximation\nC’est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans Rue, Martino, and Chopin (2009), puis (lindgren2010explicit?) dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.\nR-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models."
+  },
+  {
+    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
+    "href": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Le cadre de modélisation considéré - Modèles gaussiens latents",
+    "text": "Le cadre de modélisation considéré - Modèles gaussiens latents\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
   },
   {
     "objectID": "04_inla.html#variables-latentes-en-inla",
     "href": "04_inla.html#variables-latentes-en-inla",
     "title": "INLA et Modèles Hiérarchiques",
     "section": "Variables latentes en INLA",
-    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF). Les observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
+    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF).\nLes observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
   },
   {
     "objectID": "04_inla.html#estimation",
