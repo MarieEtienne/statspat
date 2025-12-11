@@ -57,19 +57,16 @@ myBib <- ReadBib("./spatstat.bib", check = FALSE)
 
 # Introduction
 
-
 ## Sources
 
-Ce cours est construit à partir du livre de @rue2005gaussian, @blangiardo2013spatial, @krainski2018advanced,  @gomez2020bayesian et de l'article @rue2009approximate
-
-
+Ce cours est construit à partir du livre de @rue2005gaussian,
+@blangiardo2013spatial, @krainski2018advanced, @gomez2020bayesian et de
+l'article @rue2009approximate
 
 ## Rappel modèle hiérarchique
 
-
 ::::: columns
 ::: {.column width="48%"}
-
 ```{r hierarchique}
 library(ggplot2)
 library(ggforce)
@@ -102,33 +99,29 @@ ggplot() +
   theme(plot.title = element_text(size = 14, face = "bold"))
 
 ```
-
-
 :::
 
 ::: {.column width="48%"}
-
-Un modèlé hiéarchique peut être utilisé pour représenter des dépendances complexes entre les données.
+Un modèlé hiéarchique peut être utilisé pour représenter des dépendances
+complexes entre les données.
 
 Des exemples :
 
-
 Des exemples spatiaux :
-
 :::
-
-::::: 
+:::::
 
 ## Exemple illustratif - Mort subite
 
-On s'intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de @cressie2015statistics). Les données sont disponibles dans le package `sf`
+On s'intéresse aux données de mort subite du nourrisson en Caroline du
+Nord en 1974 (exemple extrait du livre de @cressie2015statistics). Les
+données sont disponibles dans le package `sf`
 
-Les données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ....
-
+Les données sont ici des comptages par counties, mais on peut imaginer
+des prix au m2 par IRIS, des taux de chomage par IRIS etc ....
 
 ::::: columns
 ::: {.column width="58%"}
-
 ```{r}
 #| echo: false
 #| message: false
@@ -141,22 +134,18 @@ p2 <- nc |> ggplot() + geom_sf(aes(fill = SID79)) +
     scale_fill_viridis_c( option = "mako", direction = -1) + ggtitle('Nombre de Morts subites en 1979 par counties en caroline du Nord')
 ggarrange(p1, p2, ncol = 2, widths = c(1,3), heights = c(1,3))
 ```
-
 :::
 
 ::: {.column width="38%"}
-Proposer un modèle hiéarchique pour ces données qui 
+Proposer un modèle hiéarchique pour ces données qui
 
-* prend en compte la dépendance spatial
-* modélise le nombre de morts subites comme des comptages, avec un offset pour tenir compte de la taille du county
-
+-   prend en compte la dépendance spatial
+-   modélise le nombre de morts subites comme des comptages, avec un
+    offset pour tenir compte de la taille du county
 :::
-
 :::::
 
 ## Exemple illustratif - les pluies en Suisse
-
-
 
 ::::: columns
 ::: {.column width="48%"}
@@ -185,26 +174,20 @@ dta_full_sf |> ggplot() + geom_histogram(aes(x= pluies)) + ggtitle("Histpgramme 
 ```
 
 Ca n'a pas vraiment une distribution gaussienne .....
-
-
 :::
 
 ::: {.column width="48%"}
-
-Proposer un modèle dans lequel les observations ne sont pas gaussiennes mais qui gardent une cohérence spatiale
+Proposer un modèle dans lequel les observations ne sont pas gaussiennes
+mais qui gardent une cohérence spatiale
 :::
-
 :::::
 
 ## Rappel estimation bayésienne
 
 Considérons un modèle de régression simple
 
-
-
 ::::: columns
 ::: {.column width="48%"}
-
 ```{r}
 #| echo: false
 #| message: false
@@ -220,27 +203,23 @@ y =  beta0 + beta1 * x + beta2*  (x-mean(x))^2 + rnorm(n, mean = 0, sd = 4)
 dta <- data.frame(x=x, y= y)
 dta  |>  ggplot() + aes(x=x, y = y) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
-
-
 :::
 
 ::: {.column width="48%"}
+-   Ecrire le modèle
 
-* Ecrire le modèle 
+-   Comment mener l'inférence bayésienne
 
-* Comment mener l'inférence bayésienne
-
-* Le choix des priors
-
+-   Le choix des priors
 :::
-
 :::::
 
 ## Rappel estimation bayésienne
 
-Considérons un modèle de régression simple, écrit dans le formalisme du modèle linéaire généralisé
+Considérons un modèle de régression simple, écrit dans le formalisme du
+modèle linéaire généralisé
 
-### Modèle 
+### Modèle
 
 $$Y_i \overset{i.i.d} \sim \mathcal{N}(\mu_i, \sigma^2)$$
 
@@ -248,55 +227,67 @@ avec
 
 $$g(\mu_i) = \eta_i = \beta_0 + \beta_1 x_i.$$
 
-
 ### Prior
 
 $$ \beta \sim \mathcal{N}(0, 10^6 I_2) $$
 $$ \log(\sigma^2) \sim logGamma(1, 10^{-5})$$
 
-### Posterior 
+### Posterior
 
-On est surtout intéressé par 
+On est surtout intéressé par
 
-$$\pi(\beta\vert \ybf) = \int_{\sigma^2} \pi(\beta, \sigma^2\vert \ybf) d\sigma^2$$
+$$\pi(\beta\vert \boldsymbol{y}) = \int_{\sigma^2} \pi(\beta, \sigma^2\vert \boldsymbol{y}) d\sigma^2$$
 
 ## Rappel estimation bayésienne
 
-
 ### Les "rares" bons cas
 
-On a une forme conjuguée et on connait $\pi(\beta, \sigma^2\vert \ybf)$
+On a une forme conjuguée et on connait
+$\pi(\beta, \sigma^2\vert \boldsymbol{y})$
 
 ### Généralement
 
-On approche  $\pi(\theta\vert \ybf)$ par des méhodes de Monte Carlo car 
+On approche $\pi(\theta\vert \boldsymbol{y})$ par des méhodes de Monte
+Carlo car
 
-$$\pi(\theta\vert \ybf) = \frac{\pi(\ybf, \theta)}{\pi(\ybf)} =\frac{\pi(\ybf\vert \theta) \pi(\theta)}{\pi(\ybf)}\propto \pi(\ybf\vert \theta) \pi(\theta)$$ 
+$$\pi(\theta\vert \boldsymbol{y}) = \frac{\pi(\boldsymbol{y}, \theta)}{\pi(\boldsymbol{y})} =\frac{\pi(\boldsymbol{y}\vert \theta) \pi(\theta)}{\pi(\boldsymbol{y})}\propto \pi(\boldsymbol{y}\vert \theta) \pi(\theta)$$
 
 ### Problème
 
 Peut être long car
 
-* les chaînes bougent mal
-* ca converge mal 
+-   les chaînes bougent mal
+-   ca converge mal
 
-C'est souvent le cas en spatial car la forte dépendance entre les données rend la construction d'algorithme efficace difficile.
-
-
+C'est souvent le cas en spatial car la forte dépendance entre les
+données rend la construction d'algorithme efficace difficile.
 
 # Une alternative aux méthodes de Monte Carlo - INLA
 
-## Le cadre de modélisation considéré
 
-Un vecteur de $n$ observations $\mathbf{y} = (y_1, \dots, y_n)$, (dont certaines peuvent être manquantes)
+## Qu'est ce qu'INLA ?
 
-Ces observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)
+* INLA  pour [Integrated Nested Laplace Approximation]{.rouge}
 
-La moyenne $\mu_i$ de $y_i$ est liée au prédicteur linéaire $\eta_i$ par une fonction adaptée.
+* C'est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans @rue2009approximate, puis @lindgren2010explicit dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.
+
+* R-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models.
+
+## Le cadre de modélisation considéré - Modèles gaussiens latents
+
+Un vecteur de $n$ observations $\mathbf{y} = (y_1, \dots, y_n)$, (dont
+certaines peuvent être manquantes)
+
+Ces observations suivent une loi de probabilité de la famille
+exponentielle (cadre du modèle linéaire généralisé)
+
+La moyenne $\mu_i$ de $y_i$ est liée au prédicteur linéaire $\eta_i$ par
+une fonction adaptée.
 
 ### Hypothèse d'indépendance conditionnelle
 
-Les observations sont indépendantes conditionnellement à leur prédicteur linéaire :
+Les observations sont indépendantes conditionnellement à leur prédicteur
+linéaire :
 
 $$
 \eta_i = \alpha + \sum_{j=1}^{n_\beta} \beta_j z_{ji} + \sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \epsilon_i, \quad i=1,\dots,n
@@ -304,10 +295,10 @@ $$
 
 où:
 
-- $\alpha$ est l'intercept,
-- $\beta_j$ sont les coefficients des covariables $z_j$,
-- $f^{(k)}$ représente les effets aléatoires,
-- $\epsilon_i$ est un terme d'erreur.
+-   $\alpha$ est l'intercept,
+-   $\beta_j$ sont les coefficients des covariables $z_j$,
+-   $f^{(k)}$ représente les effets aléatoires,
+-   $\epsilon_i$ est un terme d'erreur.
 
 ## Variables latentes en INLA
 
@@ -317,33 +308,37 @@ $$
 \mathbf{x} = (\eta_1, \dots, \eta_n, \alpha, \beta_1, \dots)
 $$
 
-Ces effets suivent un champ aléatoire de [Markov Gaussien (GMRF)]{.rouge}. Les observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres $\theta_1$.
+Ces effets suivent un champ aléatoire de [Markov Gaussien
+(GMRF)]{.rouge}. 
 
-### Implication concrète 
+Les observations sont indépendantes conditionnellement
+aux variables latents et aux hyperparamètres $\theta_1$.
 
-* Les priors sur $\beta$ doivent être gaussiens,
-* Les effets aléatoires doivent être  gaussiens
+### Implication concrète
 
+-   Les priors sur $\beta$ doivent être gaussiens,
+-   Les effets aléatoires doivent être gaussiens
 
-Remarque : un paramètre en bayésien peut être vu comme une variable latente
-
+Remarque : un paramètre en bayésien peut être vu comme une variable
+latente
 
 ### Matrice de Précision
 
-$$\xbf \sim\mathcal{N}(0, Q(\theta_2)^{-1})$$
+$$\boldsymbol{x}\sim\mathcal{N}(0, Q(\theta_2)^{-1})$$
 
-Le GMRF a une moyenne nulle et une matrice de précision $Q(\theta_2)$ dépendant des hyperparamètres $\theta_2$. 
+Le GMRF a une moyenne nulle et une matrice de précision $Q(\theta_2)$
+dépendant des hyperparamètres $\theta_2$.
 
+$\theta = (\theta_1, \theta_2)$.
 
-$\theta = (\theta_1, \theta_2)$. 
+La matrice $Q(\theta)$ est creuse car
 
-La matrice  $Q(\theta)$ est creuse car 
+-   une indépendance conditionnellent entre $x_i$ et $x_j$
+    conditionnellement à $x_{-ij}$ se traduit par un 0 dans $Q(\theta)$.
 
-* une indépendance conditionnellent entre $x_i$ et $x_j$ conditionnellement à $x_{-ij}$ se traduit par un 0 dans  $Q(\theta)$.
+-   Cette sparsité permet d'accélérer les calculs en INLA.
 
-* Cette sparsité permet d'accélérer les calculs en INLA.
-
-## Estimation 
+## Estimation
 
 ### Distribution postérieure jointe
 
@@ -355,13 +350,15 @@ $$
 
 ### Vraisemblance
 
-Les observations étant indépendantes conditionnellement à $\mathbf{x}$ et $\theta$, la vraisemblance devient :
+Les observations étant indépendantes conditionnellement à $\mathbf{x}$
+et $\theta$, la vraisemblance devient :
 
 $$
 \pi(\mathbf{y} \mid \mathbf{x}, \theta) = \prod_{i \in I} \pi(y_i \mid x_i, \theta)
 $$
 
-avec $I$ l'ensemble des indices des observations effectivement observées.
+avec $I$ l'ensemble des indices des observations effectivement
+observées.
 
 ### Distribution des variables latentes
 
@@ -371,9 +368,8 @@ $$
 \pi(\mathbf{x}, \theta) = \pi(\mathbf{x} \mid \theta) \pi(\theta)
 $$
 
-avec $\pi(\theta)$ une distribution a priori, souvent factorisée en lois univariées.
-
-
+avec $\pi(\theta)$ une distribution a priori, souvent factorisée en lois
+univariées.
 
 ## Distribution postérieure des variables latentes
 
@@ -391,14 +387,14 @@ $$
 
 ## Marginales Postérieures pour les paramètres (hyperparamètres) $\theta$
 
-INLA ne cherche pas la postérieure complète mais les marginales des variables latentes et hyperparamètres :
+INLA ne cherche pas la postérieure complète mais les marginales des
+variables latentes et hyperparamètres :
 
-On va vouloir calculer 
+On va vouloir calculer
 
 $$
 \pi(x_l \mid \mathbf{y}) = \int \pi(x_l \mid \theta, \mathbf{y}) \pi(\theta \mid \mathbf{y}) d\theta
-$$
-et 
+$$ et
 
 $$
 \pi(\theta_k \mid \mathbf{y}) = \int \pi(\theta \mid \mathbf{y}) d\theta_{-k}
@@ -406,63 +402,66 @@ $$
 
 avec $\theta_{-k}$ le vecteur $\theta$ sans $\theta_k$.
 
-
-
-
 ### Approximation en INLA
 
-L'approximation $\tilde{\pi}(\theta \mid \mathbf{y})$ de Rue, Martino et Chopin (2009) est :
+L'approximation $\tilde{\pi}(\theta \mid \mathbf{y})$ de Rue, Martino et
+Chopin (2009) est :
 
 $$
 \tilde{\pi}(\theta \mid \mathbf{y}) \propto \frac{\pi(\mathbf{x}, \theta, \mathbf{y})}{ \tilde{\pi}_G(\mathbf{x} \mid \theta, \mathbf{y})} \bigg|_{\mathbf{x} = \mathbf{x}^*(\theta)}
 $$
 
-avec $\tilde{\pi}_G(\mathbf{x} \mid \theta, \mathbf{y})$ une approximation gaussienne et $\mathbf{x}^*(\theta)$ le mode de la conditionnelle.
+avec $\tilde{\pi}_G(\mathbf{x} \mid \theta, \mathbf{y})$ une
+approximation gaussienne et $\mathbf{x}^*(\theta)$ le mode de la
+conditionnelle.
 
 ## Approximations Finales
 
-La marginale $\pi(\theta_k \mid \mathbf{y})$ est obtenue par intégration de $\tilde{\pi}(\theta \mid \mathbf{y})$. 
+La marginale $\pi(\theta_k \mid \mathbf{y})$ est obtenue par intégration
+de $\tilde{\pi}(\theta \mid \mathbf{y})$.
 
-
-L'approximation de $\pi(x_i \mid \mathbf{y})$ utilise l'intégration numérique, avec la méthode de Laplace donnant de meilleurs résultats.
-
-
+L'approximation de $\pi(x_i \mid \mathbf{y})$ utilise l'intégration
+numérique, avec la méthode de Laplace donnant de meilleurs résultats.
 
 ## La flexibilité de cette approche
 
-* On rendre compte d'effets non linéaires de covariables en modélisant l'effet de la covariabble comme un processus gaussien (dont il faudra préciser la forme)
+-   On rendre compte d'effets non linéaires de covariables en modélisant
+    l'effet de la covariabble comme un processus gaussien (dont il
+    faudra préciser la forme)
 
-* Les temps de calcul son imbattables : quelques secondes pour un champs spatial
+-   Les temps de calcul son imbattables : quelques secondes pour un
+    champs spatial
 
 [Et le spatial dans tout ca ?]{.rouge}
 
-
 ## INLA et modèles spatiaux
 
-* Le terme d'effets aléatoires peut rendre compte des aspects spatiaux.
+-   Le terme d'effets aléatoires peut rendre compte des aspects
+    spatiaux.
 
 ### Les limites
 
-Si le nombre de données est important, le vecteur $\xbf$ devient trop grand et lestemps de calcul augmentent rapidement
+Si le nombre de données est important, le vecteur $\boldsymbol{x}$
+devient trop grand et lestemps de calcul augmentent rapidement
 
-## Limiter  l'impact du nombre de points : l'approche SPDE
+## Limiter l'impact du nombre de points : l'approche SPDE
 
 Le nombre de points important en géostatistique.
 
-Il se trouve qu'un champs gaussien de Matern  peut s'écrire comme la solution d'une équation aux dérivées partielles stochastique
-
+Il se trouve qu'un champs gaussien de Matern peut s'écrire comme la
+solution d'une équation aux dérivées partielles stochastique
 
 ### Processus Gaussiens avec Covariance de Matérn
 
-Un champ gaussien $U(s)$ avec covariance de Matérn est solution de l'EDPS fractionnaire suivante :
+Un champ gaussien $U(s)$ avec covariance de Matérn est solution de
+l'EDPS fractionnaire suivante :
 
 $$
 (\kappa^2 - \Delta)^{\alpha/2} u(s) = W(s), \quad s \in \mathbb{R}^d, \quad \alpha = \nu + d/2, \quad \kappa > 0, \quad \nu > 0.
 $$
 
-où :
-- $\Delta$ est l'opérateur de Laplace,
-- $W(s)$ est un bruit blanc gaussien spatial de variance unité.
+où : - $\Delta$ est l'opérateur de Laplace, - $W(s)$ est un bruit blanc
+gaussien spatial de variance unité.
 
 ---
 title: "INLA et Modèles Hiérarchiques"
@@ -475,48 +474,44 @@ output: revealjs::revealjs_presentation
 
 ### Fonction de Corrélation de Matérn
 
-Rappel  est définie par un paramètre d’échelle $\kappa > 0$ et un paramètre de régularité $\nu > 0$. Pour deux positions $s_i$ et $s_j$, la fonction de corrélation stationnaire et isotrope de Matérn est donnée par :
+Rappel est définie par un paramètre d’échelle $\kappa > 0$ et un
+paramètre de régularité $\nu > 0$. Pour deux positions $s_i$ et $s_j$,
+la fonction de corrélation stationnaire et isotrope de Matérn est donnée
+par :
 
 $$
 \text{Cor}_M(U(s_i), U(s_j)) = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \|s_i - s_j\|)^\nu K_\nu (\kappa \|s_i - s_j\|)
 $$
 
-où $K_\nu$ est la fonction de Bessel modifiée de seconde espèce et $\Gamma(\nu)$ est la fonction gamma.
+où $K_\nu$ est la fonction de Bessel modifiée de seconde espèce et
+$\Gamma(\nu)$ est la fonction gamma.
 
-
-Un champ gaussien $U(s)$ avec covariance de Matérn est solution de l'EDPS fractionnaire suivante :
+Un champ gaussien $U(s)$ avec covariance de Matérn est solution de
+l'EDPS fractionnaire suivante :
 
 $$
 (\kappa^2 - \Delta)^{\alpha/2} u(s) = W(s), \quad s \in \mathbb{R}^d, \quad \alpha = \nu + d/2, \quad \kappa > 0, \quad \nu > 0.
 $$
 
-où :
-- $\Delta$ est l'opérateur de Laplace,
-- $W(s)$ est un bruit blanc gaussien spatial de variance unité.
-
-
+où : - $\Delta$ est l'opérateur de Laplace, - $W(s)$ est un bruit blanc
+gaussien spatial de variance unité.
 
 ### Résolution de l'EDPS sur un maillage
 
-C'est une technique classique des numériciens on se donne un maillage et on résoud l'EDPS sur les points du maillage.  On interpole ensuite au sein du maillage.
+C'est une technique classique des numériciens on se donne un maillage et
+on résoud l'EDPS sur les points du maillage. On interpole ensuite au
+sein du maillage.
 
-La finesse du maillage contrôle la complexité du problème et sa précision
-
-
-
+La finesse du maillage contrôle la complexité du problème et sa
+précision
 
 ## Conclusion
 
-* On dispose d'un outil rapide pour des modèles à variable latente y compris spatiaux (et même spatio  temporels)
+-   On dispose d'un outil rapide pour des modèles à variable latente y
+    compris spatiaux (et même spatio temporels)
 
-* des contraintes dans la modélisation 
+-   des contraintes dans la modélisation
 
-* des habitudes de modélisation à acquérir.
-
-
-
-
-
-
+-   des habitudes de modélisation à acquérir.
 
 ## Références
