@@ -37,12 +37,21 @@ autres.]{.rouge}
 
 ## Installation de INLA
 
-(Ici inutile car INLA est déja sur le cluster 10)
 
 ```{r}
 #| eval: false
 # Base de R INLA
 install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
+```
+
+Si lors de la suite, il y a des problèmes de mise à disposition de binaires, il faut essayer 
+
+```{r}
+#| echo: true
+#| eval: false
+# Base de R INLA
+install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE, type = "binary")
+inla.binary.install()
 ```
 
 ## La réussite en maths
@@ -95,9 +104,10 @@ head(awards)
     récompenses obtenues. Proposer une représentation graphique
 
 ```{r}
+#| warning: false
 #| message: false
 #| eval: false
-#| echo: false
+#| echo: true
 #| label: awards_pres
 
 awards |> ggplot() + aes(x= math, y = num_awards) + geom_point()
@@ -105,13 +115,13 @@ awards |> ggplot() + aes(x= math, y = num_awards) + geom_point()
 
 2.  Proposer un modèle.
 
-<!-- $$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i))\,.$$ -->
+$$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i))\,.$$
 
 3.  Ajustement du modèle
 
 ```{r}
- #| eval: false
- #| label: awards_first_model
+#| eval: false
+#| label: awards_first_model
 
 # Application de la formule avec un modèle de Poisson
 m.pois.lin1 <- inla(num_awards ~ math,
@@ -124,8 +134,8 @@ summary(m.pois.lin1)
     mathématiques
 
 ```{r}
- #| echo: true
- #| label: awards_first_post
+#| echo: true
+#| label: awards_first_post
  
 m.pois.lin1$marginals.fixed$math |> 
   ggplot() + aes(x=x, y = y) + geom_line() + 
@@ -145,11 +155,13 @@ summary(fit2.glm)
     effet aléatoire de la manière suivante. Identifier tous les hyper
     paramètres et toutes les variables latentes.
 
+
 $$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i+E_i)) \quad \text{avec}\quad E_i\overset{ind}{\sim}\mathcal{N}(0,\sigma^2).$$
 
+
 ```{r effet-aleatoire}
- #| echo: true
- #| label: awards_ranef
+#| echo: true
+#| label: awards_ranef
  
 awards <- awards |> mutate(ID = 1:nrow(awards))
 m.pois.lin_surd <- inla(num_awards ~ math + f(ID, model = "iid"),
@@ -181,8 +193,8 @@ m.pois.lin_surd$marginals.hyperpar$`Precision for ID` |>  as.data.frame() |>
     l'élève 1.
 
 ```{r}
- #| echo: true
- #| label: awards_post_ranef
+#| echo: true
+#| label: awards_post_ranef
 m.pois.lin_surd$marginals.random$ID$index.1
 m.pois.lin_surd$marginals.random$ID$index.1 |>  ggplot() + aes(x=x, y = y) + geom_line()
 ```
