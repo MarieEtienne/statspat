@@ -95,9 +95,11 @@ head(awards)
     récompenses obtenues. Proposer une représentation graphique
 
 ```{r}
- #| eval: false
- #| echo: false
- #| label: awards_pres
+#| message: false
+#| eval: false
+#| echo: false
+#| label: awards_pres
+
 awards |> ggplot() + aes(x= math, y = num_awards) + geom_point()
 ```
 
@@ -110,6 +112,7 @@ awards |> ggplot() + aes(x= math, y = num_awards) + geom_point()
 ```{r}
  #| eval: false
  #| label: awards_first_model
+
 # Application de la formule avec un modèle de Poisson
 m.pois.lin1 <- inla(num_awards ~ math,
   data = awards, family = "poisson")
@@ -123,6 +126,7 @@ summary(m.pois.lin1)
 ```{r}
  #| echo: true
  #| label: awards_first_post
+ 
 m.pois.lin1$marginals.fixed$math |> 
   ggplot() + aes(x=x, y = y) + geom_line() + 
   stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = "red")
