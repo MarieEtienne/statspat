@@ -1,5 +1,5 @@
 ---
-title: "TD4 - Krigeage avec INLA"
+title: "Krigeage avec INLA"
 author:
   - name: Marie-Pierre Etienne (sur la base des idées expolorée dans [FinistR2023](https://stateofther.github.io/finistR2023/) )
     affiliation: 
