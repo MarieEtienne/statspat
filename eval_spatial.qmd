@@ -1,0 +1,147 @@
+---
+title: "Statistique spatiale : Evaluation "
+format: html
+toc: true
+date: last-modified
+css: mpe_pres_revealjs.css
+execute: 
+  freeze: auto
+---
+
+
+Toutes les données sont disponibles dans [https://github.com/MarieEtienne/statspat/data_LNH](https://github.com/MarieEtienne/statspat/data_LNH)
+
+
+# Partie 1 — Cartographie de l’exposition aux pesticides et agrégation par départements (8 pts)
+
+## Prise en main des données
+
+On dispose de mesures ponctuelles d’exposition aux pesticides atmosphériques (en $ng . m^{-3}$) ainsi que de covariables environnementales. L’objectif de cette partie est :
+
+-   d’estimer l’exposition en tout point à l'échelle de la France par krigeage en tenant compte des covariables,
+
+-   d’en déduire, pour chaque département, une exposition moyenne (moyenne surfacique).
+
+Les données fournies sont :
+
+-   `pesticide_points.csv` : points de mesure (WGS84, EPSG:4326) contenant l'exposition aux pesticides, ainsi qu'un niveau d'usage agricole (indice normalisé entre 0 et 1), la quantité de pluie par an en $mm.an^{-1}$, la température moyenne en degré celsius
+
+-   `prediction_grid.csv` : grille de prédiction (WGS84, EPSG:4326)
+
+-   `departements_lambert93.geojson` : départements (Lambert-93, EPSG:2154) (on peut lire un fichier spatial `geojson` en `R` avec le package `geojsonsf` et la fonction `geojson_sf`)
+
+**Question 1** Charger les points de mesure et les départements et proposer une visualisation des dpartements et des mesures d'exposition
+
+**Rendu 1** :
+
+-   le code et un court commentaire (2–3 lignes) sur les points clés.
+-   une figure
+
+## Prédiction de l'exposition en tout point
+
+On note $D$ le domaine spatial $(Z(s), s\in D=$ l’exposition (ng/m³) au point $s$.
+
+**Question 2** quel pourrait être l'intérêt de modéliser $log(Z(s))$ plut\$ot que \$Z(s) ?
+
+**Rendu 2** : Répondez en 2/3 lignes
+
+**Question 3** Prédire l'exposition en tout point de la grille.
+
+**Rendu 3** : Justifier la démarche et le choix du modèle proposé. Visualiser les prédictions sur une carte ainsi que la carte des variances de prédiction. Ecrire explicitement le modèle retenu.
+
+**Question 4** Quelle démarche faudrait il adopter pour comparer les divers modèles proposés et l'intérêt de prédire $log Z$ plutôt que $Z$ **Rendu 4** : Expliquer la démarche que vous pourriez mettre en oeuvre pour valider proprement le modèle. Il n'est pas demandé de l'implémenter.
+
+**Question 5** On souhaite estimer un niveau moyen d'exposition à l'échelle de chaque département $$Z_i=\frac{1}{|A_i|} \int_{s\in A_i} Z(s)  ds.$$ Expliquer comment utiliser ce qui précède pour construire un estimateur de cette quantité et l'implémenter. Comparer avec la valeur moyenne des mesures au sein de chaque département.
+
+**Rendu 5** : le code correspondant expliqué et la comparaison. La tableau donnant la valeur par département que vous proposez en regard de la valeur moyenne des données brutes. Une carte de niveau d'exposition par département.
+
+# Partie 2 — Modélisation spatiale du risque de lymphomes non hodgkiniens (SAR) (6 pts)
+
+On s’intéresse au nombre annuel de cas de lymphomes non hodgkiniens (LNH) observés dans chaque département de France métropolitaine. Pour chaque département $i$, on dispose :
+
+-   du nombre observé de cas $Y_i$,
+-   du nombre de cas attendus $Ei$ par projection de la prévalence à l'échelle de la france ( $E_i$ est proportionnel à la taille de la population dans le département et peut etre compris comme un effort d'échantillonnage)
+-   d’une structure de voisinage entre départements.
+
+On note $\lambda_i$ le risque relatif de LNH dans le département $i$.
+
+**Question 6** Proposez un modèle de référence sans prendre en compte els aspects spatiaux qui relie les cas observés aux cas attendus et à l’exposition.
+
+**Rendu 6** La formulation mathématique du modèle et une interprétation du ou des paramètres de ce modèle.
+
+**Question 7** En analysant la structure des erreurs de prédiction, conclure sur la nécessité (ou non) d’introduire un effet spatial..
+
+**Rendu 7** Expliquer comment mettre en évidence une structure spatiale (sur quel critère on peut se baser et son interprétation) et conclure sur les données.
+
+**Question 8** Proposer un modèle qui permetd e prendre en compte une éventuelle structure spatiale.
+
+**Rendu 8** Ecrire le modèle, décrire le rôle des paramètres et l'ajuster. Interpréeter les résultats obtenus. Comparer qualitativement les résultats avec le modèle sans effet spatial. Vérifier si l’autocorrélation spatiale est correctement prise en compte dans le modèle SAR.
+
+# Partie 3 — Modélisation conjointe sous INLA : exposition aux pesticides et risque de LNH (6 pts)
+
+Dans cette partie, on adopte une approche hiérarchique bayésienne afin de modéliser conjointement :
+
+-   le champ spatial d’exposition aux pesticides,
+
+-   le risque de lymphomes non hodgkiniens (LNH),
+
+-   propager l’incertitude liée à l’agrégation spatiale de l’exposition,
+
+-   comparer cette approche avec les résultats fréquentistes des Parties 1 et 2.
+
+**Question 9** Expliquer brièvement pourquoi l’approche krigeage → moyenne par département → modèle peut sous-estimer l’incertitude associée à l’effet des pesticides et l’intérêt d’un modèle conjoint.
+
+**Rendu 9** un court paragraphe (5–6 lignes).
+
+On souhaite construire un modèle hiérarchique proposé qui prend en compte
+
+On considère le modèle suivant
+
+a.  Modèle d"observation (santé) Pour chaque département $i$, on modélise
+
+$$Y_i∣\lambda_i\sim \mathcal{P} (E_i \lambda_i)$$ $$ log⁡\lambda_iλi)\alpha + \beta Z_i + U_i$$
+
+où
+
+-   $Z_i$ est l’exposition moyenne latente aux pesticides dans le département $i$
+-   $U_i$ est un effet spatial structuré.
+
+b.  Modèle couche latente
+
+-   Le champ spatial $U_i$ par un modèle sur grille,
+
+-   Les $Z_i$ sont obtenus comme la moyenne au sein du département $i$ du champs d'exposition aux pesticides continu en espace (cf première partie)
+
+**Question 10** Détailler ce modèle et spécifier les paramètres, hyperparamètres, processus latents et observations
+
+**Rendu 10** Le modèle complètement écrit sous forme mathématique et le role de chaque terme du modèle, un schéma type DAG peut aider.
+
+On va maintenant implémenter par étape ce modèle dans INLA
+
+**Question 11** Etape 1. implémenter la partie du modèle qui modélise l'exposition et calcule une exposition moyenne par département, pour cela vous devez
+
+-   construire le maillage SPDE à partir des départements,
+
+-   relier le champ continu aux départements (intégration spatiale ou approximation).
+
+-   S'assurer que cette partie tourne et produire une carte d'exposition moyenne par département.
+
+**Rendu 11** Le code détaillé et commenté, ainsi que la carte d'exposition par département.
+
+**Question 12** Etape 2 Implémenter le modèle de poisson sans la partie exposition mais avec le terme spatial.
+
+**Rendu 12** Le code détaillé et commenté, et la carte des $\lambda_i$ par dépârtements
+
+**Question 13** Regrouper ce qui a été fait dans les questions 11 et 12 pour construire le modèle complet et produire la carte de l'excès de risque par département.
+
+**Rendu 13** Le code commenté et la carte des excès de risque par département $\lambda_i$.
+
+**Question 14** Analyser le modèle, l'intérêt des différents termes.
+
+**Rendu 14** un court paragraphe qui commentent les résultats obtenus pour chacun des termes du modèle
+
+# Partie 4 — Discussion
+
+**Question 15** Quelle approche proposeriez vous pour évaluer l'évolution du nombre de cas de LNH au cours du temps
+
+**Rendu 15** Un paragraphe détaillé qui propose une stsratégie et ou des pistes d'extension du modèle pour prendre en compte une évolution temporelle.
