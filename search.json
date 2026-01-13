@@ -476,11 +476,25 @@
     "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
   },
   {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
+    "objectID": "eval_spatial.html",
+    "href": "eval_spatial.html",
+    "title": "Statistique spatiale : Evaluation",
     "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+    "text": "Toutes les données sont disponibles dans https://github.com/MarieEtienne/statspat/data_LNH"
+  },
+  {
+    "objectID": "eval_spatial.html#prise-en-main-des-données",
+    "href": "eval_spatial.html#prise-en-main-des-données",
+    "title": "Statistique spatiale : Evaluation",
+    "section": "Prise en main des données",
+    "text": "Prise en main des données\nOn dispose de mesures ponctuelles d’exposition aux pesticides atmosphériques (en \\(ng . m^{-3}\\)) ainsi que de covariables environnementales. L’objectif de cette partie est :\n\nd’estimer l’exposition en tout point à l’échelle de la France par krigeage en tenant compte des covariables,\nd’en déduire, pour chaque département, une exposition moyenne (moyenne surfacique).\n\nLes données fournies sont :\n\npesticide_points.csv : points de mesure (WGS84, EPSG:4326) contenant l’exposition aux pesticides, ainsi qu’un niveau d’usage agricole (indice normalisé entre 0 et 1), la quantité de pluie par an en \\(mm.an^{-1}\\), la température moyenne en degré celsius\nprediction_grid.csv : grille de prédiction (WGS84, EPSG:4326)\ndepartements_lambert93.geojson : départements (Lambert-93, EPSG:2154) (on peut lire un fichier spatial geojson en R avec le package geojsonsf et la fonction geojson_sf)\n\nQuestion 1 Charger les points de mesure et les départements et proposer une visualisation des dpartements et des mesures d’exposition\nRendu 1 :\n\nle code et un court commentaire (2–3 lignes) sur les points clés.\nune figure"
+  },
+  {
+    "objectID": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
+    "href": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
+    "title": "Statistique spatiale : Evaluation",
+    "section": "Prédiction de l’exposition en tout point",
+    "text": "Prédiction de l’exposition en tout point\nOn note \\(D\\) le domaine spatial \\((Z(s), s\\in D=\\) l’exposition (ng/m³) au point \\(s\\).\nQuestion 2 quel pourrait être l’intérêt de modéliser \\(log(Z(s))\\) plut$ot que $Z(s) ?\nRendu 2 : Répondez en 2/3 lignes\nQuestion 3 Prédire l’exposition en tout point de la grille.\nRendu 3 : Justifier la démarche et le choix du modèle proposé. Visualiser les prédictions sur une carte ainsi que la carte des variances de prédiction. Ecrire explicitement le modèle retenu.\nQuestion 4 Quelle démarche faudrait il adopter pour comparer les divers modèles proposés et l’intérêt de prédire \\(log Z\\) plutôt que \\(Z\\) Rendu 4 : Expliquer la démarche que vous pourriez mettre en oeuvre pour valider proprement le modèle. Il n’est pas demandé de l’implémenter.\nQuestion 5 On souhaite estimer un niveau moyen d’exposition à l’échelle de chaque département \\[Z_i=\\frac{1}{|A_i|} \\int_{s\\in A_i} Z(s)  ds.\\] Expliquer comment utiliser ce qui précède pour construire un estimateur de cette quantité et l’implémenter. Comparer avec la valeur moyenne des mesures au sein de chaque département.\nRendu 5 : le code correspondant expliqué et la comparaison. La tableau donnant la valeur par département que vous proposez en regard de la valeur moyenne des données brutes. Une carte de niveau d’exposition par département."
   },
   {
     "objectID": "01_pluies.html",
@@ -509,6 +523,13 @@
     "title": "TD1 - Statistique Spatiale",
     "section": "Directives",
     "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
+    "section": "",
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
   },
   {
     "objectID": "index.html",

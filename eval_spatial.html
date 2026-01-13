@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>References – Statistique Spatiale</title>
+<title>Statistique spatiale : Evaluation – Statistique Spatiale</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -101,9 +67,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="mpe_pres_revealjs.css">
 </head>
 
 <body class="nav-fixed">
@@ -222,7 +216,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#pour-approfondir-ou-compléter-le-cours" id="toc-pour-approfondir-ou-compléter-le-cours" class="nav-link active" data-scroll-target="#pour-approfondir-ou-compléter-le-cours">Pour approfondir ou compléter le cours</a></li>
+  <li><a href="#partie-1-cartographie-de-lexposition-aux-pesticides-et-agrégation-par-départements-8-pts" id="toc-partie-1-cartographie-de-lexposition-aux-pesticides-et-agrégation-par-départements-8-pts" class="nav-link active" data-scroll-target="#partie-1-cartographie-de-lexposition-aux-pesticides-et-agrégation-par-départements-8-pts">Partie 1 — Cartographie de l’exposition aux pesticides et agrégation par départements (8 pts)</a>
+  <ul class="collapse">
+  <li><a href="#prise-en-main-des-données" id="toc-prise-en-main-des-données" class="nav-link" data-scroll-target="#prise-en-main-des-données">Prise en main des données</a></li>
+  <li><a href="#prédiction-de-lexposition-en-tout-point" id="toc-prédiction-de-lexposition-en-tout-point" class="nav-link" data-scroll-target="#prédiction-de-lexposition-en-tout-point">Prédiction de l’exposition en tout point</a></li>
+  </ul></li>
+  <li><a href="#partie-2-modélisation-spatiale-du-risque-de-lymphomes-non-hodgkiniens-sar-6-pts" id="toc-partie-2-modélisation-spatiale-du-risque-de-lymphomes-non-hodgkiniens-sar-6-pts" class="nav-link" data-scroll-target="#partie-2-modélisation-spatiale-du-risque-de-lymphomes-non-hodgkiniens-sar-6-pts">Partie 2 — Modélisation spatiale du risque de lymphomes non hodgkiniens (SAR) (6 pts)</a></li>
+  <li><a href="#partie-3-modélisation-conjointe-sous-inla-exposition-aux-pesticides-et-risque-de-lnh-6-pts" id="toc-partie-3-modélisation-conjointe-sous-inla-exposition-aux-pesticides-et-risque-de-lnh-6-pts" class="nav-link" data-scroll-target="#partie-3-modélisation-conjointe-sous-inla-exposition-aux-pesticides-et-risque-de-lnh-6-pts">Partie 3 — Modélisation conjointe sous INLA : exposition aux pesticides et risque de LNH (6 pts)</a></li>
+  <li><a href="#partie-4-discussion" id="toc-partie-4-discussion" class="nav-link" data-scroll-target="#partie-4-discussion">Partie 4 — Discussion</a></li>
   </ul>
 </nav>
     </div>
@@ -231,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title">Statistique spatiale : Evaluation</h1>
 </div>
 
 
@@ -239,12 +240,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-title-meta">
 
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">Last Updated on January, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -254,30 +249,107 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="hidden">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>liste <span class="ot">&lt;-</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">readLines</span>(<span class="st">'spatstat.bib'</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(stringr<span class="sc">::</span><span class="fu">str_detect</span>(value, <span class="at">pattern =</span> <span class="st">'@|keywords'</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowid_to_column</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">int_part =</span> <span class="fu">floor</span>((rowid<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span>), <span class="at">parity =</span> rowid <span class="sc">%%</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>rowid) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>( <span class="at">values_from =</span> value, <span class="at">names_from =</span> parity, <span class="at">names_prefix =</span> <span class="st">"key"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">key1 =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(key1, <span class="at">pattern =</span> <span class="st">'@[:alnum:]+</span><span class="sc">\\</span><span class="st">{'</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">key1 =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(key1, <span class="at">pattern =</span> <span class="st">','</span>)) </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>statspat_liste <span class="ot">&lt;-</span> liste <span class="sc">%&gt;%</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(key0, <span class="st">'spatstat'</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(key1) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">NoCite</span>(<span class="at">bib =</span> myBib, statspat_liste)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<section id="pour-approfondir-ou-compléter-le-cours" class="level2">
-<h2 class="anchored" data-anchor-id="pour-approfondir-ou-compléter-le-cours">Pour approfondir ou compléter le cours</h2>
-<p>Gaetan, C., X. Guyon, and others (2010). Vol. 90. Springer.</p>
+<p>Toutes les données sont disponibles dans <a href="https://github.com/MarieEtienne/statspat/data_LNH">https://github.com/MarieEtienne/statspat/data_LNH</a></p>
+<section id="partie-1-cartographie-de-lexposition-aux-pesticides-et-agrégation-par-départements-8-pts" class="level1">
+<h1>Partie 1 — Cartographie de l’exposition aux pesticides et agrégation par départements (8 pts)</h1>
+<section id="prise-en-main-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="prise-en-main-des-données">Prise en main des données</h2>
+<p>On dispose de mesures ponctuelles d’exposition aux pesticides atmosphériques (en <span class="math inline">\(ng . m^{-3}\)</span>) ainsi que de covariables environnementales. L’objectif de cette partie est :</p>
+<ul>
+<li><p>d’estimer l’exposition en tout point à l’échelle de la France par krigeage en tenant compte des covariables,</p></li>
+<li><p>d’en déduire, pour chaque département, une exposition moyenne (moyenne surfacique).</p></li>
+</ul>
+<p>Les données fournies sont :</p>
+<ul>
+<li><p><code>pesticide_points.csv</code> : points de mesure (WGS84, EPSG:4326) contenant l’exposition aux pesticides, ainsi qu’un niveau d’usage agricole (indice normalisé entre 0 et 1), la quantité de pluie par an en <span class="math inline">\(mm.an^{-1}\)</span>, la température moyenne en degré celsius</p></li>
+<li><p><code>prediction_grid.csv</code> : grille de prédiction (WGS84, EPSG:4326)</p></li>
+<li><p><code>departements_lambert93.geojson</code> : départements (Lambert-93, EPSG:2154) (on peut lire un fichier spatial <code>geojson</code> en <code>R</code> avec le package <code>geojsonsf</code> et la fonction <code>geojson_sf</code>)</p></li>
+</ul>
+<p><strong>Question 1</strong> Charger les points de mesure et les départements et proposer une visualisation des dpartements et des mesures d’exposition</p>
+<p><strong>Rendu 1</strong> :</p>
+<ul>
+<li>le code et un court commentaire (2–3 lignes) sur les points clés.</li>
+<li>une figure</li>
+</ul>
+</section>
+<section id="prédiction-de-lexposition-en-tout-point" class="level2">
+<h2 class="anchored" data-anchor-id="prédiction-de-lexposition-en-tout-point">Prédiction de l’exposition en tout point</h2>
+<p>On note <span class="math inline">\(D\)</span> le domaine spatial <span class="math inline">\((Z(s), s\in D=\)</span> l’exposition (ng/m³) au point <span class="math inline">\(s\)</span>.</p>
+<p><strong>Question 2</strong> quel pourrait être l’intérêt de modéliser <span class="math inline">\(log(Z(s))\)</span> plut$ot que $Z(s) ?</p>
+<p><strong>Rendu 2</strong> : Répondez en 2/3 lignes</p>
+<p><strong>Question 3</strong> Prédire l’exposition en tout point de la grille.</p>
+<p><strong>Rendu 3</strong> : Justifier la démarche et le choix du modèle proposé. Visualiser les prédictions sur une carte ainsi que la carte des variances de prédiction. Ecrire explicitement le modèle retenu.</p>
+<p><strong>Question 4</strong> Quelle démarche faudrait il adopter pour comparer les divers modèles proposés et l’intérêt de prédire <span class="math inline">\(log Z\)</span> plutôt que <span class="math inline">\(Z\)</span> <strong>Rendu 4</strong> : Expliquer la démarche que vous pourriez mettre en oeuvre pour valider proprement le modèle. Il n’est pas demandé de l’implémenter.</p>
+<p><strong>Question 5</strong> On souhaite estimer un niveau moyen d’exposition à l’échelle de chaque département <span class="math display">\[Z_i=\frac{1}{|A_i|} \int_{s\in A_i} Z(s)  ds.\]</span> Expliquer comment utiliser ce qui précède pour construire un estimateur de cette quantité et l’implémenter. Comparer avec la valeur moyenne des mesures au sein de chaque département.</p>
+<p><strong>Rendu 5</strong> : le code correspondant expliqué et la comparaison. La tableau donnant la valeur par département que vous proposez en regard de la valeur moyenne des données brutes. Une carte de niveau d’exposition par département.</p>
+</section>
+</section>
+<section id="partie-2-modélisation-spatiale-du-risque-de-lymphomes-non-hodgkiniens-sar-6-pts" class="level1">
+<h1>Partie 2 — Modélisation spatiale du risque de lymphomes non hodgkiniens (SAR) (6 pts)</h1>
+<p>On s’intéresse au nombre annuel de cas de lymphomes non hodgkiniens (LNH) observés dans chaque département de France métropolitaine. Pour chaque département <span class="math inline">\(i\)</span>, on dispose :</p>
+<ul>
+<li>du nombre observé de cas <span class="math inline">\(Y_i\)</span>,</li>
+<li>du nombre de cas attendus <span class="math inline">\(Ei\)</span> par projection de la prévalence à l’échelle de la france ( <span class="math inline">\(E_i\)</span> est proportionnel à la taille de la population dans le département et peut etre compris comme un effort d’échantillonnage)</li>
+<li>d’une structure de voisinage entre départements.</li>
+</ul>
+<p>On note <span class="math inline">\(\lambda_i\)</span> le risque relatif de LNH dans le département <span class="math inline">\(i\)</span>.</p>
+<p><strong>Question 6</strong> Proposez un modèle de référence sans prendre en compte els aspects spatiaux qui relie les cas observés aux cas attendus et à l’exposition.</p>
+<p><strong>Rendu 6</strong> La formulation mathématique du modèle et une interprétation du ou des paramètres de ce modèle.</p>
+<p><strong>Question 7</strong> En analysant la structure des erreurs de prédiction, conclure sur la nécessité (ou non) d’introduire un effet spatial..</p>
+<p><strong>Rendu 7</strong> Expliquer comment mettre en évidence une structure spatiale (sur quel critère on peut se baser et son interprétation) et conclure sur les données.</p>
+<p><strong>Question 8</strong> Proposer un modèle qui permetd e prendre en compte une éventuelle structure spatiale.</p>
+<p><strong>Rendu 8</strong> Ecrire le modèle, décrire le rôle des paramètres et l’ajuster. Interpréeter les résultats obtenus. Comparer qualitativement les résultats avec le modèle sans effet spatial. Vérifier si l’autocorrélation spatiale est correctement prise en compte dans le modèle SAR.</p>
+</section>
+<section id="partie-3-modélisation-conjointe-sous-inla-exposition-aux-pesticides-et-risque-de-lnh-6-pts" class="level1">
+<h1>Partie 3 — Modélisation conjointe sous INLA : exposition aux pesticides et risque de LNH (6 pts)</h1>
+<p>Dans cette partie, on adopte une approche hiérarchique bayésienne afin de modéliser conjointement :</p>
+<ul>
+<li><p>le champ spatial d’exposition aux pesticides,</p></li>
+<li><p>le risque de lymphomes non hodgkiniens (LNH),</p></li>
+<li><p>propager l’incertitude liée à l’agrégation spatiale de l’exposition,</p></li>
+<li><p>comparer cette approche avec les résultats fréquentistes des Parties 1 et 2.</p></li>
+</ul>
+<p><strong>Question 9</strong> Expliquer brièvement pourquoi l’approche krigeage → moyenne par département → modèle peut sous-estimer l’incertitude associée à l’effet des pesticides et l’intérêt d’un modèle conjoint.</p>
+<p><strong>Rendu 9</strong> un court paragraphe (5–6 lignes).</p>
+<p>On souhaite construire un modèle hiérarchique proposé qui prend en compte</p>
+<p>On considère le modèle suivant</p>
+<ol type="a">
+<li>Modèle d”observation (santé) Pour chaque département <span class="math inline">\(i\)</span>, on modélise</li>
+</ol>
+<p><span class="math display">\[Y_i∣\lambda_i\sim \mathcal{P} (E_i \lambda_i)\]</span> <span class="math display">\[ log⁡\lambda_iλi)\alpha + \beta Z_i + U_i\]</span></p>
+<p>où</p>
+<ul>
+<li><span class="math inline">\(Z_i\)</span> est l’exposition moyenne latente aux pesticides dans le département <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(U_i\)</span> est un effet spatial structuré.</li>
+</ul>
+<ol start="2" type="a">
+<li>Modèle couche latente</li>
+</ol>
+<ul>
+<li><p>Le champ spatial <span class="math inline">\(U_i\)</span> par un modèle sur grille,</p></li>
+<li><p>Les <span class="math inline">\(Z_i\)</span> sont obtenus comme la moyenne au sein du département <span class="math inline">\(i\)</span> du champs d’exposition aux pesticides continu en espace (cf première partie)</p></li>
+</ul>
+<p><strong>Question 10</strong> Détailler ce modèle et spécifier les paramètres, hyperparamètres, processus latents et observations</p>
+<p><strong>Rendu 10</strong> Le modèle complètement écrit sous forme mathématique et le role de chaque terme du modèle, un schéma type DAG peut aider.</p>
+<p>On va maintenant implémenter par étape ce modèle dans INLA</p>
+<p><strong>Question 11</strong> Etape 1. implémenter la partie du modèle qui modélise l’exposition et calcule une exposition moyenne par département, pour cela vous devez</p>
+<ul>
+<li><p>construire le maillage SPDE à partir des départements,</p></li>
+<li><p>relier le champ continu aux départements (intégration spatiale ou approximation).</p></li>
+<li><p>S’assurer que cette partie tourne et produire une carte d’exposition moyenne par département.</p></li>
+</ul>
+<p><strong>Rendu 11</strong> Le code détaillé et commenté, ainsi que la carte d’exposition par département.</p>
+<p><strong>Question 12</strong> Etape 2 Implémenter le modèle de poisson sans la partie exposition mais avec le terme spatial.</p>
+<p><strong>Rendu 12</strong> Le code détaillé et commenté, et la carte des <span class="math inline">\(\lambda_i\)</span> par dépârtements</p>
+<p><strong>Question 13</strong> Regrouper ce qui a été fait dans les questions 11 et 12 pour construire le modèle complet et produire la carte de l’excès de risque par département.</p>
+<p><strong>Rendu 13</strong> Le code commenté et la carte des excès de risque par département <span class="math inline">\(\lambda_i\)</span>.</p>
+<p><strong>Question 14</strong> Analyser le modèle, l’intérêt des différents termes.</p>
+<p><strong>Rendu 14</strong> un court paragraphe qui commentent les résultats obtenus pour chacun des termes du modèle</p>
+</section>
+<section id="partie-4-discussion" class="level1">
+<h1>Partie 4 — Discussion</h1>
+<p><strong>Question 15</strong> Quelle approche proposeriez vous pour évaluer l’évolution du nombre de cas de LNH au cours du temps</p>
+<p><strong>Rendu 15</strong> Un paragraphe détaillé qui propose une stsratégie et ou des pistes d’extension du modèle pour prendre en compte une évolution temporelle.</p>
 
 
 </section>
