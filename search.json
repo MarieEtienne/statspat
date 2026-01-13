@@ -842,14 +842,14 @@
   {
     "objectID": "04_tp_inlakrigeage.html",
     "href": "04_tp_inlakrigeage.html",
-    "title": "TD4 - Krigeage avec INLA",
+    "title": "Krigeage avec INLA",
     "section": "",
     "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\nlibrary(INLA)\nlibrary(sf)\nlibrary(gstat)"
   },
   {
     "objectID": "04_tp_inlakrigeage.html#references",
     "href": "04_tp_inlakrigeage.html#references",
-    "title": "TD4 - Krigeage avec INLA",
+    "title": "Krigeage avec INLA",
     "section": "References",
     "text": "References"
   }
