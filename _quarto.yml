@@ -32,6 +32,8 @@ website:
           - href: tp_reseau.qmd
           - href: 02_tpintro_inla.qmd
           - href: 03_tp_inlaspatial.qmd
+          - href: 04_tp_inlakrigeage.qmd
+          
       - text: "Evaluation"
         menu: 
           - href: eval_spatial.qmd
