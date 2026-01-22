@@ -70,6 +70,7 @@ l'article @rue2009approximate
 ```{r hierarchique}
 library(ggplot2)
 library(ggforce)
+library(ggthemes)
 
 # Données pour les cercles représentant les couches
 layers <- data.frame(
@@ -264,14 +265,17 @@ données rend la construction d'algorithme efficace difficile.
 
 # Une alternative aux méthodes de Monte Carlo - INLA
 
-
 ## Qu'est ce qu'INLA ?
 
-* INLA  pour [Integrated Nested Laplace Approximation]{.rouge}
+-   INLA pour [Integrated Nested Laplace Approximation]{.rouge}
 
-* C'est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans @rue2009approximate, puis @lindgren2010explicit dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.
+-   C'est une méthode alternative aux méthodes MCMC pour mener une
+    inférence bayésienne. Premières idées dans @rue2009approximate, puis
+    @lindgren2010explicit dans le cadre spatial et le lien avec les
+    méthjodes de résolutions numériques.
 
-* R-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models.
+-   R-INLA is a package in R that do approximate Bayesian inference for
+    Latent Gaussian Models.
 
 ## Le cadre de modélisation considéré - Modèles gaussiens latents
 
@@ -309,10 +313,10 @@ $$
 $$
 
 Ces effets suivent un champ aléatoire de [Markov Gaussien
-(GMRF)]{.rouge}. 
+(GMRF)]{.rouge}.
 
-Les observations sont indépendantes conditionnellement
-aux variables latents et aux hyperparamètres $\theta_1$.
+Les observations sont indépendantes conditionnellement aux variables
+latents et aux hyperparamètres $\theta_1$.
 
 ### Implication concrète
 
