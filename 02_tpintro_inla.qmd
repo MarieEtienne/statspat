@@ -159,7 +159,7 @@ summary(fit2.glm)
 $$Y_i\overset{ind}{\sim}\mathcal{P}(\exp(\mu+\alpha\cdot x_i+E_i)) \quad \text{avec}\quad E_i\overset{ind}{\sim}\mathcal{N}(0,\sigma^2).$$
 
 
-```{r effet-aleatoire}
+```{r}
 #| echo: true
 #| label: awards_ranef
  
