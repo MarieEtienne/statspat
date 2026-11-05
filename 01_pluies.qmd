@@ -1,5 +1,5 @@
 ---
-title: "TD1 - Statistique Spatiale"
+title: "TD2 - Statistique Spatiale"
 author:
   - name: Marie-Pierre Etienne (sur la base du TD  de Liliane Bel)
     affiliation: 

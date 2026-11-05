@@ -25,19 +25,6 @@ Les packages que nous utiliserons sont disponibles sur les clusters
 [cluster1](https://clust-n1.ensai.fr/) et
 [cluster2](https://clust-n2.ensai.fr/) uniquement !
 
-## Clusters
-
-Le but de ce premier TP est de se familiariser avec les données
-spatiales, de se creuser un peu la tête et de chercher des solutions. Il
-est donc vivement déconseillé de faire appel à l'IA à la moindre
-difficulté. Utilisez
-
-1.  votre cerveau,
-2.  votre voisin,
-3.  votre enseignant.
-4.  en désespoir de cause, si personne ne résoud votre question Claude
-    sera votre dernier espoir !
-
 ## Objectifs du TP
 
 L'objectif de ce TP est d'acquérir les outils de manipulation de données
@@ -53,6 +40,16 @@ spatiales utiles pour la manipulation de celles-ci en R, notamment pour
 - calculer des surfaces ;
 - construire une grille régulière (fishnet) et agréger une variable par
   mailles.
+
+Le but des TPS en général est de se creuser un peu la tête et de
+chercher des solutions. Il est donc vivement déconseillé de faire appel
+à l'IA à la moindre difficulté. Utilisez
+
+1.  votre cerveau,
+2.  votre voisin,
+3.  votre enseignant.
+4.  en désespoir de cause, si personne ne résoud votre question Claude
+    sera votre dernier espoir !
 
 ## Packages
 
