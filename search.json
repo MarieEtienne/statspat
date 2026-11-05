@@ -1,59 +1,206 @@
 [
   {
-    "objectID": "02_tpintro_inla.html",
-    "href": "02_tpintro_inla.html",
-    "title": "TD4 - Introduction INLA",
+    "objectID": "tp_reseau.html",
+    "href": "tp_reseau.html",
+    "title": "TD3 : Modèles spatiaux et régression SAR",
     "section": "",
-    "text": "Ce TP est construit à partir des idées explorées durant la session FinistR2023"
+    "text": "Pêches et Océans Canada conduit chaque année des campagnes de suivi dans le Golf du Saint Laurent. Le plan de suivi est construit à partir d’une stratification du golfe (strates spatiales construites pour avoir des habitats relativement homogènes). Plusieurs mesures par strates sont faites et nous avons ici accès à la valeur vomyenne de ces mesures pour chaque strate.\nPlus précisément, Les variables d’intérêt sont\nLes packages utilisés seront\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(spdep)\n\nLoading required package: spData\nTo access larger datasets in this package, install the spDataLarge\npackage with: `install.packages('spDataLarge',\nrepos='https://nowosad.github.io/drat/', type='source')`\n\nlibrary(spatialreg)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\n\nAttaching package: 'spatialreg'\n\nThe following objects are masked from 'package:spdep':\n\n    get.ClusterOption, get.coresOption, get.mcOption,\n    get.VerboseOption, get.ZeroPolicyOption, set.ClusterOption,\n    set.coresOption, set.mcOption, set.VerboseOption,\n    set.ZeroPolicyOption\n\n# library(GGally) #eventuellement pour des stats desc \nlibrary(purrr) # pour la validation croisée"
   },
   {
-    "objectID": "02_tpintro_inla.html#introduction",
-    "href": "02_tpintro_inla.html#introduction",
-    "title": "TD4 - Introduction INLA",
-    "section": "Introduction",
-    "text": "Introduction\nPrésentation de la méthodologie INLA (integrated nested Laplace approximation) en utilisant les packages {INLA}.\nRessources :\n\nhttps://www.r-inla.org/home\nhttps://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf\n\nIMPORTANT : Utiliser le cluster 10 !!! INLA n’est pas installé sur les autres."
+    "objectID": "tp_reseau.html#questions",
+    "href": "tp_reseau.html#questions",
+    "title": "TD3 : Modèles spatiaux et régression SAR",
+    "section": "Questions",
+    "text": "Questions\n\nQue mesure le coefficient associé à temperature ?\nReprésenter sptialement les résdus. Qu’en pensez vous ?\nPourquoi tester l’autocorrélation spatiale des résidus ? Que vaut le test de Moran sur ces résidus ?\nQue conclure si les résidus présentent une structure spatiale ?"
   },
   {
-    "objectID": "02_tpintro_inla.html#installation-de-inla",
-    "href": "02_tpintro_inla.html#installation-de-inla",
-    "title": "TD4 - Introduction INLA",
-    "section": "Installation de INLA",
-    "text": "Installation de INLA\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE)\n\nSi lors de la suite, il y a des problèmes de mise à disposition de binaires, il faut essayer\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE, type = \"binary\")\ninla.binary.install()"
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistique Spatiale",
+    "section": "",
+    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
   },
   {
-    "objectID": "02_tpintro_inla.html#la-réussite-en-maths",
-    "href": "02_tpintro_inla.html#la-réussite-en-maths",
-    "title": "TD4 - Introduction INLA",
-    "section": "La réussite en maths",
-    "text": "La réussite en maths\n\nChargement de packages\n\n# Chargement des packages\nlibrary(tidyverse)\nlibrary(INLA)\nlibrary(lme4) # pour comparer avec l'approche frequentiste \n\nLe jeu de données awards contient le nombre de récompenses (num_awards) obtenues en fonction des résultats en mathématique (math) pour une classe de 200 élèves.\nLa réponse mesurée est un comptage.\n\n# Chargement des donnees\nload(\"data/awards.RData\")\nhead(awards)\n\n\n\n\n\n\n\n\n\n\n\n\nOn souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique\n\n\nawards |&gt; ggplot() + aes(x= math, y = num_awards) + geom_point()\n\n\nProposer un modèle.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i))\\,.\\]\n\nAjustement du modèle\n\n\n# Application de la formule avec un modèle de Poisson\nm.pois.lin1 &lt;- inla(num_awards ~ math,\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin1)\n#Vous pouvez éventuellement comparer à ce que donneraitjags\n\n\nQuelle est la distribution a posteriori pour l’effet des mathématiques\n\n\nm.pois.lin1$marginals.fixed$math |&gt; \n  ggplot() + aes(x=x, y = y) + geom_line() + \n  stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = \"red\")\n\n\nComparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance\n\n\nfit2.glm &lt;- glm(num_awards ~ math, family=\"poisson\", data = awards)\nsummary(fit2.glm)\n\n\nPour prendre en compte le problème classique de surdispersion dans les données de comptages, il peut être intéressant de rajouter un effet aléatoire de la manière suivante. Identifier tous les hyper paramètres et toutes les variables latentes.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i+E_i)) \\quad \\text{avec}\\quad E_i\\overset{ind}{\\sim}\\mathcal{N}(0,\\sigma^2).\\]\n\nawards &lt;- awards |&gt; mutate(ID = 1:nrow(awards))\nm.pois.lin_surd &lt;- inla(num_awards ~ math + f(ID, model = \"iid\"),\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin_surd)\n\n\nDiscuter les distributions a posteriori des effets fixes\non peut regarder la loi a posteriori de la précision sur les effets alétaoires\n\n\n m.pois.lin_surd$summary.hyperpar\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nSi une variable aléatoire V est strictement positive et admet une densité \\(f\\), quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l’effet aléatoire.\n\n\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  as.data.frame() |&gt;  \n  mutate(u = 1/x, fu = x^2 * y ) |&gt; \n  ggplot() + aes(x=u, y = fu) + geom_line()\n\n\nOn peut accéder aux effets aléatoires a posteriori, par exemple pour l’élève 1.\n\n\nm.pois.lin_surd$marginals.random$ID$index.1\nm.pois.lin_surd$marginals.random$ID$index.1 |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nOn peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?\n\n\nfit4.glmm&lt;-glmer(num_awards ~ math + (1|id), family = poisson, data = awards)\nsummary(fit4.glmm)\n\n\nQuels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande inla.doc(\"iid\"). Quelle différence entre prior et postérior ?\nOn souhaite changer le prior en une loi gamma de parametre 1,2 (Attention les priors sont codés dans le format interne d’inla cf Table 5.3 @gomez2020bayesian\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nOn peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nIntégrer un effet non linéaire de la note en mathématique\n\n\nm.pois.nonlin &lt;- inla(num_awards ~ f(math,  model = \"rw1\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")\n\n\nIl existe un modèle RW2, en vous référrant au chapitre Mixed-effects Models du livre @gomez2020bayesian, expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?\n\n\nm.pois.nonlin2 &lt;- inla(num_awards ~ f(math,  model = \"rw2\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin2)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_nonlin2 = m.pois.nonlin2$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]\n) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\",\"pred_nonlin2\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")"
+    "objectID": "05_tp_evaluation.html",
+    "href": "05_tp_evaluation.html",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "",
+    "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(gstat)\nlibrary(mapdata)\n\nLoading required package: maps\n\nAttaching package: 'maps'\n\nThe following object is masked from 'package:purrr':\n\n    map"
   },
   {
-    "objectID": "02_tpintro_inla.html#references",
-    "href": "02_tpintro_inla.html#references",
-    "title": "TD4 - Introduction INLA",
+    "objectID": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
+    "href": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.",
+    "text": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.\nDans le cadre de l’étude d’une population marine, l’Institut Français de Recherche pour l’Exploitation de la Mer (IFREMER) organise chaque année des campagnes océanographiques qui permettent de récolter des données et d’obtenir des estimations de l’abondance.\nCes données sont cruciales pour le suivi des espèces marines afin d’évaluer le bon état écologique des populations exploitées. Pour ce TP, nous allons étudier la campagne EVHOE dont un déscriptif est donné au lien: https://campagnes.flotteoceanographique.fr/series/8/fr/."
+  },
+  {
+    "objectID": "05_tp_evaluation.html#données",
+    "href": "05_tp_evaluation.html#données",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Données",
+    "text": "Données\nLes données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC\n(voir le shapefile Agreed_Strata_EVHOE_Polyg_WGS84.shp et l’objet evhoe_shp)datr.\nLes poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier EVHOE_2008_2019.RData. Il est constitué de trois data frame:\n\nSave_Datras$datras_HH.full regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nDepth: profondeur\nDistance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.\n\nSave_Datras$datras_sp.HL.full regroupe le poids et les abondances sur l’ensemble d’un trait de chalut de chaque combinaison ‘trait de chalut x espèce x classe de taille x sexe’ (données ré-haussées)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nscientificname: nom scientifique\nLngtClass: classe de taille\nTotalNo: comptages (nombre d’individus par combinaison de facteur)\n\n\n\n\n\nRécolte des données EVHOE."
+  },
+  {
+    "objectID": "05_tp_evaluation.html#chargement-des-données",
+    "href": "05_tp_evaluation.html#chargement-des-données",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
+    "section": "Chargement des données",
+    "text": "Chargement des données\n\nLa zone d’intérêt\nLe jeu de donées evhoe_shp défini ci-dessous contient les contours de la zone de suivi.\n\nxlims &lt;- c(-12,0)\nylims &lt;- c(42,52)\n\n# Charger les données EVHOE et les strates de la campagne\nload(\"data/EVHOE_2008_2019.RData\")\n# Definir la zone d'intérêt\nevhoe_shp &lt;- st_read(\"data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp\") %&gt;% \n  dplyr::select(STRATE) |&gt; \n  mutate(area_strata = as.numeric(st_area(geometry)/1e6)) |&gt; ##surface en km2\n  summarise(area_zone_evohe = sum(area_strata))\n\nReading layer `Agreed_Strata_EVHOE_Polyg_WGS84' from data source \n  `/__w/statspat/statspat/data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 29 features and 7 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -11.6487 ymin: 43.61471 xmax: -1.109647 ymax: 52.19023\nGeodetic CRS:  WGS 84\n\n# Tracé de côte\nmapBase &lt;- map(\"worldHires\", fill = T, plot = F) |&gt; st_as_sf() |&gt; \n  filter(ID %in% c(\"France\", \"Spain\", \"UK\", \"Ireland\", \"Germany\", \"Belgium\", \"Netherlands\", \"Denmark\" ))\nmapBase |&gt; ggplot() + geom_sf(aes(geometry = geom)) +\n  geom_sf(data=evhoe_shp, fill = \"#5f98a3\", alpha =0.5) +\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n# Espèce pour l'analyse\nspecies &lt;- \"Merluccius_merluccius\"\n\n\n\nDonnées de traits de chaluts\n\n# Pour le calcul de la taille de l'échantillon:\n# --&gt; l'ouverture du chalut est de 10 m\n# l'aire balayé par le chalut correspond \n# à la distance parcourue (Distance) x l'ouverture du chalut (10m)\nHaul_df &lt;- Save_Datras $datras_HH.full %&gt;%\n  dplyr::select(Year,long,lati,StNo,HaulNo,Depth,Distance) %&gt;% \n  mutate(Area_swept = Distance * 10) # aire chalutée par chaque trait \nHaul_df$Area_swept[which(is.na(Haul_df$Area_swept))] &lt;- mean(Haul_df$Area_swept,na.rm = T)\n\n# on renumérote les années de 1 à 12\nHaul_df &lt;- Haul_df |&gt;  mutate(annee_suivi = as.numeric(as.factor(Year)))\nn_year &lt;- max(Haul_df$annee_suivi)\n\n# Converti en sf et jointure avec le shapefile EVHOE\nHaul_sf &lt;- st_as_sf(Haul_df,coords=c(\"long\",\"lati\"),crs = st_crs(evhoe_shp))\nHaul_sf_evohe &lt;- st_intersection(Haul_sf,evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Plot des points échantillonnés\nggplot(Haul_sf_evohe)+\n  facet_wrap(~as.factor(annee_suivi))+\n  geom_sf(aes(col=as.factor(annee_suivi)))+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n\n\n\nDonnées de captures\n\n# Niveau d'aggrégation --&gt; trait de chalut, \nCatch_df &lt;- Save_Datras$datras_sp.HL.full %&gt;%\n  dplyr::select(Year,long,lati,HaulNo, scientificname,TotalNo) %&gt;% \n  group_by(Year,long,lati,HaulNo,scientificname) %&gt;%\n  dplyr::summarise(TotalNo = sum(TotalNo)) |&gt; \n  filter(scientificname == species) |&gt; \n  full_join(Haul_df) |&gt; \n  mutate(haul_id = paste0(StNo,\"-\",HaulNo,\"-\",Year)) \n\n`summarise()` has regrouped the output.\nJoining with `by = join_by(Year, long, lati, HaulNo)`\nℹ Summaries were computed grouped by Year, long, lati, HaulNo, and\n  scientificname.\nℹ Output is grouped by Year, long, lati, and HaulNo.\nℹ Use `summarise(.groups = \"drop_last\")` to silence this message.\nℹ Use `summarise(.by = c(Year, long, lati, HaulNo, scientificname))` for\n  per-operation grouping (`?dplyr::dplyr_by`) instead.\n\n# Ne garder que le traits de chalut au sein de la zone evohe\nCatch_sf_2 &lt;- st_as_sf(Catch_df,\n                       coords = c(\"long\",\"lati\"),\n                       crs=st_crs(evhoe_shp)) %&gt;% \n  st_intersection(evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Filtrer sur les espèces\nCatch_sf_3 &lt;- Catch_sf_2 %&gt;% \n  select_at(vars(Year,HaulNo,Area_swept,TotalNo, StNo, Depth))\nCatch_sf_3$TotalNo[which(is.na(Catch_sf_3$TotalNo))] &lt;- 0\n\n# Plot\nggplot(Catch_sf_3)+\n  geom_sf(aes(col=TotalNo))+\n  scale_color_distiller(palette=\"Spectral\",trans = 'log10')+\n  facet_wrap(.~Year)+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ggtitle(\"Données de captures (en effectif)\")+\n  ylab(\"\")+xlab(\"\")\n\nWarning in scale_color_distiller(palette = \"Spectral\", trans = \"log10\"): log-10\ntransformation introduced infinite values.\n\n\n\n\n\n\n\n\n\nNous souhaitons ajuster un modèle liant l’abondance (i.e le nombre de merlus pechés ) à la profondeur, en prenant en compte une éventuelle struture spatiale dans le but d’estimer l’abondance sur l’ensemble de la zone pour chaque année.\nOn veut obtenir pour chaque année une carte d”abondance spatialisée et une abondance totale sur la zone d’intérêt. On souhaite également mesuré l’effet de la profondeur (bathymétrie) sur l’abondance et regarder si cet effet potentiel est constant d’une année sur l’autre. Pour obtenir l’abondance totale, nous allons prédire l’abondance en tout point d’une grille et approcher l’abondance totale par la somme de l’abondance sur les points de la grille multiplié par la taille d’une celleule de grille.\nProgramme de travail :\n\nSi l’abondance dépend de la profondeur on va avoir besoin de la profondeur en tout point de la grille sur laquelle on souhaite prédire. Commencer par utiliser l’ensemble des points du jeu de données pour estimer la profondeur en tout point d’une grille que vous aurez choisi.\nAjuster pour chaque année un modèle spatial faisait le lien entre le nombre de merlus pêchés et la profondeur tout en intégrant une dépendance spatiale.\nPrédire l’abondance en tout point de la grille et calculer l’abondance totale sur la zone pour chaque année. Représenter la série des abondances estimées sur un graphique (années x abondance). Comment se porte le stock de merlu ?\nLa série des abondances estimées est-elle sensible à la finesse de la grille ? A la finesse du maillage utilisé dans INLA ?\n\nRendu : vous me rendrez un document en pdf (avec le code R annexe ) présentant votre démarche, les modèles choisis et vous discuterez les résultats obtenus. Le document (hors annexe) doit faire 10 pages maximum. Faites attention à la lisibilité de vos sorties R."
+  },
+  {
+    "objectID": "05_tp_evaluation.html#references",
+    "href": "05_tp_evaluation.html#references",
+    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
     "section": "References",
     "text": "References"
   },
   {
-    "objectID": "03_tp_inlaspatial.html",
-    "href": "03_tp_inlaspatial.html",
-    "title": "TD5 - Ajuster un modèle hiérarchique spatial avec INLA",
-    "section": "",
-    "text": "# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nThis is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.\n - See www.r-inla.org/contact-us for how to get help.\n - List available models/likelihoods/etc with inla.list.models()\n - Use inla.doc(&lt;NAME&gt;) to access documentation\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE"
+    "objectID": "04_inla.html#sources",
+    "href": "04_inla.html#sources",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Sources",
+    "text": "Sources\nCe cours est construit à partir du livre de Rue and Held (2005), Blangiardo et al. (2013), Krainski et al. (2018), Gómez-Rubio (2020) et de l’article Rue et al. (2009)"
   },
   {
-    "objectID": "03_tp_inlaspatial.html#references",
-    "href": "03_tp_inlaspatial.html#references",
-    "title": "TD5 - Ajuster un modèle hiérarchique spatial avec INLA",
-    "section": "References",
-    "text": "References"
+    "objectID": "04_inla.html#rappel-modèle-hiérarchique",
+    "href": "04_inla.html#rappel-modèle-hiérarchique",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel modèle hiérarchique",
+    "text": "Rappel modèle hiérarchique\n\n\n\n\n\n\n\n\n\n\n\n\nUn modèlé hiéarchique peut être utilisé pour représenter des dépendances complexes entre les données.\nDes exemples :\nDes exemples spatiaux :"
+  },
+  {
+    "objectID": "04_inla.html#exemple-illustratif---mort-subite",
+    "href": "04_inla.html#exemple-illustratif---mort-subite",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Exemple illustratif - Mort subite",
+    "text": "Exemple illustratif - Mort subite\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\n\n\n\n\n\n\n\n\n\n\n\n\nProposer un modèle hiéarchique pour ces données qui\n\nprend en compte la dépendance spatial\nmodélise le nombre de morts subites comme des comptages, avec un offset pour tenir compte de la taille du county"
+  },
+  {
+    "objectID": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
+    "href": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Exemple illustratif - les pluies en Suisse",
+    "text": "Exemple illustratif - les pluies en Suisse\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCa n’a pas vraiment une distribution gaussienne …..\n\nProposer un modèle dans lequel les observations ne sont pas gaussiennes mais qui gardent une cohérence spatiale"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne",
+    "href": "04_inla.html#rappel-estimation-bayésienne",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple\n\n\n\n\n\n\n\n\n\n\n\n\n\nEcrire le modèle\nComment mener l’inférence bayésienne\nLe choix des priors"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne-1",
+    "href": "04_inla.html#rappel-estimation-bayésienne-1",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple, écrit dans le formalisme du modèle linéaire généralisé\nModèle\n\\[Y_i \\overset{i.i.d} \\sim \\mathcal{N}(\\mu_i, \\sigma^2)\\]\navec\n\\[g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_i.\\]\nPrior\n\\[ \\beta \\sim \\mathcal{N}(0, 10^6 I_2) \\] \\[ \\log(\\sigma^2) \\sim logGamma(1, 10^{-5})\\]\nPosterior\nOn est surtout intéressé par\n\\[\\pi(\\beta\\vert \\boldsymbol{y}) = \\int_{\\sigma^2} \\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y}) d\\sigma^2\\]"
+  },
+  {
+    "objectID": "04_inla.html#rappel-estimation-bayésienne-2",
+    "href": "04_inla.html#rappel-estimation-bayésienne-2",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Rappel estimation bayésienne",
+    "text": "Rappel estimation bayésienne\nLes “rares” bons cas\nOn a une forme conjuguée et on connait \\(\\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y})\\)\nGénéralement\nOn approche \\(\\pi(\\theta\\vert \\boldsymbol{y})\\) par des méhodes de Monte Carlo car\n\\[\\pi(\\theta\\vert \\boldsymbol{y}) = \\frac{\\pi(\\boldsymbol{y}, \\theta)}{\\pi(\\boldsymbol{y})} =\\frac{\\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)}{\\pi(\\boldsymbol{y})}\\propto \\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)\\]\nProblème\nPeut être long car\n\nles chaînes bougent mal\nca converge mal\n\nC’est souvent le cas en spatial car la forte dépendance entre les données rend la construction d’algorithme efficace difficile."
+  },
+  {
+    "objectID": "04_inla.html#quest-ce-quinla",
+    "href": "04_inla.html#quest-ce-quinla",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Qu’est ce qu’INLA ?",
+    "text": "Qu’est ce qu’INLA ?\n\nINLA pour Integrated Nested Laplace Approximation\nC’est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans Rue et al. (2009), puis (lindgren2010explicit?) dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.\nR-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models."
+  },
+  {
+    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
+    "href": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Le cadre de modélisation considéré - Modèles gaussiens latents",
+    "text": "Le cadre de modélisation considéré - Modèles gaussiens latents\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
+  },
+  {
+    "objectID": "04_inla.html#variables-latentes-en-inla",
+    "href": "04_inla.html#variables-latentes-en-inla",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Variables latentes en INLA",
+    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF).\nLes observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
+  },
+  {
+    "objectID": "04_inla.html#estimation",
+    "href": "04_inla.html#estimation",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Estimation",
+    "text": "Estimation\nDistribution postérieure jointe\nLa distribution postérieure des variables latentes s’écrit :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) \\pi(\\mathbf{x}, \\theta)\n\\]\nVraisemblance\nLes observations étant indépendantes conditionnellement à \\(\\mathbf{x}\\) et \\(\\theta\\), la vraisemblance devient :\n\\[\n\\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) = \\prod_{i \\in I} \\pi(y_i \\mid x_i, \\theta)\n\\]\navec \\(I\\) l’ensemble des indices des observations effectivement observées.\nDistribution des variables latentes\nOn factorise la distribution jointe :\n\\[\n\\pi(\\mathbf{x}, \\theta) = \\pi(\\mathbf{x} \\mid \\theta) \\pi(\\theta)\n\\]\navec \\(\\pi(\\theta)\\) une distribution a priori, souvent factorisée en lois univariées."
+  },
+  {
+    "objectID": "04_inla.html#distribution-postérieure-des-variables-latentes",
+    "href": "04_inla.html#distribution-postérieure-des-variables-latentes",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Distribution postérieure des variables latentes",
+    "text": "Distribution postérieure des variables latentes\nComme \\(\\mathbf{x}\\) est un GMRF :\n\\[\n\\pi(\\mathbf{x} \\mid \\theta) \\propto |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} \\right)\n\\]\nLa distribution postérieure devient :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\theta) |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} + \\sum_{i \\in I} \\log \\pi(y_i \\mid x_i, \\theta) \\right)\n\\]"
+  },
+  {
+    "objectID": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
+    "href": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)",
+    "text": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)\nINLA ne cherche pas la postérieure complète mais les marginales des variables latentes et hyperparamètres :\nOn va vouloir calculer\n\\[\n\\pi(x_l \\mid \\mathbf{y}) = \\int \\pi(x_l \\mid \\theta, \\mathbf{y}) \\pi(\\theta \\mid \\mathbf{y}) d\\theta\n\\] et\n\\[\n\\pi(\\theta_k \\mid \\mathbf{y}) = \\int \\pi(\\theta \\mid \\mathbf{y}) d\\theta_{-k}\n\\]\navec \\(\\theta_{-k}\\) le vecteur \\(\\theta\\) sans \\(\\theta_k\\).\nApproximation en INLA\nL’approximation \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\) de Rue, Martino et Chopin (2009) est :\n\\[\n\\tilde{\\pi}(\\theta \\mid \\mathbf{y}) \\propto \\frac{\\pi(\\mathbf{x}, \\theta, \\mathbf{y})}{ \\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})} \\bigg|_{\\mathbf{x} = \\mathbf{x}^*(\\theta)}\n\\]\navec \\(\\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})\\) une approximation gaussienne et \\(\\mathbf{x}^*(\\theta)\\) le mode de la conditionnelle."
+  },
+  {
+    "objectID": "04_inla.html#approximations-finales",
+    "href": "04_inla.html#approximations-finales",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Approximations Finales",
+    "text": "Approximations Finales\nLa marginale \\(\\pi(\\theta_k \\mid \\mathbf{y})\\) est obtenue par intégration de \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\).\nL’approximation de \\(\\pi(x_i \\mid \\mathbf{y})\\) utilise l’intégration numérique, avec la méthode de Laplace donnant de meilleurs résultats."
+  },
+  {
+    "objectID": "04_inla.html#la-flexibilité-de-cette-approche",
+    "href": "04_inla.html#la-flexibilité-de-cette-approche",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "La flexibilité de cette approche",
+    "text": "La flexibilité de cette approche\n\nOn rendre compte d’effets non linéaires de covariables en modélisant l’effet de la covariabble comme un processus gaussien (dont il faudra préciser la forme)\nLes temps de calcul son imbattables : quelques secondes pour un champs spatial\n\nEt le spatial dans tout ca ?"
+  },
+  {
+    "objectID": "04_inla.html#inla-et-modèles-spatiaux",
+    "href": "04_inla.html#inla-et-modèles-spatiaux",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "INLA et modèles spatiaux",
+    "text": "INLA et modèles spatiaux\n\nLe terme d’effets aléatoires peut rendre compte des aspects spatiaux.\n\nLes limites\nSi le nombre de données est important, le vecteur \\(\\boldsymbol{x}\\) devient trop grand et lestemps de calcul augmentent rapidement"
+  },
+  {
+    "objectID": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
+    "href": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Limiter l’impact du nombre de points : l’approche SPDE",
+    "text": "Limiter l’impact du nombre de points : l’approche SPDE\nLe nombre de points important en géostatistique.\nIl se trouve qu’un champs gaussien de Matern peut s’écrire comme la solution d’une équation aux dérivées partielles stochastique\nProcessus Gaussiens avec Covariance de Matérn\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité."
+  },
+  {
+    "objectID": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
+    "href": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Processus Gaussiens avec Covariance de Matérn",
+    "text": "Processus Gaussiens avec Covariance de Matérn\nFonction de Corrélation de Matérn\nRappel est définie par un paramètre d’échelle \\(\\kappa &gt; 0\\) et un paramètre de régularité \\(\\nu &gt; 0\\). Pour deux positions \\(s_i\\) et \\(s_j\\), la fonction de corrélation stationnaire et isotrope de Matérn est donnée par :\n\\[\n\\text{Cor}_M(U(s_i), U(s_j)) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)} (\\kappa \\|s_i - s_j\\|)^\\nu K_\\nu (\\kappa \\|s_i - s_j\\|)\n\\]\noù \\(K_\\nu\\) est la fonction de Bessel modifiée de seconde espèce et \\(\\Gamma(\\nu)\\) est la fonction gamma.\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité.\nRésolution de l’EDPS sur un maillage\nC’est une technique classique des numériciens on se donne un maillage et on résoud l’EDPS sur les points du maillage. On interpole ensuite au sein du maillage.\nLa finesse du maillage contrôle la complexité du problème et sa précision"
+  },
+  {
+    "objectID": "04_inla.html#conclusion",
+    "href": "04_inla.html#conclusion",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Conclusion",
+    "text": "Conclusion\n\nOn dispose d’un outil rapide pour des modèles à variable latente y compris spatiaux (et même spatio temporels)\ndes contraintes dans la modélisation\ndes habitudes de modélisation à acquérir."
+  },
+  {
+    "objectID": "04_inla.html#références",
+    "href": "04_inla.html#références",
+    "title": "INLA et Modèles Hiérarchiques",
+    "section": "Références",
+    "text": "Références\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, et al. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
   },
   {
     "objectID": "03_lattice.html#sources",
     "href": "03_lattice.html#sources",
     "title": "Données spatiales sur réseau",
     "section": "Sources",
-    "text": "Sources\nCe cours est construit à partir du livre de Cressie (2015) et de l’article Ver Hoef, Hanks, and Hooten (2018)"
+    "text": "Sources\nCe cours est construit à partir du livre de Cressie (2015) et de l’article Ver Hoef et al. (2018)"
   },
   {
     "objectID": "03_lattice.html#exemple-illustratif",
@@ -214,7 +361,7 @@
     "href": "03_lattice.html#relations-entre-car-et-sar",
     "title": "Données spatiales sur réseau",
     "section": "Relations entre CAR et SAR",
-    "text": "Relations entre CAR et SAR\nThéorème Ver Hoef, Hanks, and Hooten (2018) :\n\nTout modèle SAR peut s’écrire de manière unique comme un modèle CAR\nTout modèle CAR peut s’écrire de manière comme un modèle SAR mais cette écriture n’est pas unique"
+    "text": "Relations entre CAR et SAR\nThéorème Ver Hoef et al. (2018) :\n\nTout modèle SAR peut s’écrire de manière unique comme un modèle CAR\nTout modèle CAR peut s’écrire de manière comme un modèle SAR mais cette écriture n’est pas unique"
   },
   {
     "objectID": "03_lattice.html#estmation-des-modèles-car-et-sar",
@@ -249,161 +396,105 @@
     "href": "03_lattice.html#références",
     "title": "Données spatiales sur réseau",
     "section": "Références",
-    "text": "Références\n\n\n\n\n\n\n\n\nBesag, Julian. 1974. “Spatial Interaction and the Statistical Analysis of Lattice Systems.” Journal of the Royal Statistical Society: Series B (Methodological) 36 (2): 192–225.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nVer Hoef, Jay M., Ephraim M. Hanks, and Mevin B. Hooten. 2018. “On the Relationship Between Conditional (CAR) and Simultaneous (SAR) Autoregressive Models.” Spatial Statistics 25: 68–85. https://doi.org/https://doi.org/10.1016/j.spasta.2018.04.006."
+    "text": "Références\n\n\n\n\nBesag, Julian. 1974. “Spatial Interaction and the Statistical Analysis of Lattice Systems.” Journal of the Royal Statistical Society: Series B (Methodological) 36 (2): 192–225.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nVer Hoef, Jay M., Ephraim M. Hanks, and Mevin B. Hooten. 2018. “On the Relationship Between Conditional (CAR) and Simultaneous (SAR) Autoregressive Models.” Spatial Statistics 25: 68–85. https://doi.org/https://doi.org/10.1016/j.spasta.2018.04.006."
   },
   {
-    "objectID": "04_inla.html#sources",
-    "href": "04_inla.html#sources",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Sources",
-    "text": "Sources\nCe cours est construit à partir du livre de Rue and Held (2005), Blangiardo et al. (2013), Krainski et al. (2018), Gómez-Rubio (2020) et de l’article Rue, Martino, and Chopin (2009)"
-  },
-  {
-    "objectID": "04_inla.html#rappel-modèle-hiérarchique",
-    "href": "04_inla.html#rappel-modèle-hiérarchique",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel modèle hiérarchique",
-    "text": "Rappel modèle hiérarchique\n\n\n\n\n\n\n\n\n\n\n\n\nUn modèlé hiéarchique peut être utilisé pour représenter des dépendances complexes entre les données.\nDes exemples :\nDes exemples spatiaux :"
-  },
-  {
-    "objectID": "04_inla.html#exemple-illustratif---mort-subite",
-    "href": "04_inla.html#exemple-illustratif---mort-subite",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Exemple illustratif - Mort subite",
-    "text": "Exemple illustratif - Mort subite\nOn s’intéresse aux données de mort subite du nourrisson en Caroline du Nord en 1974 (exemple extrait du livre de Cressie (2015)). Les données sont disponibles dans le package sf\nLes données sont ici des comptages par counties, mais on peut imaginer des prix au m2 par IRIS, des taux de chomage par IRIS etc ….\n\n\n\n\n\n\n\n\n\n\n\n\nProposer un modèle hiéarchique pour ces données qui\n\nprend en compte la dépendance spatial\nmodélise le nombre de morts subites comme des comptages, avec un offset pour tenir compte de la taille du county"
-  },
-  {
-    "objectID": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
-    "href": "04_inla.html#exemple-illustratif---les-pluies-en-suisse",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Exemple illustratif - les pluies en Suisse",
-    "text": "Exemple illustratif - les pluies en Suisse\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCa n’a pas vraiment une distribution gaussienne …..\n\nProposer un modèle dans lequel les observations ne sont pas gaussiennes mais qui gardent une cohérence spatiale"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne",
-    "href": "04_inla.html#rappel-estimation-bayésienne",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple\n\n\n\n\n\n\n\n\n\n\n\n\n\nEcrire le modèle\nComment mener l’inférence bayésienne\nLe choix des priors"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne-1",
-    "href": "04_inla.html#rappel-estimation-bayésienne-1",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nConsidérons un modèle de régression simple, écrit dans le formalisme du modèle linéaire généralisé\nModèle\n\\[Y_i \\overset{i.i.d} \\sim \\mathcal{N}(\\mu_i, \\sigma^2)\\]\navec\n\\[g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_i.\\]\nPrior\n\\[ \\beta \\sim \\mathcal{N}(0, 10^6 I_2) \\] \\[ \\log(\\sigma^2) \\sim logGamma(1, 10^{-5})\\]\nPosterior\nOn est surtout intéressé par\n\\[\\pi(\\beta\\vert \\boldsymbol{y}) = \\int_{\\sigma^2} \\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y}) d\\sigma^2\\]"
-  },
-  {
-    "objectID": "04_inla.html#rappel-estimation-bayésienne-2",
-    "href": "04_inla.html#rappel-estimation-bayésienne-2",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Rappel estimation bayésienne",
-    "text": "Rappel estimation bayésienne\nLes “rares” bons cas\nOn a une forme conjuguée et on connait \\(\\pi(\\beta, \\sigma^2\\vert \\boldsymbol{y})\\)\nGénéralement\nOn approche \\(\\pi(\\theta\\vert \\boldsymbol{y})\\) par des méhodes de Monte Carlo car\n\\[\\pi(\\theta\\vert \\boldsymbol{y}) = \\frac{\\pi(\\boldsymbol{y}, \\theta)}{\\pi(\\boldsymbol{y})} =\\frac{\\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)}{\\pi(\\boldsymbol{y})}\\propto \\pi(\\boldsymbol{y}\\vert \\theta) \\pi(\\theta)\\]\nProblème\nPeut être long car\n\nles chaînes bougent mal\nca converge mal\n\nC’est souvent le cas en spatial car la forte dépendance entre les données rend la construction d’algorithme efficace difficile."
-  },
-  {
-    "objectID": "04_inla.html#quest-ce-quinla",
-    "href": "04_inla.html#quest-ce-quinla",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Qu’est ce qu’INLA ?",
-    "text": "Qu’est ce qu’INLA ?\n\nINLA pour Integrated Nested Laplace Approximation\nC’est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans Rue, Martino, and Chopin (2009), puis (lindgren2010explicit?) dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.\nR-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models."
-  },
-  {
-    "objectID": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
-    "href": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Le cadre de modélisation considéré - Modèles gaussiens latents",
-    "text": "Le cadre de modélisation considéré - Modèles gaussiens latents\nUn vecteur de \\(n\\) observations \\(\\mathbf{y} = (y_1, \\dots, y_n)\\), (dont certaines peuvent être manquantes)\nCes observations suivent une loi de probabilité de la famille exponentielle (cadre du modèle linéaire généralisé)\nLa moyenne \\(\\mu_i\\) de \\(y_i\\) est liée au prédicteur linéaire \\(\\eta_i\\) par une fonction adaptée.\nHypothèse d’indépendance conditionnelle\nLes observations sont indépendantes conditionnellement à leur prédicteur linéaire :\n\\[\n\\eta_i = \\alpha + \\sum_{j=1}^{n_\\beta} \\beta_j z_{ji} + \\sum_{k=1}^{n_f} f^{(k)}(u_{ki}) + \\epsilon_i, \\quad i=1,\\dots,n\n\\]\noù:\n\n\\(\\alpha\\) est l’intercept,\n\\(\\beta_j\\) sont les coefficients des covariables \\(z_j\\),\n\\(f^{(k)}\\) représente les effets aléatoires,\n\\(\\epsilon_i\\) est un terme d’erreur."
-  },
-  {
-    "objectID": "04_inla.html#variables-latentes-en-inla",
-    "href": "04_inla.html#variables-latentes-en-inla",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Variables latentes en INLA",
-    "text": "Variables latentes en INLA\nLe vecteur des effets latents est :\n\\[\n\\mathbf{x} = (\\eta_1, \\dots, \\eta_n, \\alpha, \\beta_1, \\dots)\n\\]\nCes effets suivent un champ aléatoire de Markov Gaussien (GMRF).\nLes observations sont indépendantes conditionnellement aux variables latents et aux hyperparamètres \\(\\theta_1\\).\nImplication concrète\n\nLes priors sur \\(\\beta\\) doivent être gaussiens,\nLes effets aléatoires doivent être gaussiens\n\nRemarque : un paramètre en bayésien peut être vu comme une variable latente\nMatrice de Précision\n\\[\\boldsymbol{x}\\sim\\mathcal{N}(0, Q(\\theta_2)^{-1})\\]\nLe GMRF a une moyenne nulle et une matrice de précision \\(Q(\\theta_2)\\) dépendant des hyperparamètres \\(\\theta_2\\).\n\\(\\theta = (\\theta_1, \\theta_2)\\).\nLa matrice \\(Q(\\theta)\\) est creuse car\n\nune indépendance conditionnellent entre \\(x_i\\) et \\(x_j\\) conditionnellement à \\(x_{-ij}\\) se traduit par un 0 dans \\(Q(\\theta)\\).\nCette sparsité permet d’accélérer les calculs en INLA."
-  },
-  {
-    "objectID": "04_inla.html#estimation",
-    "href": "04_inla.html#estimation",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Estimation",
-    "text": "Estimation\nDistribution postérieure jointe\nLa distribution postérieure des variables latentes s’écrit :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) \\pi(\\mathbf{x}, \\theta)\n\\]\nVraisemblance\nLes observations étant indépendantes conditionnellement à \\(\\mathbf{x}\\) et \\(\\theta\\), la vraisemblance devient :\n\\[\n\\pi(\\mathbf{y} \\mid \\mathbf{x}, \\theta) = \\prod_{i \\in I} \\pi(y_i \\mid x_i, \\theta)\n\\]\navec \\(I\\) l’ensemble des indices des observations effectivement observées.\nDistribution des variables latentes\nOn factorise la distribution jointe :\n\\[\n\\pi(\\mathbf{x}, \\theta) = \\pi(\\mathbf{x} \\mid \\theta) \\pi(\\theta)\n\\]\navec \\(\\pi(\\theta)\\) une distribution a priori, souvent factorisée en lois univariées."
-  },
-  {
-    "objectID": "04_inla.html#distribution-postérieure-des-variables-latentes",
-    "href": "04_inla.html#distribution-postérieure-des-variables-latentes",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Distribution postérieure des variables latentes",
-    "text": "Distribution postérieure des variables latentes\nComme \\(\\mathbf{x}\\) est un GMRF :\n\\[\n\\pi(\\mathbf{x} \\mid \\theta) \\propto |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} \\right)\n\\]\nLa distribution postérieure devient :\n\\[\n\\pi(\\mathbf{x}, \\theta \\mid \\mathbf{y}) \\propto \\pi(\\theta) |Q(\\theta)|^{1/2} \\exp \\left(-\\frac{1}{2} \\mathbf{x}^T Q(\\theta) \\mathbf{x} + \\sum_{i \\in I} \\log \\pi(y_i \\mid x_i, \\theta) \\right)\n\\]"
-  },
-  {
-    "objectID": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
-    "href": "04_inla.html#marginales-postérieures-pour-les-paramètres-hyperparamètres-theta",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)",
-    "text": "Marginales Postérieures pour les paramètres (hyperparamètres) \\(\\theta\\)\nINLA ne cherche pas la postérieure complète mais les marginales des variables latentes et hyperparamètres :\nOn va vouloir calculer\n\\[\n\\pi(x_l \\mid \\mathbf{y}) = \\int \\pi(x_l \\mid \\theta, \\mathbf{y}) \\pi(\\theta \\mid \\mathbf{y}) d\\theta\n\\] et\n\\[\n\\pi(\\theta_k \\mid \\mathbf{y}) = \\int \\pi(\\theta \\mid \\mathbf{y}) d\\theta_{-k}\n\\]\navec \\(\\theta_{-k}\\) le vecteur \\(\\theta\\) sans \\(\\theta_k\\).\nApproximation en INLA\nL’approximation \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\) de Rue, Martino et Chopin (2009) est :\n\\[\n\\tilde{\\pi}(\\theta \\mid \\mathbf{y}) \\propto \\frac{\\pi(\\mathbf{x}, \\theta, \\mathbf{y})}{ \\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})} \\bigg|_{\\mathbf{x} = \\mathbf{x}^*(\\theta)}\n\\]\navec \\(\\tilde{\\pi}_G(\\mathbf{x} \\mid \\theta, \\mathbf{y})\\) une approximation gaussienne et \\(\\mathbf{x}^*(\\theta)\\) le mode de la conditionnelle."
-  },
-  {
-    "objectID": "04_inla.html#approximations-finales",
-    "href": "04_inla.html#approximations-finales",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Approximations Finales",
-    "text": "Approximations Finales\nLa marginale \\(\\pi(\\theta_k \\mid \\mathbf{y})\\) est obtenue par intégration de \\(\\tilde{\\pi}(\\theta \\mid \\mathbf{y})\\).\nL’approximation de \\(\\pi(x_i \\mid \\mathbf{y})\\) utilise l’intégration numérique, avec la méthode de Laplace donnant de meilleurs résultats."
-  },
-  {
-    "objectID": "04_inla.html#la-flexibilité-de-cette-approche",
-    "href": "04_inla.html#la-flexibilité-de-cette-approche",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "La flexibilité de cette approche",
-    "text": "La flexibilité de cette approche\n\nOn rendre compte d’effets non linéaires de covariables en modélisant l’effet de la covariabble comme un processus gaussien (dont il faudra préciser la forme)\nLes temps de calcul son imbattables : quelques secondes pour un champs spatial\n\nEt le spatial dans tout ca ?"
-  },
-  {
-    "objectID": "04_inla.html#inla-et-modèles-spatiaux",
-    "href": "04_inla.html#inla-et-modèles-spatiaux",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "INLA et modèles spatiaux",
-    "text": "INLA et modèles spatiaux\n\nLe terme d’effets aléatoires peut rendre compte des aspects spatiaux.\n\nLes limites\nSi le nombre de données est important, le vecteur \\(\\boldsymbol{x}\\) devient trop grand et lestemps de calcul augmentent rapidement"
-  },
-  {
-    "objectID": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
-    "href": "04_inla.html#limiter-limpact-du-nombre-de-points-lapproche-spde",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Limiter l’impact du nombre de points : l’approche SPDE",
-    "text": "Limiter l’impact du nombre de points : l’approche SPDE\nLe nombre de points important en géostatistique.\nIl se trouve qu’un champs gaussien de Matern peut s’écrire comme la solution d’une équation aux dérivées partielles stochastique\nProcessus Gaussiens avec Covariance de Matérn\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité."
-  },
-  {
-    "objectID": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
-    "href": "04_inla.html#processus-gaussiens-avec-covariance-de-matérn-1",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Processus Gaussiens avec Covariance de Matérn",
-    "text": "Processus Gaussiens avec Covariance de Matérn\nFonction de Corrélation de Matérn\nRappel est définie par un paramètre d’échelle \\(\\kappa &gt; 0\\) et un paramètre de régularité \\(\\nu &gt; 0\\). Pour deux positions \\(s_i\\) et \\(s_j\\), la fonction de corrélation stationnaire et isotrope de Matérn est donnée par :\n\\[\n\\text{Cor}_M(U(s_i), U(s_j)) = \\frac{2^{1-\\nu}}{\\Gamma(\\nu)} (\\kappa \\|s_i - s_j\\|)^\\nu K_\\nu (\\kappa \\|s_i - s_j\\|)\n\\]\noù \\(K_\\nu\\) est la fonction de Bessel modifiée de seconde espèce et \\(\\Gamma(\\nu)\\) est la fonction gamma.\nUn champ gaussien \\(U(s)\\) avec covariance de Matérn est solution de l’EDPS fractionnaire suivante :\n\\[\n(\\kappa^2 - \\Delta)^{\\alpha/2} u(s) = W(s), \\quad s \\in \\mathbb{R}^d, \\quad \\alpha = \\nu + d/2, \\quad \\kappa &gt; 0, \\quad \\nu &gt; 0.\n\\]\noù : - \\(\\Delta\\) est l’opérateur de Laplace, - \\(W(s)\\) est un bruit blanc gaussien spatial de variance unité.\nRésolution de l’EDPS sur un maillage\nC’est une technique classique des numériciens on se donne un maillage et on résoud l’EDPS sur les points du maillage. On interpole ensuite au sein du maillage.\nLa finesse du maillage contrôle la complexité du problème et sa précision"
-  },
-  {
-    "objectID": "04_inla.html#conclusion",
-    "href": "04_inla.html#conclusion",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Conclusion",
-    "text": "Conclusion\n\nOn dispose d’un outil rapide pour des modèles à variable latente y compris spatiaux (et même spatio temporels)\ndes contraintes dans la modélisation\ndes habitudes de modélisation à acquérir."
-  },
-  {
-    "objectID": "04_inla.html#références",
-    "href": "04_inla.html#références",
-    "title": "INLA et Modèles Hiérarchiques",
-    "section": "Références",
-    "text": "Références\n\n\n\n\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, Amanda Lenzi, Daniela Castro-Camilo, Daniel Simpson, Finn Lindgren, and Håvard Rue. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
-  },
-  {
-    "objectID": "references_statspat.html",
-    "href": "references_statspat.html",
-    "title": "References",
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
     "section": "",
-    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
   },
   {
-    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
-    "title": "References",
-    "section": "Pour approfondir ou compléter le cours",
-    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
+    "objectID": "01_tp_sf.html",
+    "href": "01_tp_sf.html",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+  },
+  {
+    "objectID": "01_tp_sf.html#clusters",
+    "href": "01_tp_sf.html#clusters",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+  },
+  {
+    "objectID": "01_tp_sf.html#clusters-1",
+    "href": "01_tp_sf.html#clusters-1",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Clusters",
+    "text": "Clusters\nLe but de ce premier TP est de se familiariser avec les données spatiales, de se creuser un peu la tête et de chercher des solutions. Il est donc vivement déconseillé de faire appel à l’IA à la moindre difficulté. Utilisez\n\nvotre cerveau,\nvotre voisin,\nvotre enseignant.\nen désespoir de cause, si personne ne résoud votre question Claude sera votre dernier espoir !"
+  },
+  {
+    "objectID": "01_tp_sf.html#objectifs-du-tp",
+    "href": "01_tp_sf.html#objectifs-du-tp",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Objectifs du TP",
+    "text": "Objectifs du TP\nL’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
+  },
+  {
+    "objectID": "01_tp_sf.html#packages",
+    "href": "01_tp_sf.html#packages",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Packages",
+    "text": "Packages\n\nPackages : sf, dplyr, ggplot2, readr.\n\n\n# install.packages(c(\"sf\", \"dplyr\", \"ggplot2\", \"readr\"))\n\n\nlibrary(sf)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)"
+  },
+  {
+    "objectID": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "href": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Données utilisées dans le TP",
+    "text": "Données utilisées dans le TP\nNous utiliserons :\n\nle shapefile d’exemple nc.shp fourni par le package sf (comtés de Caroline du Nord) ;\nun fichier CSV nc_cities.csv contenant des points en longitude/latitude (WGS84) et disponibles ici"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "href": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel",
+    "text": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel\n\n1.1 Lecture de données en WGS84\n\nLire le fichier nc_cities.csv dans un objet data.frame nommé nc_cities.df\nConvertir ce tableau en objet sf en utilisant les colonnes lon et lat comme coordonnées, avec le CRS WGS84 (EPSG:4326) et stocker le résultat dans nc_cities.sf\nVérifier la structure de l’objet obtenu et son CRS.\nCartographier les données\n\n\nnc_cities.sf |&gt; ggplot() + geom_sf() +   geom_sf_text( aes(label = name))\n\nDes fonctions utiles :read_csv(), st_as_sf(), st_crs(),glimpse().\n\n\n1.2 Lecture du shapefile projeté et comparaison des CRS\nOn utilisera le shapefile nc fourni par sf.\n\nCharger le shapefile nc.shp dans un object nc.sf en utilisant le chemin renvoyé par system.file(\"shape/nc.shp\", package = \"sf\").\n\n\nnc.shp &lt;- st_read(system.file(\"shape/nc.shp\", package=\"sf\"))\n\n\nInspecter sa structure (glimpse) et vérifier son CRS. 3 Afficher la classe de l’objet nc.\nAfficher les premières lignes de nc.\nLister les noms de colonnes disponibles et repérer au moins une variable numérique.\nComparer le CRS de nc et celui de vos stations (stations_wgs84).\nCartographier les données nc.sf\n\nDes fonctions utiles :st_read(), st_crs(), glimpse().\n\n\n1.3 Transformation des stations vers le CRS de nc\n\nReprésenter les deux types de données sur une même carte.\nTransformer les données de nc_cities.sf de WGS84 (EPSG:4326) vers le CRS de nc.\nVérifier le CRS de l’objet transformé.\nAfficher une carte rapide montrant les comtés (nc) et les villes.\nReprésenter une variable quantitative (par exemple BIR74) en choroplèthe.\n\nDes fonctions utiles :st_transform(), st_crs(). ggplot() + geom_sf(aes(fill = ...))."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "href": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 2 — Buffers et opérations géométriques",
+    "text": "Partie 2 — Buffers et opérations géométriques\n\n2.1 Centroïdes des polygones\nQuestion 2.1\n\nCalculer les centroïdes des polygones de nc.\nVisualiser les centroïdes superposés aux polygones.\n\nDes fonctions utiles : st_centroid(), plot().\n\n\n2.2 Buffers autour des points\nOn souhaite créer un buffer de 20 km autour de chaque centroïde.\nQuestion 2.2\n\nCréer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.\nVisualiser les buffers et les polygones sur une même carte.\nDiscuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.\n\nDes fonctions utiles : : st_buffer() (argument dist en mètres).\n\n\n2.3 Buffers autour des polygones\nQuestion 2.3\n\nCréer un buffer de 5 km autour de chaque polygone de nc.\nVisualiser la différence entre les polygones originaux et les buffers.\nExpliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.\n\nDes fonctions utiles : : st_buffer() appliquée directement à nc."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "href": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 3 — Unions spatiales et calcul de surfaces",
+    "text": "Partie 3 — Unions spatiales et calcul de surfaces\n\n3.1 Union de polygones (dissolve)\nOn souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest)\n\nCalculer le centroid de la Caroline du Nord.\nCréer une nouvelle variable region dans nc qui prend deux modalités (\"Est\", \"Ouest\") en fonction de sa position par rapport au centroide et vérifier graphiquement.\nRegrouper les comtés par region et réaliser l’union géométrique des polygones pour obtenir un polygone par région.\nCalculer, pour chaque région, le total de la variable BIR74.\nVisualiser les 2 régions obtenues et le nombre de naissances.\n\nLes fonctions utiles : st_union, st_coordinates, mutate(), case_when(), summarise();\n\n\n3.2 Calcul de surfaces\n\nCalculer la surface de chaque comté de nc (en m²), puis convertir cette surface en km².\nAjouter ces deux colonnes (area_m2, area_km2) à l’objet nc.\nAfficher les noms de quelques comtés et leur surface (en km²).\nReprésenter la surface des comtés sur une carte (choroplèthe).\n\nLes fonctions utiles : st_area()"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "href": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 4 — Grille régulière et moyenne par maille",
+    "text": "Partie 4 — Grille régulière et moyenne par maille\n\n4.1 Définir une grille régulière\nOn souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.\n\nRécupérer l’étendue spatiale (bounding box) de nc.\nCréer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.\nConvertir cette grille en objet sf avec un identifiant de maille (id_cell).\nVisualiser la grille et les comtés superposés.\n\nLes fonctions utiles st_bbox(), st_make_grid(), st_sf().\n\n\n4.2 Intersections comtés / grille\nNous voulons découper les comtés selon la grille.\n\nIntersecter nc (ou nc_area si vous avez déjà les surfaces) avec la grille.\nExaminer la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?\n\nDes fonctions utiles : : st_intersection().\n\n\n4.3 Surface des morceaux de polygones\n\nCalculer la surface de chaque polygone issu de l’intersection (en km²).\nAjouter cette surface comme colonne (area_piece_km2).\n\n\n\n4.4 Moyenne simple de BIR74 par maille\nDans un premier temps, on calcule la moyenne simple de BIR74 pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.\n\nExtraire la partie attributaire (non spatiale) des données intersectées.\nCalculer, pour chaque maille (id_cell), la moyenne simple de BIR74 (ignorer les valeurs manquantes si besoin).\nJoindre ce résultat à l’objet sf représentant la grille.\nReprésenter cartographiquement la moyenne simple de BIR74 par maille.\n\nDes fonctions utiles : st_drop_geometry(), left_join()\n\n\n4.5 Moyenne pondérée par surface\nOn souhaite maintenant calculer une moyenne de BIR74 pondérée par la surface des morceaux de comtés dans chaque maille.\n\nUtiliser la surface des morceaux (area_piece_km2) comme poids.\nPour chaque maille (id_cell), calculer la moyenne pondérée de BIR74 : [ = ]\nJoindre ce résultat à la grille.\nComparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?"
+  },
+  {
+    "objectID": "01_tp_sf.html#pour-coller-à-lactualité",
+    "href": "01_tp_sf.html#pour-coller-à-lactualité",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Pour coller à l’actualité",
+    "text": "Pour coller à l’actualité\nLes derniers résultats des élections américaines seront bientôt disponible. Avant de changer d’ère (air), on souhaite faire les deux cartes suivantes\n\nPour tous les états centraux (on omet Hawai et Alaska), on souhaite colorier l’état en fonction de la couleur majoritaire\nOn souhaite faire la carte pour chaque cirsconsription"
+  },
+  {
+    "objectID": "01_tp_sf.html#les-ressources-pour-y-arriver",
+    "href": "01_tp_sf.html#les-ressources-pour-y-arriver",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Les ressources pour y arriver",
+    "text": "Les ressources pour y arriver\n\n## liste des codes des états américains\nstate.abb \n\n## pour lire un fichier carto publé par le Census Bureau américain \nlire_census &lt;- function(fichier) {\n  url  &lt;- paste0(\"https://www2.census.gov/geo/tiger/GENZ2024/shp/\", fichier, \".zip\")\n  dest &lt;- file.path(tempdir(), fichier)\n  if (!dir.exists(dest)) {\n    zip &lt;- tempfile(fileext = \".zip\")\n    download.file(url, zip, mode = \"wb\")\n    unzip(zip, exdir = dest)\n  }\n  st_read(file.path(dest, paste0(fichier, \".shp\")), quiet = TRUE)\n}\n\n#le fichier à l'échelle 1:20 000 000\netats &lt;- lire_census(\"cb_2024_us_state_20m\")\nggplot(etats) + geom_sf()\n\n\n# 48 états contigus sulement\netats_48 &lt;- setdiff(state.abb, c(\"AK\", \"HI\"))\n\netats |&gt; \n  filter(STUSPS %in% etats_48) |&gt; \n  ggplot() + geom_sf()\n\n## pour les circonscriptions : \ncirc &lt;- lire_census(\"cb_2024_us_cd119_500k\")\nggplot(circ) + geom_sf()\n\nfips &lt;- etats |&gt; st_drop_geometry() |&gt; select(STATEFP, state = STUSPS)\ncirc &lt;- circ |&gt;  inner_join(fips, by = \"STATEFP\") |&gt;  filter(state %in% etats_48) \ncirc |&gt; \n  ggplot() + geom_sf()\n\n## représentants en fonction \nreps &lt;- read_csv(\n  \"https://raw.githubusercontent.com/unitedstates/congress-legislators/gh-pages/legislators-current.csv\",\n  show_col_types = FALSE\n) |&gt;\n  filter(type == \"rep\", state %in% etats_48)|&gt;\n  select(full_name, state, district, party)"
+  },
+  {
+    "objectID": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "href": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Pour aller plus loin (facultatif)",
+    "text": "Pour aller plus loin (facultatif)\n\nTirer uniformément 1000 points en Caroline du nord (Acceptation rejet)\nCalculer le nombre de points par comté et comparer à la superficie du comté\nQu s’attend on à constater"
   },
   {
     "objectID": "01_intro.html#cadre",
@@ -473,42 +564,21 @@
     "href": "01_intro.html#references",
     "title": "Introduction",
     "section": "References",
-    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J Phillips, Gordana Popovic, and David I Warton. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
-  },
-  {
-    "objectID": "eval_spatial.html",
-    "href": "eval_spatial.html",
-    "title": "Statistique spatiale : Evaluation",
-    "section": "",
-    "text": "Toutes les données sont disponibles dans https://github.com/MarieEtienne/statspat/data_LNH"
-  },
-  {
-    "objectID": "eval_spatial.html#prise-en-main-des-données",
-    "href": "eval_spatial.html#prise-en-main-des-données",
-    "title": "Statistique spatiale : Evaluation",
-    "section": "Prise en main des données",
-    "text": "Prise en main des données\nOn dispose de mesures ponctuelles d’exposition aux pesticides atmosphériques (en \\(ng . m^{-3}\\)) ainsi que de covariables environnementales. L’objectif de cette partie est :\n\nd’estimer l’exposition en tout point à l’échelle de la France par krigeage en tenant compte des covariables,\nd’en déduire, pour chaque département, une exposition moyenne (moyenne surfacique).\n\nLes données fournies sont :\n\npesticide_points.csv : points de mesure (WGS84, EPSG:4326) contenant l’exposition aux pesticides, ainsi qu’un niveau d’usage agricole (indice normalisé entre 0 et 1), la quantité de pluie par an en \\(mm.an^{-1}\\), la température moyenne en degré celsius\nprediction_grid.csv : grille de prédiction (WGS84, EPSG:4326)\ndepartements_lambert93.geojson : départements (Lambert-93, EPSG:2154) (on peut lire un fichier spatial geojson en R avec le package geojsonsf et la fonction geojson_sf)\n\nQuestion 1 Charger les points de mesure et les départements et proposer une visualisation des dpartements et des mesures d’exposition\nRendu 1 :\n\nle code et un court commentaire (2–3 lignes) sur les points clés.\nune figure"
-  },
-  {
-    "objectID": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
-    "href": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
-    "title": "Statistique spatiale : Evaluation",
-    "section": "Prédiction de l’exposition en tout point",
-    "text": "Prédiction de l’exposition en tout point\nOn note \\(D\\) le domaine spatial \\((Z(s), s\\in D=\\) l’exposition (ng/m³) au point \\(s\\).\nQuestion 2 quel pourrait être l’intérêt de modéliser \\(log(Z(s))\\) plut$ot que $Z(s) ?\nRendu 2 : Répondez en 2/3 lignes\nQuestion 3 Prédire l’exposition en tout point de la grille.\nRendu 3 : Justifier la démarche et le choix du modèle proposé. Visualiser les prédictions sur une carte ainsi que la carte des variances de prédiction. Ecrire explicitement le modèle retenu.\nQuestion 4 Quelle démarche faudrait il adopter pour comparer les divers modèles proposés et l’intérêt de prédire \\(log Z\\) plutôt que \\(Z\\) Rendu 4 : Expliquer la démarche que vous pourriez mettre en oeuvre pour valider proprement le modèle. Il n’est pas demandé de l’implémenter.\nQuestion 5 On souhaite estimer un niveau moyen d’exposition à l’échelle de chaque département \\[Z_i=\\frac{1}{|A_i|} \\int_{s\\in A_i} Z(s)  ds.\\] Expliquer comment utiliser ce qui précède pour construire un estimateur de cette quantité et l’implémenter. Comparer avec la valeur moyenne des mesures au sein de chaque département.\nRendu 5 : le code correspondant expliqué et la comparaison. La tableau donnant la valeur par département que vous proposez en regard de la valeur moyenne des données brutes. Une carte de niveau d’exposition par département."
+    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, et al. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
   },
   {
     "objectID": "01_pluies.html",
     "href": "01_pluies.html",
     "title": "TD1 - Statistique Spatiale",
     "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
   },
   {
     "objectID": "01_pluies.html#présentation",
     "href": "01_pluies.html#présentation",
     "title": "TD1 - Statistique Spatiale",
     "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster10 et cluster13"
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
   },
   {
     "objectID": "01_pluies.html#objectifs",
@@ -522,126 +592,14 @@
     "href": "01_pluies.html#directives",
     "title": "TD1 - Statistique Spatiale",
     "section": "Directives",
-    "text": "Directives\n\n1. Chargement et visualisation des données\nlibrary(tidyverse)\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies/100, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n2. Nuées variographiques à la main\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\n\n3. Variogramme empirique\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n4. Ajustement du variogramme\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", 15000, 60))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n5. Krigeage\nKfull &lt;- krige(formula = pluies ~ 1, locations = dta_sf, newdata = dta_full_sf, model = v.fit)\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies)) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
-  },
-  {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
-    "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistique Spatiale",
-    "section": "",
-    "text": "Description du cours\nCe cours présente des techniques statistiques pour représenter des données spatiales.La spécificité de celles-ci réside dans la structure de dépendance qui dépend d’une notion de proximité. On distingue différents type de données spatiales\n\ndes mesures sur un support continu\ndes mesures associées à des régions géographiques\ndes localisations d’évènement.\n\nCes différents types de données nécessites des représentations statistique différentes. De plus, les questions que l’on aborde avec ce type de données sont elles aussi assez spécifiques.\nS’agissant de mesure sur un support continu, on va souvent vouloir prédire une valeur en un site non observé, en fonction des observations. Ceci sera également souvent le cas lorsque l’on traite des données régionales. Lorsque l’on observe des positions d’vènements, on voudra le plus souvent comprendre la strure responsable de la répartition des points\n\n\nContenu\n\nGéostastique les méthodes classiques pour les mesures sur des supports continue\nDonnées sur réseaux pour représenter les données associées à des régions\nProcessus ponctuels pour modéliser les semis de points\n\nLe cours mettra un accent particulier sur la mise en oeuvre de ces méthodes sur des cas concrets.\nÀ la fin du cours, les étudiants seront compétents dans la modélisation classique des données spatiales.\n\n\nOrganisation du cours\n\n20h de Cours/TP"
-  },
-  {
-    "objectID": "01_tp_sf.html",
-    "href": "01_tp_sf.html",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "",
-    "text": "L’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
-  },
-  {
-    "objectID": "01_tp_sf.html#objectifs-du-tp",
-    "href": "01_tp_sf.html#objectifs-du-tp",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "",
-    "text": "L’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
-  },
-  {
-    "objectID": "01_tp_sf.html#packages",
-    "href": "01_tp_sf.html#packages",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Packages",
-    "text": "Packages\n\nPackages : sf, dplyr, ggplot2, readr.\n\n\n# install.packages(c(\"sf\", \"dplyr\", \"ggplot2\", \"readr\"))\n\n\nlibrary(sf)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)"
-  },
-  {
-    "objectID": "01_tp_sf.html#données-utilisées-dans-le-tp",
-    "href": "01_tp_sf.html#données-utilisées-dans-le-tp",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Données utilisées dans le TP",
-    "text": "Données utilisées dans le TP\nNous utiliserons :\n\nle shapefile d’exemple nc.shp fourni par le package sf (comtés de Caroline du Nord) ;\nun fichier CSV nc_cities.csv contenant des points en longitude/latitude (WGS84) et disponibles ici"
-  },
-  {
-    "objectID": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
-    "href": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel",
-    "text": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel\n\n1.1 Lecture de données en WGS84\n\nLire le fichier nc_cities.csv dans un objet data.frame nommé nc_cities.df\nConvertir ce tableau en objet sf en utilisant les colonnes lon et lat comme coordonnées, avec le CRS WGS84 (EPSG:4326) et stocker le résultat dans nc_cities.sf\nVérifier la structure de l’objet obtenu et son CRS.\nCartographier les données\n\n\nnc_cities.sf |&gt; ggplot() + geom_sf() +   geom_sf_text( aes(label = name))\n\nDes fonctions utiles :read_csv(), st_as_sf(), st_crs(), glimpse().\n\n\n1.2 Lecture du shapefile projeté et comparaison des CRS\nOn utilisera le shapefile nc fourni par sf.\n\nCharger le shapefile nc.shp dans un object nc.sf en utilisant le chemin renvoyé par system.file(\"shape/nc.shp\", package = \"sf\").\nInspecter sa structure (glimpse) et vérifier son CRS. 3 Afficher la classe de l’objet nc.\nAfficher les premières lignes de nc.\nLister les noms de colonnes disponibles et repérer au moins une variable numérique.\nComparer le CRS de nc et celui de vos stations (stations_wgs84).\nCartographier les données nc.sf\n\nDes fonctions utiles :st_read(), st_crs(), glimpse().\n\n\n1.3 Transformation des stations vers le CRS de nc\n\nReprésenter les deux types de données sur une même carte.\nTransformer les données de nc_cities.sf de WGS84 (EPSG:4326) vers le CRS de nc.\nVérifier le CRS de l’objet transformé.\nAfficher une carte rapide montrant les comtés (nc) et les villes.\nReprésenter une variable quantitative (par exemple BIR74) en choroplèthe.\n\nDes fonctions utiles :st_transform(), st_crs(). ggplot() + geom_sf(aes(fill = ...))."
-  },
-  {
-    "objectID": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
-    "href": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Partie 2 — Buffers et opérations géométriques",
-    "text": "Partie 2 — Buffers et opérations géométriques\n\n2.1 Centroïdes des polygones\nQuestion 2.1\n\nCalculer les centroïdes des polygones de nc.\nVisualiser les centroïdes superposés aux polygones.\n\nDes fonctions utiles : st_centroid(), plot().\n\n\n2.2 Buffers autour des points\nOn souhaite créer un buffer de 20 km autour de chaque centroïde.\nQuestion 2.2\n\nCréer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.\nVisualiser les buffers et les polygones sur une même carte.\nDiscuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.\n\nDes fonctions utiles : : st_buffer() (argument dist en mètres).\n\n\n2.3 Buffers autour des polygones\nQuestion 2.3\n\nCréer un buffer de 5 km autour de chaque polygone de nc.\nVisualiser la différence entre les polygones originaux et les buffers.\nExpliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.\n\nDes fonctions utiles : : st_buffer() appliquée directement à nc."
-  },
-  {
-    "objectID": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
-    "href": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Partie 3 — Unions spatiales et calcul de surfaces",
-    "text": "Partie 3 — Unions spatiales et calcul de surfaces\n\n3.1 Union de polygones (dissolve)\nOn souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest)\n\nCalculer le centroid de la Caroline du Nord.\nCréer une nouvelle variable region dans nc qui prend deux modalités (\"Est\", \"Ouest\") en fonction de sa position par rapport au centroide et vérifier graphiquement.\nRegrouper les comtés par region et réaliser l’union géométrique des polygones pour obtenir un polygone par région.\nCalculer, pour chaque région, le total de la variable BIR74.\nVisualiser les 2 régions obtenues et le nombre de naissances.\n\nLes fonctions utiles : st_union, st_coordinates, mutate(), case_when(), summarise();\n\n\n3.2 Calcul de surfaces\n\nCalculer la surface de chaque comté de nc (en m²), puis convertir cette surface en km².\nAjouter ces deux colonnes (area_m2, area_km2) à l’objet nc.\nAfficher les noms de quelques comtés et leur surface (en km²).\nReprésenter la surface des comtés sur une carte (choroplèthe).\n\nLes fonctions utiles : st_area()"
-  },
-  {
-    "objectID": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
-    "href": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Partie 4 — Grille régulière et moyenne par maille",
-    "text": "Partie 4 — Grille régulière et moyenne par maille\n\n4.1 Définir une grille régulière\nOn souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.\n\nRécupérer l’étendue spatiale (bounding box) de nc.\nCréer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.\nConvertir cette grille en objet sf avec un identifiant de maille (id_cell).\nVisualiser la grille et les comtés superposés.\n\nLes fonctions utiles st_bbox(), st_make_grid(), st_sf().\n\n\n4.2 Intersections comtés / grille\nNous voulons découper les comtés selon la grille.\n\nIntersecter nc (ou nc_area si vous avez déjà les surfaces) avec la grille.\nExaminer la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?\n\nDes fonctions utiles : : st_intersection().\n\n\n4.3 Surface des morceaux de polygones\n\nCalculer la surface de chaque polygone issu de l’intersection (en km²).\nAjouter cette surface comme colonne (area_piece_km2).\n\n\n\n4.4 Moyenne simple de BIR74 par maille\nDans un premier temps, on calcule la moyenne simple de BIR74 pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.\n\nExtraire la partie attributaire (non spatiale) des données intersectées.\nCalculer, pour chaque maille (id_cell), la moyenne simple de BIR74 (ignorer les valeurs manquantes si besoin).\nJoindre ce résultat à l’objet sf représentant la grille.\nReprésenter cartographiquement la moyenne simple de BIR74 par maille.\n\nDes fonctions utiles : st_drop_geometry(), left_join()\n\n\n4.5 Moyenne pondérée par surface\nOn souhaite maintenant calculer une moyenne de BIR74 pondérée par la surface des morceaux de comtés dans chaque maille.\n\nUtiliser la surface des morceaux (area_piece_km2) comme poids.\nPour chaque maille (id_cell), calculer la moyenne pondérée de BIR74 : [ = ]\nJoindre ce résultat à la grille.\nComparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?"
-  },
-  {
-    "objectID": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
-    "href": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
-    "title": "TD2 -Manipulation de données spatiales avec R",
-    "section": "Pour aller plus loin (facultatif)",
-    "text": "Pour aller plus loin (facultatif)\n\nTirer uniformément 1000 points en Caroline du nord (Acceptation rejet)\nCalculer le nombre de points par comté et comparer à la superficie du comté\nQu s’attend on à constater"
-  },
-  {
-    "objectID": "05_tp_evaluation.html",
-    "href": "05_tp_evaluation.html",
-    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
-    "section": "",
-    "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nThis is INLA_24.12.11 built 2024-12-11 19:58:26 UTC.\n - See www.r-inla.org/contact-us for how to get help.\n - List available models/likelihoods/etc with inla.list.models()\n - Use inla.doc(&lt;NAME&gt;) to access documentation\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(gstat)\nlibrary(mapdata)\n\nLoading required package: maps\n\nAttaching package: 'maps'\n\nThe following object is masked from 'package:purrr':\n\n    map"
-  },
-  {
-    "objectID": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
-    "href": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
-    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
-    "section": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.",
-    "text": "Objectif de l’étude : Estimer l’abondance de merlus à partir d’un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.\nDans le cadre de l’étude d’une population marine, l’Institut Français de Recherche pour l’Exploitation de la Mer (IFREMER) organise chaque année des campagnes océanographiques qui permettent de récolter des données et d’obtenir des estimations de l’abondance.\nCes données sont cruciales pour le suivi des espèces marines afin d’évaluer le bon état écologique des populations exploitées. Pour ce TP, nous allons étudier la campagne EVHOE dont un déscriptif est donné au lien: https://campagnes.flotteoceanographique.fr/series/8/fr/."
-  },
-  {
-    "objectID": "05_tp_evaluation.html#données",
-    "href": "05_tp_evaluation.html#données",
-    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
-    "section": "Données",
-    "text": "Données\nLes données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC\n(voir le shapefile Agreed_Strata_EVHOE_Polyg_WGS84.shp et l’objet evhoe_shp)datr.\nLes poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier EVHOE_2008_2019.RData. Il est constitué de trois data frame:\n\nSave_Datras$datras_HH.full regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nDepth: profondeur\nDistance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.\n\nSave_Datras$datras_sp.HL.full regroupe le poids et les abondances sur l’ensemble d’un trait de chalut de chaque combinaison ‘trait de chalut x espèce x classe de taille x sexe’ (données ré-haussées)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nscientificname: nom scientifique\nLngtClass: classe de taille\nTotalNo: comptages (nombre d’individus par combinaison de facteur)\n\n\n\n\n\nRécolte des données EVHOE."
-  },
-  {
-    "objectID": "05_tp_evaluation.html#chargement-des-données",
-    "href": "05_tp_evaluation.html#chargement-des-données",
-    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
-    "section": "Chargement des données",
-    "text": "Chargement des données\n\nLa zone d’intérêt\nLe jeu de donées evhoe_shp défini ci-dessous contient les contours de la zone de suivi.\n\nxlims &lt;- c(-12,0)\nylims &lt;- c(42,52)\n\n# Charger les données EVHOE et les strates de la campagne\nload(\"data/EVHOE_2008_2019.RData\")\n# Definir la zone d'intérêt\nevhoe_shp &lt;- st_read(\"data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp\") %&gt;% \n  dplyr::select(STRATE) |&gt; \n  mutate(area_strata = as.numeric(st_area(geometry)/1e6)) |&gt; ##surface en km2\n  summarise(area_zone_evohe = sum(area_strata))\n\nReading layer `Agreed_Strata_EVHOE_Polyg_WGS84' from data source \n  `/__w/statspat/statspat/data/STRATES/Agreed_Strata_EVHOE_Polyg_WGS84.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 29 features and 7 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -11.6487 ymin: 43.61471 xmax: -1.109647 ymax: 52.19023\nGeodetic CRS:  WGS 84\n\n# Tracé de côte\nmapBase &lt;- map(\"worldHires\", fill = T, plot = F) |&gt; st_as_sf() |&gt; \n  filter(ID %in% c(\"France\", \"Spain\", \"UK\", \"Ireland\", \"Germany\", \"Belgium\", \"Netherlands\", \"Denmark\" ))\nmapBase |&gt; ggplot() + geom_sf(aes(geometry = geom)) +\n  geom_sf(data=evhoe_shp, fill = \"#5f98a3\", alpha =0.5) +\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n# Espèce pour l'analyse\nspecies &lt;- \"Merluccius_merluccius\"\n\n\n\nDonnées de traits de chaluts\n\n# Pour le calcul de la taille de l'échantillon:\n# --&gt; l'ouverture du chalut est de 10 m\n# l'aire balayé par le chalut correspond \n# à la distance parcourue (Distance) x l'ouverture du chalut (10m)\nHaul_df &lt;- Save_Datras $datras_HH.full %&gt;%\n  dplyr::select(Year,long,lati,StNo,HaulNo,Depth,Distance) %&gt;% \n  mutate(Area_swept = Distance * 10) # aire chalutée par chaque trait \nHaul_df$Area_swept[which(is.na(Haul_df$Area_swept))] &lt;- mean(Haul_df$Area_swept,na.rm = T)\n\n# on renumérote les années de 1 à 12\nHaul_df &lt;- Haul_df |&gt;  mutate(annee_suivi = as.numeric(as.factor(Year)))\nn_year &lt;- max(Haul_df$annee_suivi)\n\n# Converti en sf et jointure avec le shapefile EVHOE\nHaul_sf &lt;- st_as_sf(Haul_df,coords=c(\"long\",\"lati\"),crs = st_crs(evhoe_shp))\nHaul_sf_evohe &lt;- st_intersection(Haul_sf,evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Plot des points échantillonnés\nggplot(Haul_sf_evohe)+\n  facet_wrap(~as.factor(annee_suivi))+\n  geom_sf(aes(col=as.factor(annee_suivi)))+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ylab(\"\")+xlab(\"\")\n\n\n\n\n\n\n\n\n\n\nDonnées de captures\n\n# Niveau d'aggrégation --&gt; trait de chalut, \nCatch_df &lt;- Save_Datras$datras_sp.HL.full %&gt;%\n  dplyr::select(Year,long,lati,HaulNo, scientificname,TotalNo) %&gt;% \n  group_by(Year,long,lati,HaulNo,scientificname) %&gt;%\n  dplyr::summarise(TotalNo = sum(TotalNo)) |&gt; \n  filter(scientificname == species) |&gt; \n  full_join(Haul_df) |&gt; \n  mutate(haul_id = paste0(StNo,\"-\",HaulNo,\"-\",Year)) \n\n`summarise()` has grouped output by 'Year', 'long', 'lati', 'HaulNo'. You can\noverride using the `.groups` argument.\nJoining with `by = join_by(Year, long, lati, HaulNo)`\n\n# Ne garder que le traits de chalut au sein de la zone evohe\nCatch_sf_2 &lt;- st_as_sf(Catch_df,\n                       coords = c(\"long\",\"lati\"),\n                       crs=st_crs(evhoe_shp)) %&gt;% \n  st_intersection(evhoe_shp)\n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# Filtrer sur les espèces\nCatch_sf_3 &lt;- Catch_sf_2 %&gt;% \n  select_at(vars(Year,HaulNo,Area_swept,TotalNo, StNo, Depth))\nCatch_sf_3$TotalNo[which(is.na(Catch_sf_3$TotalNo))] &lt;- 0\n\n# Plot\nggplot(Catch_sf_3)+\n  geom_sf(aes(col=TotalNo))+\n  scale_color_distiller(palette=\"Spectral\",trans = 'log10')+\n  facet_wrap(.~Year)+\n  geom_sf(data=mapBase)+\n  coord_sf(xlim = xlims, ylim = ylims, expand = FALSE)+\n  theme_bw()+\n  theme(axis.text.x = element_text(angle = 90),\n        plot.title = element_text(hjust = 0.5,face = \"bold\",size=14),\n        panel.spacing.x = unit(4, \"mm\"))+\n  ggtitle(\"Données de captures (en effectif)\")+\n  ylab(\"\")+xlab(\"\")\n\nWarning in scale_color_distiller(palette = \"Spectral\", trans = \"log10\"): log-10\ntransformation introduced infinite values.\n\n\n\n\n\n\n\n\n\nNous souhaitons ajuster un modèle liant l’abondance (i.e le nombre de merlus pechés ) à la profondeur, en prenant en compte une éventuelle struture spatiale dans le but d’estimer l’abondance sur l’ensemble de la zone pour chaque année.\nOn veut obtenir pour chaque année une carte d”abondance spatialisée et une abondance totale sur la zone d’intérêt. On souhaite également mesuré l’effet de la profondeur (bathymétrie) sur l’abondance et regarder si cet effet potentiel est constant d’une année sur l’autre. Pour obtenir l’abondance totale, nous allons prédire l’abondance en tout point d’une grille et approcher l’abondance totale par la somme de l’abondance sur les points de la grille multiplié par la taille d’une celleule de grille.\nProgramme de travail :\n\nSi l’abondance dépend de la profondeur on va avoir besoin de la profondeur en tout point de la grille sur laquelle on souhaite prédire. Commencer par utiliser l’ensemble des points du jeu de données pour estimer la profondeur en tout point d’une grille que vous aurez choisi.\nAjuster pour chaque année un modèle spatial faisait le lien entre le nombre de merlus pêchés et la profondeur tout en intégrant une dépendance spatiale.\nPrédire l’abondance en tout point de la grille et calculer l’abondance totale sur la zone pour chaque année. Représenter la série des abondances estimées sur un graphique (années x abondance). Comment se porte le stock de merlu ?\nLa série des abondances estimées est-elle sensible à la finesse de la grille ? A la finesse du maillage utilisé dans INLA ?\n\nRendu : vous me rendrez un document en pdf (avec le code R annexe ) présentant votre démarche, les modèles choisis et vous discuterez les résultats obtenus. Le document (hors annexe) doit faire 10 pages maximum. Faites attention à la lisibilité de vos sorties R."
-  },
-  {
-    "objectID": "05_tp_evaluation.html#references",
-    "href": "05_tp_evaluation.html#references",
-    "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
-    "section": "References",
-    "text": "References"
+    "text": "Directives\n\n1. Chargement et visualisation des données\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \n\nReading layer `swiss_rain_full' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain_full.shp' using driver `ESRI Shapefile'\nSimple feature collection with 467 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -159812 ymin: -109008 xmax: 172891 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\n\nReading layer `swiss_rain' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain.shp' using driver `ESRI Shapefile'\nSimple feature collection with 100 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -140463 ymin: -92327 xmax: 150921 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \n\nReading layer `bords' from data source `/__w/statspat/statspat/swiss/bords.shp' using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -169990 ymin: -111696 xmax: 177126 ymax: 108158\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\nReading layer `elev' from data source `/__w/statspat/statspat/swiss/elev.shp' using driver `ESRI Shapefile'\nSimple feature collection with 95128 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -185556.4 ymin: -127261.5 xmax: 193184.2 ymax: 127252.2\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n\n\n\n\n\n\n\n\n2. Nuées variographiques à la main\n\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\nWarning: Removed 2125 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\n\n3. Variogramme empirique\n\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n\n\n\n\n\n\n\n\n4. Ajustement du variogramme\n\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", psill = 90000, range = 50000))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120000)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n\n\n\n\n\n\n\n\n5. Krigeage\n\nKfull &lt;- krige(formula = pluies ~ 1, \n               locations = dta_sf, \n               newdata = dta_full_sf, model = v.fit)\n\nRegistered S3 method overwritten by 'stars':\n  method                  from\n  st_interpolate_aw.stars sf  \n\n\n[using ordinary kriging]\n\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies), size=3) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n\n\n\n\n\n\nPrédites en fonction des observées\n\npred_df &lt;- data.frame(pred =Kfull$var1.pred)\ndta_full_sf |&gt; mutate(pred = Kfull$var1.pred) |&gt; ggplot() +geom_point(aes(x=pluies, y = pred))\n\n\n\n\n\n\n\n\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
   },
   {
     "objectID": "02_geostat.html#sources",
     "href": "02_geostat.html#sources",
     "title": "Géostatistique",
     "section": "Sources",
-    "text": "Sources\nCe cours est construit principalement à partir de celui de Lilane Bel et du livre de Gaetan, Guyon, et al. (2010)"
+    "text": "Sources\nCe cours est construit principalement à partir de celui de Lilane Bel et du livre de Gaetan et al. (2010)"
   },
   {
     "objectID": "02_geostat.html#exemple-illustratif",
@@ -823,21 +781,56 @@
     "href": "02_geostat.html#références",
     "title": "Géostatistique",
     "section": "Références",
-    "text": "Références\n\n\n\n\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
+    "text": "Références\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
   },
   {
-    "objectID": "tp_reseau.html",
-    "href": "tp_reseau.html",
-    "title": "TD3 : Modèles spatiaux et régression SAR",
+    "objectID": "02_tpintro_inla.html",
+    "href": "02_tpintro_inla.html",
+    "title": "TD4 - Introduction INLA",
     "section": "",
-    "text": "Pêches et Océans Canada conduit chaque année des campagnes de suivi dans le Golf du Saint Laurent. Le plan de suivi est construit à partir d’une stratification du golfe (strates spatiales construites pour avoir des habitats relativement homogènes). Plusieurs mesures par strates sont faites et nous avons ici accès à la valeur vomyenne de ces mesures pour chaque strate.\nPlus précisément, Les variables d’intérêt sont\nLes packages utilisés seront\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(spdep)\n\nLoading required package: spData\nTo access larger datasets in this package, install the spDataLarge\npackage with: `install.packages('spDataLarge',\nrepos='https://nowosad.github.io/drat/', type='source')`\n\nlibrary(spatialreg)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\n\nAttaching package: 'spatialreg'\n\nThe following objects are masked from 'package:spdep':\n\n    get.ClusterOption, get.coresOption, get.mcOption,\n    get.VerboseOption, get.ZeroPolicyOption, set.ClusterOption,\n    set.coresOption, set.mcOption, set.VerboseOption,\n    set.ZeroPolicyOption\n\n# library(GGally) #eventuellement pour des stats desc \nlibrary(purrr) # pour la validation croisée"
+    "text": "Ce TP est construit à partir des idées explorées durant la session FinistR2023"
   },
   {
-    "objectID": "tp_reseau.html#questions",
-    "href": "tp_reseau.html#questions",
-    "title": "TD3 : Modèles spatiaux et régression SAR",
-    "section": "Questions",
-    "text": "Questions\n\nQue mesure le coefficient associé à temperature ?\nReprésenter sptialement les résdus. Qu’en pensez vous ?\nPourquoi tester l’autocorrélation spatiale des résidus ? Que vaut le test de Moran sur ces résidus ?\nQue conclure si les résidus présentent une structure spatiale ?"
+    "objectID": "02_tpintro_inla.html#introduction",
+    "href": "02_tpintro_inla.html#introduction",
+    "title": "TD4 - Introduction INLA",
+    "section": "Introduction",
+    "text": "Introduction\nPrésentation de la méthodologie INLA (integrated nested Laplace approximation) en utilisant les packages {INLA}.\nRessources :\n\nhttps://www.r-inla.org/home\nhttps://inla.r-inla-download.org/r-inla.org/doc/inla-manual/inla-manual.pdf\n\nIMPORTANT : Utiliser le cluster 10 !!! INLA n’est pas installé sur les autres."
+  },
+  {
+    "objectID": "02_tpintro_inla.html#installation-de-inla",
+    "href": "02_tpintro_inla.html#installation-de-inla",
+    "title": "TD4 - Introduction INLA",
+    "section": "Installation de INLA",
+    "text": "Installation de INLA\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE)\n\nSi lors de la suite, il y a des problèmes de mise à disposition de binaires, il faut essayer\n\n# Base de R INLA\ninstall.packages(\"INLA\",repos=c(getOption(\"repos\"),INLA=\"https://inla.r-inla-download.org/R/stable\"), dep=TRUE, type = \"binary\")\ninla.binary.install()"
+  },
+  {
+    "objectID": "02_tpintro_inla.html#la-réussite-en-maths",
+    "href": "02_tpintro_inla.html#la-réussite-en-maths",
+    "title": "TD4 - Introduction INLA",
+    "section": "La réussite en maths",
+    "text": "La réussite en maths\n\nChargement de packages\n\n# Chargement des packages\nlibrary(tidyverse)\nlibrary(INLA)\nlibrary(lme4) # pour comparer avec l'approche frequentiste \n\nLe jeu de données awards contient le nombre de récompenses (num_awards) obtenues en fonction des résultats en mathématique (math) pour une classe de 200 élèves.\nLa réponse mesurée est un comptage.\n\n# Chargement des donnees\nload(\"data/awards.RData\")\nhead(awards)\n\n\n\n\n\n\n\n\n\n\n\n\nOn souhaite voir la note de mathématique est liée au nombre de récompenses obtenues. Proposer une représentation graphique\n\n\nawards |&gt; ggplot() + aes(x= math, y = num_awards) + geom_point()\n\n\nProposer un modèle.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i))\\,.\\]\n\nAjustement du modèle\n\n\n# Application de la formule avec un modèle de Poisson\nm.pois.lin1 &lt;- inla(num_awards ~ math,\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin1)\n#Vous pouvez éventuellement comparer à ce que donneraitjags\n\n\nQuelle est la distribution a posteriori pour l’effet des mathématiques\n\n\nm.pois.lin1$marginals.fixed$math |&gt; \n  ggplot() + aes(x=x, y = y) + geom_line() + \n  stat_function(fun = dnorm, args = list(mean = mean(m.pois.lin1$summary.fixed[2,1]), sd = m.pois.lin1$summary.fixed[2,2]), col = \"red\")\n\n\nComparer avec les résultats obtenus en utilisant un modèle linéaire généralisé estimé par max de vraisemblance\n\n\nfit2.glm &lt;- glm(num_awards ~ math, family=\"poisson\", data = awards)\nsummary(fit2.glm)\n\n\nPour prendre en compte le problème classique de surdispersion dans les données de comptages, il peut être intéressant de rajouter un effet aléatoire de la manière suivante. Identifier tous les hyper paramètres et toutes les variables latentes.\n\n\\[Y_i\\overset{ind}{\\sim}\\mathcal{P}(\\exp(\\mu+\\alpha\\cdot x_i+E_i)) \\quad \\text{avec}\\quad E_i\\overset{ind}{\\sim}\\mathcal{N}(0,\\sigma^2).\\]\n\nawards &lt;- awards |&gt; mutate(ID = 1:nrow(awards))\nm.pois.lin_surd &lt;- inla(num_awards ~ math + f(ID, model = \"iid\"),\n  data = awards, family = \"poisson\")\nsummary(m.pois.lin_surd)\n\n\nDiscuter les distributions a posteriori des effets fixes\non peut regarder la loi a posteriori de la précision sur les effets alétaoires\n\n\n m.pois.lin_surd$summary.hyperpar\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nSi une variable aléatoire V est strictement positive et admet une densité \\(f\\), quelle est la densité de 1/V ? En déduire la loi a posteriore de la variance de l’effet aléatoire.\n\n\nm.pois.lin_surd$marginals.hyperpar$`Precision for ID` |&gt;  as.data.frame() |&gt;  \n  mutate(u = 1/x, fu = x^2 * y ) |&gt; \n  ggplot() + aes(x=u, y = fu) + geom_line()\n\n\nOn peut accéder aux effets aléatoires a posteriori, par exemple pour l’élève 1.\n\n\nm.pois.lin_surd$marginals.random$ID$index.1\nm.pois.lin_surd$marginals.random$ID$index.1 |&gt;  ggplot() + aes(x=x, y = y) + geom_line()\n\n\nOn peut comparer un modèle à effets aléatoires généralisés en fréquentiste. Que constatez vous ?\n\n\nfit4.glmm&lt;-glmer(num_awards ~ math + (1|id), family = poisson, data = awards)\nsummary(fit4.glmm)\n\n\nQuels sont les priors utilisés par inla pour les précisions ? Vous pourrez utiliser la commande inla.doc(\"iid\"). Quelle différence entre prior et postérior ?\nOn souhaite changer le prior en une loi gamma de parametre 1,2 (Attention les priors sont codés dans le format interne d’inla cf Table 5.3 @gomez2020bayesian\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nOn peut demander à inla de calculer des critères de sélection de modèle type DIC ou WAIC\n\n\nm.pois.lin_surd2 &lt;- inla(num_awards ~ math + \n                           f(ID, model = \"iid\",\n                             hyper = list(prec = list(prior = \"loggamma\", param = c(3, 1)))),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.lin_surd2)\n\n\nIntégrer un effet non linéaire de la note en mathématique\n\n\nm.pois.nonlin &lt;- inla(num_awards ~ f(math,  model = \"rw1\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")\n\n\nIl existe un modèle RW2, en vous référrant au chapitre Mixed-effects Models du livre @gomez2020bayesian, expliquez la différence entre RW1 et RW2. Dans cet exemple, quelle différence observez vous ?\n\n\nm.pois.nonlin2 &lt;- inla(num_awards ~ f(math,  model = \"rw2\"),\n                         control.compute = list(dic = TRUE, waic = TRUE),\n                         data = awards, family = \"poisson\")\n\nsummary(m.pois.nonlin2)\n\nawards |&gt; mutate(pred_nonlin = m.pois.nonlin$summary.fitted.values[,1],\n                 pred_nonlin2 = m.pois.nonlin2$summary.fitted.values[,1],\n                 pred_lin = m.pois.lin1$summary.fitted.values[,1]\n) |&gt; \n  pivot_longer(cols = c(\"pred_nonlin\",\"pred_nonlin2\", \"pred_lin\"), names_to = \"method\", values_to = \"pred\") |&gt; \n  arrange(math) |&gt; \n  ggplot() + geom_line(aes(x=math, y = pred, col = method)) +\n  geom_point(aes(x=math, y = num_awards)) + ggtitle(\"Fit with linear and non linear effect (RW1)\")"
+  },
+  {
+    "objectID": "02_tpintro_inla.html#references",
+    "href": "02_tpintro_inla.html#references",
+    "title": "TD4 - Introduction INLA",
+    "section": "References",
+    "text": "References"
+  },
+  {
+    "objectID": "03_tp_inlaspatial.html",
+    "href": "03_tp_inlaspatial.html",
+    "title": "TD5 - Ajuster un modèle hiérarchique spatial avec INLA",
+    "section": "",
+    "text": "# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE"
+  },
+  {
+    "objectID": "03_tp_inlaspatial.html#references",
+    "href": "03_tp_inlaspatial.html#references",
+    "title": "TD5 - Ajuster un modèle hiérarchique spatial avec INLA",
+    "section": "References",
+    "text": "References"
   },
   {
     "objectID": "04_tp_inlakrigeage.html",
@@ -852,5 +845,40 @@
     "title": "Krigeage avec INLA",
     "section": "References",
     "text": "References"
+  },
+  {
+    "objectID": "eval_spatial.html",
+    "href": "eval_spatial.html",
+    "title": "Statistique spatiale : Evaluation",
+    "section": "",
+    "text": "Toutes les données sont disponibles dans https://github.com/MarieEtienne/statspat/data_LNH"
+  },
+  {
+    "objectID": "eval_spatial.html#prise-en-main-des-données",
+    "href": "eval_spatial.html#prise-en-main-des-données",
+    "title": "Statistique spatiale : Evaluation",
+    "section": "Prise en main des données",
+    "text": "Prise en main des données\nOn dispose de mesures ponctuelles d’exposition aux pesticides atmosphériques (en \\(ng . m^{-3}\\)) ainsi que de covariables environnementales. L’objectif de cette partie est :\n\nd’estimer l’exposition en tout point à l’échelle de la France par krigeage en tenant compte des covariables,\nd’en déduire, pour chaque département, une exposition moyenne (moyenne surfacique).\n\nLes données fournies sont :\n\npesticide_points.csv : points de mesure (WGS84, EPSG:4326) contenant l’exposition aux pesticides, ainsi qu’un niveau d’usage agricole (indice normalisé entre 0 et 1), la quantité de pluie par an en \\(mm.an^{-1}\\), la température moyenne en degré celsius\nprediction_grid.csv : grille de prédiction (WGS84, EPSG:4326)\ndepartements_lambert93.geojson : départements (Lambert-93, EPSG:2154) (on peut lire un fichier spatial geojson en R avec le package geojsonsf et la fonction geojson_sf)\n\nQuestion 1 Charger les points de mesure et les départements et proposer une visualisation des dpartements et des mesures d’exposition\nRendu 1 :\n\nle code et un court commentaire (2–3 lignes) sur les points clés.\nune figure"
+  },
+  {
+    "objectID": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
+    "href": "eval_spatial.html#prédiction-de-lexposition-en-tout-point",
+    "title": "Statistique spatiale : Evaluation",
+    "section": "Prédiction de l’exposition en tout point",
+    "text": "Prédiction de l’exposition en tout point\nOn note \\(D\\) le domaine spatial \\((Z(s), s\\in D=\\) l’exposition (ng/m³) au point \\(s\\).\nQuestion 2 quel pourrait être l’intérêt de modéliser \\(log(Z(s))\\) plut$ot que $Z(s) ?\nRendu 2 : Répondez en 2/3 lignes\nQuestion 3 Prédire l’exposition en tout point de la grille.\nRendu 3 : Justifier la démarche et le choix du modèle proposé. Visualiser les prédictions sur une carte ainsi que la carte des variances de prédiction. Ecrire explicitement le modèle retenu.\nQuestion 4 Quelle démarche faudrait il adopter pour comparer les divers modèles proposés et l’intérêt de prédire \\(log Z\\) plutôt que \\(Z\\) Rendu 4 : Expliquer la démarche que vous pourriez mettre en oeuvre pour valider proprement le modèle. Il n’est pas demandé de l’implémenter.\nQuestion 5 On souhaite estimer un niveau moyen d’exposition à l’échelle de chaque département \\[Z_i=\\frac{1}{|A_i|} \\int_{s\\in A_i} Z(s)  ds.\\] Expliquer comment utiliser ce qui précède pour construire un estimateur de cette quantité et l’implémenter. Comparer avec la valeur moyenne des mesures au sein de chaque département.\nRendu 5 : le code correspondant expliqué et la comparaison. La tableau donnant la valeur par département que vous proposez en regard de la valeur moyenne des données brutes. Une carte de niveau d’exposition par département."
+  },
+  {
+    "objectID": "references_statspat.html",
+    "href": "references_statspat.html",
+    "title": "References",
+    "section": "",
+    "text": "liste &lt;- \n    readLines('spatstat.bib') |&gt; \n  as_tibble() |&gt; \n  filter(stringr::str_detect(value, pattern = '@|keywords')) |&gt; \n  rowid_to_column() %&gt;% \n  mutate(int_part = floor((rowid-1)/2), parity = rowid %% 2) %&gt;% \n  select(-rowid) %&gt;% \n  pivot_wider( values_from = value, names_from = parity, names_prefix = \"key\") |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = '@[:alnum:]+\\\\{')) |&gt; \n  mutate(key1 = stringr::str_remove(key1, pattern = ',')) \n  \nstatspat_liste &lt;- liste %&gt;% \n  filter(str_detect(key0, 'spatstat')) %&gt;% \n  select(key1) %&gt;% \n  pull()\n\nNoCite(bib = myBib, statspat_liste)"
+  },
+  {
+    "objectID": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "href": "references_statspat.html#pour-approfondir-ou-compléter-le-cours",
+    "title": "References",
+    "section": "Pour approfondir ou compléter le cours",
+    "text": "Pour approfondir ou compléter le cours\nGaetan, C., X. Guyon, and others (2010). Vol. 90. Springer."
   }
 ]
