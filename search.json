@@ -109,7 +109,7 @@
     "href": "04_inla.html#quest-ce-quinla",
     "title": "INLA et Modèles Hiérarchiques",
     "section": "Qu’est ce qu’INLA ?",
-    "text": "Qu’est ce qu’INLA ?\n\nINLA pour Integrated Nested Laplace Approximation\nC’est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans Rue et al. (2009), puis (lindgren2010explicit?) dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.\nR-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models."
+    "text": "Qu’est ce qu’INLA ?\n\nINLA pour Integrated Nested Laplace Approximation\nC’est une méthode alternative aux méthodes MCMC pour mener une inférence bayésienne. Premières idées dans Rue et al. (2009), puis Lindgren et al. (2010) dans le cadre spatial et le lien avec les méthjodes de résolutions numériques.\nR-INLA is a package in R that do approximate Bayesian inference for Latent Gaussian Models."
   },
   {
     "objectID": "04_inla.html#le-cadre-de-modélisation-considéré---modèles-gaussiens-latents",
@@ -193,7 +193,7 @@
     "href": "04_inla.html#références",
     "title": "INLA et Modèles Hiérarchiques",
     "section": "Références",
-    "text": "Références\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, et al. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
+    "text": "Références\n\n\n\n\nBlangiardo, Marta, Michela Cameletti, Gianluca Baio, and Håvard Rue. 2013. “Spatial and Spatio-Temporal Models with r-INLA.” Spatial and Spatio-Temporal Epidemiology 4: 33–49.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGómez-Rubio, Virgilio. 2020. Bayesian Inference with INLA. Chapman; Hall/CRC.\n\n\nKrainski, Elias, Virgilio Gómez-Rubio, Haakon Bakka, et al. 2018. Advanced Spatial Modeling with Stochastic Partial Differential Equations Using r and INLA. Chapman; Hall/CRC.\n\n\nLindgren, Finn, Johan Lindström, and Håvard Rue. 2010. An Explicit Link Between Gaussian Fields and Gaussian Markov Random Fields; the Spde Approach.\n\n\nRue, Håvard, and Leonhard Held. 2005. Gaussian Markov Random Fields: Theory and Applications. Chapman; Hall/CRC.\n\n\nRue, Håvard, Sara Martino, and Nicolas Chopin. 2009. “Approximate Bayesian Inference for Latent Gaussian Models by Using Integrated Nested Laplace Approximations.” Journal of the Royal Statistical Society Series B: Statistical Methodology 71 (2): 319–92."
   },
   {
     "objectID": "03_lattice.html#sources",
@@ -420,18 +420,11 @@
     "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
   },
   {
-    "objectID": "01_tp_sf.html#clusters-1",
-    "href": "01_tp_sf.html#clusters-1",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Clusters",
-    "text": "Clusters\nLe but de ce premier TP est de se familiariser avec les données spatiales, de se creuser un peu la tête et de chercher des solutions. Il est donc vivement déconseillé de faire appel à l’IA à la moindre difficulté. Utilisez\n\nvotre cerveau,\nvotre voisin,\nvotre enseignant.\nen désespoir de cause, si personne ne résoud votre question Claude sera votre dernier espoir !"
-  },
-  {
     "objectID": "01_tp_sf.html#objectifs-du-tp",
     "href": "01_tp_sf.html#objectifs-du-tp",
     "title": "TD1 -Manipulation de données spatiales avec R",
     "section": "Objectifs du TP",
-    "text": "Objectifs du TP\nL’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles."
+    "text": "Objectifs du TP\nL’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles.\n\nLe but des TPS en général est de se creuser un peu la tête et de chercher des solutions. Il est donc vivement déconseillé de faire appel à l’IA à la moindre difficulté. Utilisez\n\nvotre cerveau,\nvotre voisin,\nvotre enseignant.\nen désespoir de cause, si personne ne résoud votre question Claude sera votre dernier espoir !"
   },
   {
     "objectID": "01_tp_sf.html#packages",
@@ -569,28 +562,28 @@
   {
     "objectID": "01_pluies.html",
     "href": "01_pluies.html",
-    "title": "TD1 - Statistique Spatiale",
+    "title": "TD2 - Statistique Spatiale",
     "section": "",
     "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
   },
   {
     "objectID": "01_pluies.html#présentation",
     "href": "01_pluies.html#présentation",
-    "title": "TD1 - Statistique Spatiale",
+    "title": "TD2 - Statistique Spatiale",
     "section": "",
     "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
   },
   {
     "objectID": "01_pluies.html#objectifs",
     "href": "01_pluies.html#objectifs",
-    "title": "TD1 - Statistique Spatiale",
+    "title": "TD2 - Statistique Spatiale",
     "section": "Objectifs",
     "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
   },
   {
     "objectID": "01_pluies.html#directives",
     "href": "01_pluies.html#directives",
-    "title": "TD1 - Statistique Spatiale",
+    "title": "TD2 - Statistique Spatiale",
     "section": "Directives",
     "text": "Directives\n\n1. Chargement et visualisation des données\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \n\nReading layer `swiss_rain_full' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain_full.shp' using driver `ESRI Shapefile'\nSimple feature collection with 467 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -159812 ymin: -109008 xmax: 172891 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\n\nReading layer `swiss_rain' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain.shp' using driver `ESRI Shapefile'\nSimple feature collection with 100 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -140463 ymin: -92327 xmax: 150921 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \n\nReading layer `bords' from data source `/__w/statspat/statspat/swiss/bords.shp' using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -169990 ymin: -111696 xmax: 177126 ymax: 108158\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\nReading layer `elev' from data source `/__w/statspat/statspat/swiss/elev.shp' using driver `ESRI Shapefile'\nSimple feature collection with 95128 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -185556.4 ymin: -127261.5 xmax: 193184.2 ymax: 127252.2\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n\n\n\n\n\n\n\n\n2. Nuées variographiques à la main\n\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\nWarning: Removed 2125 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\n\n3. Variogramme empirique\n\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n\n\n\n\n\n\n\n\n4. Ajustement du variogramme\n\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", psill = 90000, range = 50000))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120000)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n\n\n\n\n\n\n\n\n5. Krigeage\n\nKfull &lt;- krige(formula = pluies ~ 1, \n               locations = dta_sf, \n               newdata = dta_full_sf, model = v.fit)\n\nRegistered S3 method overwritten by 'stars':\n  method                  from\n  st_interpolate_aw.stars sf  \n\n\n[using ordinary kriging]\n\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies), size=3) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n\n\n\n\n\n\nPrédites en fonction des observées\n\npred_df &lt;- data.frame(pred =Kfull$var1.pred)\ndta_full_sf |&gt; mutate(pred = Kfull$var1.pred) |&gt; ggplot() +geom_point(aes(x=pluies, y = pred))\n\n\n\n\n\n\n\n\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
   },
