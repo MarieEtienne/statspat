@@ -167,7 +167,7 @@ Des fonctions utiles :`st_transform()`, `st_crs()`.
 1.  Calculer les centroïdes des polygones de `nc`.
 2.  Visualiser les centroïdes superposés aux polygones.
 
-Des fonctions utiles : `st_centroid()`, `plot()`.
+Des fonctions utiles : `st_centroid()`.
 
 ### 2.2 Buffers autour des points
 
