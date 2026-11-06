@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marie-Pierre Etienne">
-<meta name="dcterms.date" content="2026-11-05">
+<meta name="dcterms.date" content="2026-11-06">
 
 <title>TD1 -Manipulation de données spatiales avec R – Statistique Spatiale</title>
 <style>
@@ -303,7 +303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 5, 2026</p>
+      <p class="date">November 6, 2026</p>
     </div>
   </div>
   
@@ -387,10 +387,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nc.shp <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">system.file</span>(<span class="st">"shape/nc.shp"</span>, <span class="at">package=</span><span class="st">"sf"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="2" type="1">
-<li>Inspecter sa structure (<code>glimpse</code>) et vérifier son CRS. 3 Afficher la classe de l’objet <code>nc</code>.</li>
+<li>Inspecter sa structure (<code>glimpse</code>) et vérifier son CRS. 3 Afficherla classe de l’objet <code>nc</code>.</li>
 <li>Afficher les premières lignes de <code>nc</code>.</li>
 <li>Lister les noms de colonnes disponibles et repérer au moins une variable numérique.</li>
-<li>Comparer le CRS de <code>nc</code> et celui de vos stations (<code>stations_wgs84</code>).</li>
+<li>Comparer le CRS de <code>nc</code> et celui de votre jeu de données importé depuis le csv (<code>nc_cities.sf</code>).</li>
 <li>Cartographier les données <code>nc.sf</code></li>
 </ol>
 <p>Des fonctions utiles :<code>st_read()</code>, <code>st_crs()</code>, <code>glimpse()</code>.</p>
