@@ -123,12 +123,13 @@ nc.shp <- st_read(system.file("shape/nc.shp", package="sf"))
 
 ```
 
-2.  Inspecter sa structure (`glimpse`) et vérifier son CRS. 3 Afficher
-    la classe de l’objet `nc`.
+2.  Inspecter sa structure (`glimpse`) et vérifier son CRS. 3 Afficherla
+    classe de l’objet `nc`.
 3.  Afficher les premières lignes de `nc`.
 4.  Lister les noms de colonnes disponibles et repérer au moins une
     variable numérique.
-5.  Comparer le CRS de `nc` et celui de vos stations (`stations_wgs84`).
+5.  Comparer le CRS de `nc` et celui de votre jeu de données importé
+    depuis le csv (`nc_cities.sf`).
 6.  Cartographier les données `nc.sf`
 
 Des fonctions utiles :`st_read()`, `st_crs()`, `glimpse()`.
