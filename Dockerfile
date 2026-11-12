@@ -5,15 +5,16 @@ RUN apt-get update \
       mercurial gsl-bin libgsl-dev libc6-i386 libglpk40 libglpk-dev \
       ghostscript fontconfig \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # --- LaTeX pour les versions PDF (beamer) : complète la TeX Live de rocker ---
-RUN tlmgr install \
-      xetex beamer pgf translator tcolorbox environ fontspec unicode-math \
-      lm lm-math tex-gyre xcolor etoolbox iftex amsmath tools caption \
-      bookmark xurl booktabs fancyvrb framed upquote microtype parskip \
-      footnotehyper \
+ENV CTAN_REPO="https://mirror.ctan.org/systems/texlive/tlnet"
+ENV PATH="$PATH:/usr/local/texlive/bin/linux"
+RUN /rocker_scripts/install_texlive.sh \
+ && tlmgr install \
+      xetex beamer pgf translator tcolorbox environ trimspaces pdfcol \
+      tikzfill fontspec unicode-math lm lm-math tex-gyre xcolor etoolbox \
+      iftex amsmath tools caption bookmark xurl booktabs fancyvrb framed \
+      upquote microtype parskip footnotehyper \
  && fmtutil-sys --all
-
 # --- R ---
 ENV R_CRAN_WEB="https://cran.rstudio.com/"
 RUN R -e "install.packages(c('remotes', 'purrr'))"
