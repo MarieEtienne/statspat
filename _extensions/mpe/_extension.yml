@@ -1,0 +1,24 @@
+title: MPE slides (revealjs + beamer)
+author: Marie-Pierre Etienne
+version: 1.1.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    # revealjs habituel + lien vers la version PDF en bas à gauche
+    revealjs:
+      include-after-body: pdf-link.html
+    # beamer aux couleurs du CSS, une frame par onglet
+    beamer:
+      pdf-engine: xelatex
+      slide-level: 2
+      fontsize: 10pt
+      aspectratio: 32        # même ratio que revealjs 1050 x 700
+      classoption: t         # contenu aligné en haut, comme revealjs
+      section-titles: true
+      toc: false
+      fig-width: 4
+      fig-height: 2.5
+      include-in-header: mpe-beamer-theme.tex
+      filters:
+        - at: pre-ast        # avant le traitement Quarto des tabsets/callouts
+          path: tabset-beamer.lua

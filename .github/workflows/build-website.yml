@@ -1,0 +1,33 @@
+name: Build website
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_run:
+    workflows:
+      - "Build and Push Docker image"
+    types: ["completed"]
+
+jobs:
+  build:
+    name: Build website with quarto
+    runs-on: ubuntu-latest
+    container: mpetienne/statspat:latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Generate slides (revealjs + beamer)
+        run: quarto render
+
+      - name: GitHub Pages action
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site

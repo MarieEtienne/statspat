@@ -1,0 +1,142 @@
+% mpe-beamer-theme.tex — thème Beamer reprenant mpe_pres_revealjs.css
+% À inclure via  include-in-header: mpe-beamer-theme.tex
+
+%% ---------- Couleurs (classes du CSS) ----------
+\definecolor{jaune}{HTML}{F1D763}
+\definecolor{jauneb}{HTML}{FDC455}
+\definecolor{orange}{HTML}{F7A913}
+\definecolor{rouge}{HTML}{C94326}
+\definecolor{vert}{HTML}{1F908E}
+\definecolor{bleu}{HTML}{33658A}
+\definecolor{bleuf}{HTML}{0C324E}
+\definecolor{clair}{HTML}{99B6B2}
+\definecolor{alea}{HTML}{398D55}
+\definecolor{fixe}{HTML}{33658A}
+\definecolor{lien}{HTML}{B40F20}
+\definecolor{care}{HTML}{B40F20}
+\definecolor{highlight}{HTML}{B40F20}
+\definecolor{calloutbg}{HTML}{F0F2F0}
+\definecolor{tabgris}{HTML}{E4E8E4}
+
+%% ---------- Polices : Latin Modern (fournie avec toute distribution TeX) ----------
+% Texte en Latin Modern Sans, maths en Latin Modern classique.
+% Polices chargées par nom de fichier : fonctionne aussi avec TinyTeX /
+% dans un conteneur Docker, sans dépendre de fontconfig.
+% Alternative sobre type Helvetica : décommenter le bloc TeX Gyre Heros.
+\usepackage{iftex}
+\ifPDFTeX\else
+  \usepackage{fontspec}
+  \setsansfont{lmsans10-regular.otf}[
+    BoldFont       = lmsans10-bold.otf,
+    ItalicFont     = lmsans10-oblique.otf,
+    BoldItalicFont = lmsans10-boldoblique.otf]
+  % \setsansfont{texgyreheros-regular.otf}[Scale=0.92,
+  %   BoldFont = texgyreheros-bold.otf, ItalicFont = texgyreheros-italic.otf,
+  %   BoldItalicFont = texgyreheros-bolditalic.otf]
+  \setmonofont{lmmono10-regular.otf}[
+    BoldFont = lmmonolt10-bold.otf, ItalicFont = lmmono10-italic.otf]
+\fi
+\usefonttheme[onlymath]{serif}
+
+%% ---------- Couleurs Beamer ----------
+\setbeamercolor{normal text}{fg=black!85}
+\setbeamercolor{structure}{fg=bleu}
+\setbeamercolor{frametitle}{fg=rouge,bg=}              % h2 du CSS
+\setbeamercolor{title}{fg=bleu}
+\setbeamercolor{subtitle}{fg=vert}
+\setbeamercolor{author}{fg=bleuf}
+\setbeamercolor{institute}{fg=vert}
+\setbeamercolor{date}{fg=gray}
+\setbeamercolor{section title}{fg=bleu}                % h1 du CSS
+\setbeamercolor{block title}{fg=bleuf,bg=}             % h3 du CSS
+\setbeamercolor{block body}{bg=}
+\setbeamercolor{item}{fg=rouge}
+\setbeamercolor{alerted text}{fg=lien}
+\setbeamercolor{caption name}{fg=bleu}
+\setbeamercolor{page number in head/foot}{fg=gray}
+
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{caption}{size=\scriptsize,shape=\itshape}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{caption}[default]
+\setbeamertemplate{footline}{%
+  \hfill\usebeamercolor[fg]{page number in head/foot}%
+  \scriptsize\insertframenumber\,/\,\inserttotalframenumber\hspace*{1.2em}%
+  \vspace*{1.2ex}}
+
+% Page de section (équivalent des slides "# Titre" en revealjs)
+\setbeamertemplate{section page}{%
+  \vspace*{\fill}
+  \begin{center}
+    {\usebeamercolor[fg]{section title}\usebeamerfont{title}\insertsectionhead\par}
+    \vspace{1ex}{\color{orange}\rule{0.4\linewidth}{1.5pt}}
+  \end{center}
+  \vspace*{\fill}}
+
+\AtBeginDocument{\hypersetup{colorlinks=true,urlcolor=lien,linkcolor=.}}
+
+%% ---------- Callouts (callout-note & co) ----------
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{mpecalloutstyle/.style={enhanced, frame hidden, colback=calloutbg,
+    arc=0pt, outer arc=0pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
+    before skip=4pt, after skip=6pt}}
+\newenvironment{mpecallout}[2][rouge]{%
+  \tcolorbox[mpecalloutstyle, borderline west={4pt}{0pt}{#1}]%
+  \if\relax\detokenize{#2}\relax\else
+    {\color{#1}\usebeamerfont{block title}#2\par}\smallskip
+  \fi}{\endtcolorbox}
+
+%% ---------- Barre d'onglets (panel-tabset) ----------
+\newcommand{\qtab}[1]{{\setlength{\fboxsep}{2.5pt}%
+  \colorbox{tabgris}{\strut\scriptsize\color{bleuf}#1}}}
+\newcommand{\qtabactive}[1]{{\setlength{\fboxsep}{2.5pt}%
+  \colorbox{rouge}{\strut\scriptsize\color{white}\bfseries #1}}}
+\newcommand{\qtabsep}{\hspace{2pt}\allowbreak}
+\newenvironment{qtabbar}{\par\vspace*{-0.8ex}\noindent\raggedright}%
+  {\par\vspace{-0.9ex}\noindent{\color{rouge}\rule{\linewidth}{0.6pt}}\par\medskip}
+
+%% ---------- Macros mathématiques (bloc ::: hidden de la version revealjs) ----------
+\providecommand\R{{\mathbb{R}}}
+\providecommand\Xbf{{\boldsymbol{X}}}
+\providecommand\norm[1]{\lVert#1\rVert}
+\providecommand\xcol[1]{\boldsymbol{x}^{#1}}
+\providecommand\xrow[1]{\boldsymbol{x}_{#1}}
+\providecommand\xbf{\boldsymbol{x}}
+\providecommand\ybf{\boldsymbol{y}}
+% Macros du cours de statistique spatiale
+\providecommand\E{{\mathbb{E}}}
+\renewcommand\P{{\mathbb{P}}}   % \P existe déjà en LaTeX (pied-de-mouche)
+\providecommand\Cov{{\mathbb{C}\text{ov}}}
+\providecommand\Var{{\mathbb{V}\text{ar}}}
+\providecommand\Zchap{\widehat{Z}}
+\providecommand\un{\mathbf{1}}
+% \class{couleur}{...} (extension HTML de MathJax) -> texte coloré en LaTeX
+\providecommand\class[2]{\textcolor{#1}{#2}}
+% Macro de bordure de flextable : définie ici car sa définition (avec #1)
+% dans une frame beamer fait planter LaTeX ; le filtre la retire des tableaux.
+\providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+
+%% ---------- Taille maximale des figures ----------
+% Les figures sont réduites pour tenir dans \mpefigmaxh de la hauteur de texte
+% (et dans la largeur de la colonne). Modifier la fraction si besoin, ou
+% localement dans une slide :  `\renewcommand{\mpefigmaxh}{0.4}`{=latex}
+\newcommand{\mpefigmaxh}{0.6}
+\makeatletter
+\AtBeginDocument{%
+  \@ifundefined{pandocbounded}{}{%
+    \renewcommand*\pandocbounded[1]{%
+      \sbox\pandoc@box{#1}%
+      \Gscale@div\@tempa{\mpefigmaxh\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+      \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+      \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi
+      \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+      \else\usebox{\pandoc@box}\fi}}%
+  \@ifundefined{maxheight}{}{%
+    \def\maxheight{\ifdim\Gin@nat@height>\mpefigmaxh\textheight
+      \mpefigmaxh\textheight\else\Gin@nat@height\fi}}%
+}
+\makeatother
