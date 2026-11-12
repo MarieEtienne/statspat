@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marie-Pierre Etienne (sur la base des idées expolorée dans FinistR2023 )">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-12">
 
 <title>TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale – Statistique Spatiale</title>
 <style>
@@ -159,8 +159,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Introduction</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./02_geostat.html">
- <span class="dropdown-text">Géostatistique</span></a>
+    <a class="dropdown-item" href="./02_krigeage.html">
+ <span class="dropdown-text">Prédiction spatiale : le krigeage</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./03_lattice.html">
@@ -169,6 +169,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="./04_inla.html">
  <span class="dropdown-text">INLA et Modèles Hiérarchiques</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Versions PDF</li>
+        <li>
+    <a class="dropdown-item" href="./01_intro.pdf">
+ <span class="dropdown-text">Introduction (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02_krigeage.pdf">
+ <span class="dropdown-text">Krigeage (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03_lattice.pdf">
+ <span class="dropdown-text">Modèles sur grille (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04_inla.pdf">
+ <span class="dropdown-text">INLA (PDF)</span></a>
   </li>  
     </ul>
   </li>
@@ -281,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 12, 2026</p>
     </div>
   </div>
   
@@ -324,7 +342,7 @@ The following objects are masked from 'package:tidyr':
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE</code></pre>
+<pre><code>Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapdata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -346,8 +364,8 @@ The following object is masked from 'package:purrr':
 <section id="données" class="level2">
 <h2 class="anchored" data-anchor-id="données">Données</h2>
 <p>Les données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC</p>
-<p>(voir le shapefile <code>Agreed_Strata_EVHOE_Polyg_WGS84.shp</code> et l’objet <code>evhoe_shp</code>)datr.</p>
-<p>Les poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier <code>EVHOE_2008_2019.RData</code>. Il est constitué de trois data frame:</p>
+<p>(voir le shapefile <code>Agreed_Strata_EVHOE_Polyg_WGS84.shp</code> et l’objet <code>evhoe_shp</code>).</p>
+<p>Les poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockées dans le fichier <code>EVHOE_2008_2019.RData</code>. Il est constitué de trois data frame:</p>
 <ul>
 <li><p><code>Save_Datras$datras_HH.full</code> regroupe les principales informations de chaque trait de chalut (e.g.&nbsp;localisation, période de relevé)</p>
 <ul>

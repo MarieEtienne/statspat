@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marie-Pierre Etienne (sur la base des idées expolorée dans FinistR2023 )">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-12">
 
 <title>Krigeage avec INLA – Statistique Spatiale</title>
 <style>
@@ -188,8 +188,8 @@ window.Quarto = {
  <span class="dropdown-text">Introduction</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./02_geostat.html">
- <span class="dropdown-text">Géostatistique</span></a>
+    <a class="dropdown-item" href="./02_krigeage.html">
+ <span class="dropdown-text">Prédiction spatiale : le krigeage</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./03_lattice.html">
@@ -198,6 +198,24 @@ window.Quarto = {
         <li>
     <a class="dropdown-item" href="./04_inla.html">
  <span class="dropdown-text">INLA et Modèles Hiérarchiques</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Versions PDF</li>
+        <li>
+    <a class="dropdown-item" href="./01_intro.pdf">
+ <span class="dropdown-text">Introduction (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02_krigeage.pdf">
+ <span class="dropdown-text">Krigeage (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03_lattice.pdf">
+ <span class="dropdown-text">Modèles sur grille (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04_inla.pdf">
+ <span class="dropdown-text">INLA (PDF)</span></a>
   </li>  
     </ul>
   </li>
@@ -305,7 +323,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 12, 2026</p>
     </div>
   </div>
   
@@ -395,20 +413,14 @@ Le paramètre <span class="math inline">\(\kappa &gt; 0\)</span> est lié au <st
 <span class="math inline">\(\rho = \frac{\sqrt{8\nu}}{\kappa}\)</span> et à cette distance, la corrélation spatiale est proche de 0.1.</p>
 <p><strong>SPDE et Covariance de Matern</strong></p>
 <p>Un <strong>champ de markov gaussien (GRF)</strong> <span class="math inline">\(z(s)\)</span> sur un domaine <span class="math inline">\(D \subset {\mathbb{R}}^2\)</span> avec une matrice de covariance de Matérn peut être exprimé comme la solution de l’<strong>équation différentielle stochastique aux dérivées partielles (SPDE)</strong> suivante dans un domaine continu :</p>
-<p><span class="math display">\[
-(\kappa^2 - \Delta)^{\alpha/2} (\tau z(s)) = W(s).
-\]</span></p>
+<p><span class="math display">\[(\kappa^2 - \Delta)^{\alpha/2} (\tau z(s)) = W(s).\]</span></p>
 <p>Ici <span class="math inline">\(W(s)\)</span> est un <strong>bruit blanc spatial gaussien</strong>. Le paramètre $$contrôle la <strong>régularité</strong> du champ <span class="math inline">\(z(s)\)</span> , $$contrôle la <strong>variance</strong>, et $&gt; 0 <span class="math inline">\(est un **paramètre d'échelle**.\)</span>$ représente le <strong>laplacien</strong></p>
 <p>Les paramètres de la <strong>fonction de covariance de Matérn</strong> et ceux de l’<strong>équation SPDE</strong> sont couplés de la manière suivante :</p>
 <ul>
 <li><p>Le <strong>paramètre de régularité</strong> <span class="math inline">\(\nu\)</span> de la fonction de covariance de Matérn est lié au paramètre <span class="math inline">\(\alpha\)</span> de l’équation SPDE par la relation (valable sur <span class="math inline">\({\mathbb{R}}^2\)</span>):</p>
-<p><span class="math display">\[
-\nu = \alpha - 1.
-\]</span></p></li>
+<p><span class="math display">\[\nu = \alpha - 1.\]</span></p></li>
 <li><p>La <strong>variance marginale</strong> <span class="math inline">\(\sigma^2_Z\)</span> est reliée aux paramètres de l’équation SPDE par :</p>
-<p><span class="math display">\[
-\sigma^2_Z = \frac{\Gamma(\nu)}{\Gamma(\alpha)} \frac{1}{(4\pi)^{d/2}} \frac{1}{\kappa^{2\nu} \tau^2}.
-\]</span></p></li>
+<p><span class="math display">\[\sigma^2_Z = \frac{\Gamma(\nu)}{\Gamma(\alpha)} \frac{1}{(4\pi)^{d/2}} \frac{1}{\kappa^{2\nu} \tau^2}.\]</span></p></li>
 </ul>
 <p>Pour <span class="math inline">\(\nu = \frac{1}{2}\)</span> (ce qui correspond à la fonction de covariance exponentielle), on obtient <span class="math inline">\(\alpha = 3/2\)</span>. Dans le package <strong>R-INLA</strong>, la valeur par défaut est <span class="math inline">\(\alpha = 2\)</span> , bien que des options dans l’intervalle <span class="math inline">\(0 \leq \alpha &lt; 2\)</span> soient également disponibles.</p>
 <ol start="3" type="1">

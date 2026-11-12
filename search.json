@@ -4,7 +4,7 @@
     "href": "tp_reseau.html",
     "title": "TD3 : Modèles spatiaux et régression SAR",
     "section": "",
-    "text": "Pêches et Océans Canada conduit chaque année des campagnes de suivi dans le Golf du Saint Laurent. Le plan de suivi est construit à partir d’une stratification du golfe (strates spatiales construites pour avoir des habitats relativement homogènes). Plusieurs mesures par strates sont faites et nous avons ici accès à la valeur vomyenne de ces mesures pour chaque strate.\nPlus précisément, Les variables d’intérêt sont\nLes packages utilisés seront\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(spdep)\n\nLoading required package: spData\nTo access larger datasets in this package, install the spDataLarge\npackage with: `install.packages('spDataLarge',\nrepos='https://nowosad.github.io/drat/', type='source')`\n\nlibrary(spatialreg)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\n\nAttaching package: 'spatialreg'\n\nThe following objects are masked from 'package:spdep':\n\n    get.ClusterOption, get.coresOption, get.mcOption,\n    get.VerboseOption, get.ZeroPolicyOption, set.ClusterOption,\n    set.coresOption, set.mcOption, set.VerboseOption,\n    set.ZeroPolicyOption\n\n# library(GGally) #eventuellement pour des stats desc \nlibrary(purrr) # pour la validation croisée"
+    "text": "Pêches et Océans Canada conduit chaque année des campagnes de suivi dans le Golf du Saint Laurent. Le plan de suivi est construit à partir d’une stratification du golfe (strates spatiales construites pour avoir des habitats relativement homogènes). Plusieurs mesures par strates sont faites et nous avons ici accès à la valeur vomyenne de ces mesures pour chaque strate.\nPlus précisément, Les variables d’intérêt sont\nLes packages utilisés seront\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE\n\nlibrary(spdep)\n\nLoading required package: spData\nTo access larger datasets in this package, install the spDataLarge\npackage with: `install.packages('spDataLarge',\nrepos='https://nowosad.github.io/drat/', type='source')`\n\nlibrary(spatialreg)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\n\nAttaching package: 'spatialreg'\n\nThe following objects are masked from 'package:spdep':\n\n    get.ClusterOption, get.coresOption, get.mcOption,\n    get.VerboseOption, get.ZeroPolicyOption, set.ClusterOption,\n    set.coresOption, set.mcOption, set.VerboseOption,\n    set.ZeroPolicyOption\n\n# library(GGally) #eventuellement pour des stats desc \nlibrary(purrr) # pour la validation croisée"
   },
   {
     "objectID": "tp_reseau.html#questions",
@@ -25,7 +25,7 @@
     "href": "05_tp_evaluation.html",
     "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
     "section": "",
-    "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\nlibrary(gstat)\nlibrary(mapdata)\n\nLoading required package: maps\n\nAttaching package: 'maps'\n\nThe following object is masked from 'package:purrr':\n\n    map"
+    "text": "$$\n$$\n# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE\n\nlibrary(gstat)\nlibrary(mapdata)\n\nLoading required package: maps\n\nAttaching package: 'maps'\n\nThe following object is masked from 'package:purrr':\n\n    map"
   },
   {
     "objectID": "05_tp_evaluation.html#objectif-de-létude-estimer-labondance-de-merlus-à-partir-dun-sondage-stratifié-dans-le-golfe-de-gascogne-et-en-mer-celtique.",
@@ -39,7 +39,7 @@
     "href": "05_tp_evaluation.html#données",
     "title": "TD5 Evaluation de l’abondance de merlu dans le Golfe de Gascogne - Evaluation Statistique Spatiale",
     "section": "Données",
-    "text": "Données\nLes données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC\n(voir le shapefile Agreed_Strata_EVHOE_Polyg_WGS84.shp et l’objet evhoe_shp)datr.\nLes poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier EVHOE_2008_2019.RData. Il est constitué de trois data frame:\n\nSave_Datras$datras_HH.full regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nDepth: profondeur\nDistance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.\n\nSave_Datras$datras_sp.HL.full regroupe le poids et les abondances sur l’ensemble d’un trait de chalut de chaque combinaison ‘trait de chalut x espèce x classe de taille x sexe’ (données ré-haussées)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nscientificname: nom scientifique\nLngtClass: classe de taille\nTotalNo: comptages (nombre d’individus par combinaison de facteur)\n\n\n\n\n\nRécolte des données EVHOE."
+    "text": "Données\nLes données EVHOE (Evaluation Halieutique Ouest de l’Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L’échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC\n(voir le shapefile Agreed_Strata_EVHOE_Polyg_WGS84.shp et l’objet evhoe_shp).\nLes poissons sont échantillonnées à l’aide d’un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockées dans le fichier EVHOE_2008_2019.RData. Il est constitué de trois data frame:\n\nSave_Datras$datras_HH.full regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nDepth: profondeur\nDistance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.\n\nSave_Datras$datras_sp.HL.full regroupe le poids et les abondances sur l’ensemble d’un trait de chalut de chaque combinaison ‘trait de chalut x espèce x classe de taille x sexe’ (données ré-haussées)\n\nYear: année\nlong: longitude\nlati: latitude\nStNo: numéro de station\nHaulNo: numéro du trait de chalut\nscientificname: nom scientifique\nLngtClass: classe de taille\nTotalNo: comptages (nombre d’individus par combinaison de facteur)\n\n\n\n\n\nRécolte des données EVHOE."
   },
   {
     "objectID": "05_tp_evaluation.html#chargement-des-données",
@@ -270,7 +270,7 @@
     "href": "03_lattice.html#conditionnelles-locales-ne-loi-conjointe-un-contre-exemple",
     "title": "Données spatiales sur réseau",
     "section": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple",
-    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n\n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site ** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**"
+    "text": "Conditionnelles locales \\(\\ne\\) loi conjointe : un contre-exemple\n\n\n\n\n\n\n\n\n\nMarkovTriangle\n\n\n\nX1\n\nX1\n\n\n\nX2\n\nX2\n\n\n\nX1--X2\n\n\n\n\nX3\n\nX3\n\n\n\nX2--X3\n\n\n\n\nX3--X1\n\n\n\n\n\n\n\n\n\nVariables dans {0,1} et conditionnelles imposées :\n\\[P(X_1 = X_2 \\mid X_3) = 1,\\;\nP(X_2 = X_3 \\mid X_1) = 1,\\;\nP(X_3 = X_1 \\mid X_2) = 1\\]\ni.e chaque site doit être égal à ses deux voisins.\n\nPourquoi c’est impossible ?\nSi une loi conjointe existait, elle serait supportée par :\n\\[(0,0,0) \\text{ ou } (1,1,1)\\]\nmais les trois conditionnelles imposent des contraintes sur-déterminées :\n\nelles doivent être vraies quelle que soit la valeur du troisième site aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles."
   },
   {
     "objectID": "03_lattice.html#notion-de-cliques",
@@ -399,193 +399,389 @@
     "text": "Références\n\n\n\n\nBesag, Julian. 1974. “Spatial Interaction and the Statistical Analysis of Lattice Systems.” Journal of the Royal Statistical Society: Series B (Methodological) 36 (2): 192–225.\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nVer Hoef, Jay M., Ephraim M. Hanks, and Mevin B. Hooten. 2018. “On the Relationship Between Conditional (CAR) and Simultaneous (SAR) Autoregressive Models.” Spatial Statistics 25: 68–85. https://doi.org/https://doi.org/10.1016/j.spasta.2018.04.006."
   },
   {
-    "objectID": "02_introduction_inla.html",
-    "href": "02_introduction_inla.html",
-    "title": "TD2 - Introduction to INLA",
-    "section": "",
-    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
+    "objectID": "02_krigeage.html#sources",
+    "href": "02_krigeage.html#sources",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Sources",
+    "text": "Sources\nCe cours est construit principalement à partir de celui de Liliane Bel et des livres de Gaetan et al. (2010) et Cressie (2015)."
   },
   {
-    "objectID": "01_tp_sf.html",
-    "href": "01_tp_sf.html",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "",
-    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+    "objectID": "02_krigeage.html#champs-aléatoires-et-processus",
+    "href": "02_krigeage.html#champs-aléatoires-et-processus",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Champs aléatoires et processus",
+    "text": "Champs aléatoires et processus\n\n\nUn processus stochastique est une famille de variables aléatoires indexée par un ensemble \\(D\\) : \\[\\{Z(s), \\; s \\in D\\}\\]\n\n\\(D \\subset {\\mathbb{R}}\\) (le temps) : on parle de processus,\n\\(D \\subset {\\mathbb{R}}^d\\), \\(d \\geq 2\\) (l’espace) : on parle de champ aléatoire.\n\n\nUne réalisation est une fonction \\(s \\mapsto z(s)\\) sur tout \\(D\\)\n\nune carte.\n\n\nLa loi du champ est caractérisée par ses lois fini-dimensionnelles : celles de \\((Z(s_1), \\ldots, Z(s_n))\\) pour tous \\(n\\) et tous \\(s_1, \\ldots, s_n\\).\nChamp gaussien : toutes ces lois sont gaussiennes, donc la loi est entièrement déterminée par la moyenne \\(\\mu(s)\\) et la covariance \\(c(s, s')\\).\n\n\n\n\n\n\n\n\n\n\n\nEn statistique spatiale, on n’observe en général qu’une seule réalisation, et seulement en quelques sites (points noirs)."
   },
   {
-    "objectID": "01_tp_sf.html#clusters",
-    "href": "01_tp_sf.html#clusters",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "",
-    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+    "objectID": "02_krigeage.html#le-problème",
+    "href": "02_krigeage.html#le-problème",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Le problème",
+    "text": "Le problème\nOn observe \\(z(s_1), \\ldots, z(s_n)\\) aux sites \\(s_1, \\ldots, s_n\\) d’un domaine \\(D\\) et on veut :\n\nprédire \\(Z(s_0)\\) en un site \\(s_0\\) non observé,\nconstruire une carte de prédiction sur tout \\(D\\),\nquantifier l’incertitude associée à cette carte.\n\nExemple\nLa température en France\n\nPluies en Suisse : \\(n = 100\\) stations, on veut une carte de la pluie sur tout le territoire (voir le TD)."
   },
   {
-    "objectID": "01_tp_sf.html#objectifs-du-tp",
-    "href": "01_tp_sf.html#objectifs-du-tp",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Objectifs du TP",
-    "text": "Objectifs du TP\nL’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles.\n\nLe but des TPS en général est de se creuser un peu la tête et de chercher des solutions. Il est donc vivement déconseillé de faire appel à l’IA à la moindre difficulté. Utilisez\n\nvotre cerveau,\nvotre voisin,\nvotre enseignant.\nen désespoir de cause, si personne ne résoud votre question Claude sera votre dernier espoir !"
+    "objectID": "02_krigeage.html#pourquoi-ne-pas-simplement-interpoler",
+    "href": "02_krigeage.html#pourquoi-ne-pas-simplement-interpoler",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Pourquoi ne pas simplement interpoler ?",
+    "text": "Pourquoi ne pas simplement interpoler ?\nInterpolateur par inverse de la distance : \\[\\widehat{Z}(s_0) = \\sum_{i=1}^n \\lambda_i Z(s_i), \\qquad \\lambda_i \\propto \\frac{1}{\\|s_0 - s_i\\|^p}\\]\nLimites\n\nAucune mesure d’incertitude.\nLe poids d’un site ne dépend pas de la position des autres sites (deux sites collés comptent double).\nLes poids ne s’adaptent pas à la structure de dépendance des données (portée, régularité).\n\nIdée du krigeage : choisir les poids à partir d’un modèle de la dépendance spatiale."
   },
   {
-    "objectID": "01_tp_sf.html#packages",
-    "href": "01_tp_sf.html#packages",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Packages",
-    "text": "Packages\n\nPackages : sf, dplyr, ggplot2, readr.\n\n\n# install.packages(c(\"sf\", \"dplyr\", \"ggplot2\", \"readr\"))\n\n\nlibrary(sf)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)"
+    "objectID": "02_krigeage.html#ce-dont-on-a-besoin-pour-prédire",
+    "href": "02_krigeage.html#ce-dont-on-a-besoin-pour-prédire",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Ce dont on a besoin pour prédire",
+    "text": "Ce dont on a besoin pour prédire\nOn modélise \\(Z\\) comme un champ aléatoire du second ordre :\n\nmoyenne \\(\\mu(s) = {\\mathbb{E}}(Z(s))\\),\ncovariance \\(c(s, s') = {\\mathbb{C}\\text{ov}}(Z(s), Z(s'))\\).\n\nNotations\n\n\\(\\mathbf{Z} = (Z(s_1), \\ldots, Z(s_n))^T\\), \\(\\widehat{Z}_0 = \\widehat{Z}(s_0)\\)\n\\(\\boldsymbol{\\Sigma}\\) : matrice \\(n\\times n\\), \\(\\Sigma_{ij} = c(s_i, s_j)\\)\n\\(\\boldsymbol{c_0}\\) : vecteur de taille \\(n\\), \\(c_{0,i} = c(s_0, s_i)\\)\n\\(\\sigma_0^2 = {\\mathbb{V}\\text{ar}}(Z(s_0))\\)\n\nDans ce cours : on suppose la moyenne et la covariance connues. La question de leur estimation est repoussée à la fin.\n\n\n\n\n\n\nNote\n\n\nLes formules du krigeage ne font intervenir que \\(\\boldsymbol{\\Sigma}\\), \\(\\boldsymbol{c_0}\\) et \\(\\sigma_0^2\\), quelle que soit la forme de la covariance \\(c(s, s')\\)."
   },
   {
-    "objectID": "01_tp_sf.html#données-utilisées-dans-le-tp",
-    "href": "01_tp_sf.html#données-utilisées-dans-le-tp",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Données utilisées dans le TP",
-    "text": "Données utilisées dans le TP\nNous utiliserons :\n\nle shapefile d’exemple nc.shp fourni par le package sf (comtés de Caroline du Nord) ;\nun fichier CSV nc_cities.csv contenant des points en longitude/latitude (WGS84) et disponibles ici"
+    "objectID": "02_krigeage.html#covariance-utilisée-dans-les-illustrations",
+    "href": "02_krigeage.html#covariance-utilisée-dans-les-illustrations",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Covariance utilisée dans les illustrations",
+    "text": "Covariance utilisée dans les illustrations\nUne covariance qui décroît avec la distance entre les sites : \\[c(s, s') = \\sigma^2 \\exp\\left(-\\|s - s'\\|/\\rho\\right) \\; + \\; \\tau^2 \\mathbb{1}_{s = s'}\\]\n\n\\(\\sigma^2\\) : variance du signal,\n\\(\\rho\\) : vitesse de décroissance de la corrélation avec la distance (« portée »),\n\\(\\tau^2\\) : bruit de mesure (« pépite »).\n\nOn note \\(C(h) = \\sigma^2 e^{-h/\\rho}\\) (+ \\(\\tau^2\\) si \\(h = 0\\)), de sorte que \\(c(s, s') = C(\\|s - s'\\|)\\) : la covariance ne dépend que de la distance. Ce choix n’est pas anodin, on y reviendra.\n\ncov_exp &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-h / rho)\ncov_gauss &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-(h / rho)^2)"
   },
   {
-    "objectID": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
-    "href": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel",
-    "text": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel\n\n1.1 Lecture de données en WGS84\n\nLire le fichier nc_cities.csv dans un objet data.frame nommé nc_cities.df\nConvertir ce tableau en objet sf en utilisant les colonnes lon et lat comme coordonnées, avec le CRS WGS84 (EPSG:4326) et stocker le résultat dans nc_cities.sf\nVérifier la structure de l’objet obtenu et son CRS.\nCartographier les données\n\n\nnc_cities.sf |&gt; ggplot() + geom_sf() +   geom_sf_text( aes(label = name))\n\nDes fonctions utiles :read_csv(), st_as_sf(), st_crs(),glimpse().\n\n\n1.2 Lecture du shapefile projeté et comparaison des CRS\nOn utilisera le shapefile nc fourni par sf.\n\nCharger le shapefile nc.shp dans un object nc.sf en utilisant le chemin renvoyé par system.file(\"shape/nc.shp\", package = \"sf\").\n\n\nnc.shp &lt;- st_read(system.file(\"shape/nc.shp\", package=\"sf\"))\n\n\nInspecter sa structure (glimpse) et vérifier son CRS. 3 Afficherla classe de l’objet nc.\nAfficher les premières lignes de nc.\nLister les noms de colonnes disponibles et repérer au moins une variable numérique.\nComparer le CRS de nc et celui de votre jeu de données importé depuis le csv (nc_cities.sf).\nCartographier les données nc.sf\n\nDes fonctions utiles :st_read(), st_crs(), glimpse().\n\n\n1.3 Transformation des stations vers le CRS de nc\n\nReprésenter les deux types de données sur une même carte.\nTransformer les données de nc_cities.sf de WGS84 (EPSG:4326) vers le CRS de nc.\nVérifier le CRS de l’objet transformé.\nAfficher une carte rapide montrant les comtés (nc) et les villes.\nReprésenter une variable quantitative (par exemple BIR74) en choroplèthe.\n\nDes fonctions utiles :st_transform(), st_crs(). ggplot() + geom_sf(aes(fill = ...))."
+    "objectID": "02_krigeage.html#hypothèses",
+    "href": "02_krigeage.html#hypothèses",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Hypothèses",
+    "text": "Hypothèses\n\n\\(\\mu\\) connue et \\(C\\) connue,\n\\(Z\\) est un champ gaussien : tout vecteur \\((Z(s_0), Z(s_1), \\ldots, Z(s_n))\\) est gaussien.\n\n\\[\\begin{pmatrix} Z(s_0) \\\\ \\mathbf{Z} \\end{pmatrix} \\sim\n\\mathcal{N}\\left( \\begin{pmatrix} \\mu \\\\ \\mu \\mathbf{1}\\end{pmatrix},\n\\begin{pmatrix} \\sigma_0^2 & \\boldsymbol{c_0}^T \\\\\n\\boldsymbol{c_0} & \\boldsymbol{\\Sigma} \\end{pmatrix} \\right)\\]\nQuestion\nQuelle est la loi de \\(Z(s_0)\\) sachant \\(\\mathbf{Z} = \\mathbf{z}\\) ?"
   },
   {
-    "objectID": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
-    "href": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Partie 2 — Buffers et opérations géométriques",
-    "text": "Partie 2 — Buffers et opérations géométriques\n\n2.1 Centroïdes des polygones\nQuestion 2.1\n\nCalculer les centroïdes des polygones de nc.\nVisualiser les centroïdes superposés aux polygones.\n\nDes fonctions utiles : st_centroid().\n\n\n2.2 Buffers autour des points\nOn souhaite créer un buffer de 20 km autour de chaque centroïde.\nQuestion 2.2\n\nCréer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.\nVisualiser les buffers et les polygones sur une même carte.\nDiscuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.\n\nDes fonctions utiles : : st_buffer() (argument dist en mètres).\n\n\n2.3 Buffers autour des polygones\nQuestion 2.3\n\nCréer un buffer de 5 km autour de chaque polygone de nc.\nVisualiser la différence entre les polygones originaux et les buffers.\nExpliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.\n\nDes fonctions utiles : : st_buffer() appliquée directement à nc."
+    "objectID": "02_krigeage.html#conditionnement-gaussien",
+    "href": "02_krigeage.html#conditionnement-gaussien",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Conditionnement gaussien",
+    "text": "Conditionnement gaussien\n\\[Z(s_0) \\mid \\mathbf{Z} = \\mathbf{z} \\sim \\mathcal{N}\\left(\n\\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{z} - \\mu \\mathbf{1}),\n\\; \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\n\\right)\\]\nPrédicteur de krigeage simple \\[\\widehat{Z}_{KS}(s_0) = {\\mathbb{E}}(Z(s_0) \\mid \\mathbf{Z}) = \\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1})\\]\nVariance de krigeage \\[\\sigma^2_{KS}(s_0) = {\\mathbb{V}\\text{ar}}(Z(s_0) \\mid \\mathbf{Z}) = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\nBonus du cadre gaussien : on a la loi prédictive complète, donc des intervalles de prédiction \\(\\widehat{Z}_{KS}(s_0) \\pm 1.96\\, \\sigma_{KS}(s_0)\\), et toute quantité \\(P(Z(s_0) &gt; \\zeta \\mid \\mathbf{Z})\\)."
   },
   {
-    "objectID": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
-    "href": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Partie 3 — Unions spatiales et calcul de surfaces",
-    "text": "Partie 3 — Unions spatiales et calcul de surfaces\n\n3.1 Union de polygones (dissolve)\nOn souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest)\n\nCalculer le centroid de la Caroline du Nord.\nCréer une nouvelle variable region dans nc qui prend deux modalités (\"Est\", \"Ouest\") en fonction de sa position par rapport au centroide et vérifier graphiquement.\nRegrouper les comtés par region et réaliser l’union géométrique des polygones pour obtenir un polygone par région.\nCalculer, pour chaque région, le total de la variable BIR74.\nVisualiser les 2 régions obtenues et le nombre de naissances.\n\nLes fonctions utiles : st_union, st_coordinates, mutate(), case_when(), summarise();\n\n\n3.2 Calcul de surfaces\n\nCalculer la surface de chaque comté de nc (en m²), puis convertir cette surface en km².\nAjouter ces deux colonnes (area_m2, area_km2) à l’objet nc.\nAfficher les noms de quelques comtés et leur surface (en km²).\nReprésenter la surface des comtés sur une carte (choroplèthe).\n\nLes fonctions utiles : st_area()"
+    "objectID": "02_krigeage.html#interprétation",
+    "href": "02_krigeage.html#interprétation",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Interprétation",
+    "text": "Interprétation\n\\[\\widehat{Z}_{KS}(s_0) = \\mu + \\sum_{i=1}^n \\lambda_i (Z(s_i) - \\mu), \\qquad \\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\n\nOn part de la moyenne \\(\\mu\\) et on la corrige en fonction des écarts observés à la moyenne.\nLes poids \\(\\lambda_i\\) dépendent de la covariance entre \\(s_0\\) et les sites (\\(\\boldsymbol{c_0}\\)) et de la redondance entre les sites (\\(\\boldsymbol{\\Sigma}^{-1}\\)).\nLes données font baisser la variance : \\(\\sigma^2_{KS}(s_0) \\le \\sigma_0^2\\)."
   },
   {
-    "objectID": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
-    "href": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Partie 4 — Grille régulière et moyenne par maille",
-    "text": "Partie 4 — Grille régulière et moyenne par maille\n\n4.1 Définir une grille régulière\nOn souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.\n\nRécupérer l’étendue spatiale (bounding box) de nc.\nCréer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.\nConvertir cette grille en objet sf avec un identifiant de maille (id_cell).\nVisualiser la grille et les comtés superposés.\n\nLes fonctions utiles st_bbox(), st_make_grid(), st_sf().\n\n\n4.2 Intersections comtés / grille\nNous voulons découper les comtés selon la grille.\n\nIntersecter nc (ou nc_area si vous avez déjà les surfaces) avec la grille.\nExaminer la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?\n\nDes fonctions utiles : : st_intersection().\n\n\n4.3 Surface des morceaux de polygones\n\nCalculer la surface de chaque polygone issu de l’intersection (en km²).\nAjouter cette surface comme colonne (area_piece_km2).\n\n\n\n4.4 Moyenne simple de BIR74 par maille\nDans un premier temps, on calcule la moyenne simple de BIR74 pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.\n\nExtraire la partie attributaire (non spatiale) des données intersectées.\nCalculer, pour chaque maille (id_cell), la moyenne simple de BIR74 (ignorer les valeurs manquantes si besoin).\nJoindre ce résultat à l’objet sf représentant la grille.\nReprésenter cartographiquement la moyenne simple de BIR74 par maille.\n\nDes fonctions utiles : st_drop_geometry(), left_join()\n\n\n4.5 Moyenne pondérée par surface\nOn souhaite maintenant calculer une moyenne de BIR74 pondérée par la surface des morceaux de comtés dans chaque maille.\n\nUtiliser la surface des morceaux (area_piece_km2) comme poids.\nPour chaque maille (id_cell), calculer la moyenne pondérée de BIR74 : [ = ]\nJoindre ce résultat à la grille.\nComparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?"
+    "objectID": "02_krigeage.html#exercice-une-observation",
+    "href": "02_krigeage.html#exercice-une-observation",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Exercice : une observation",
+    "text": "Exercice : une observation\nOn observe un seul site \\(s_1\\). On note \\(r = C(\\|s_0 - s_1\\|) / C(0)\\) la corrélation entre \\(Z(s_0)\\) et \\(Z(s_1)\\).\n\nDonner \\(\\widehat{Z}_{KS}(s_0)\\) et \\(\\sigma^2_{KS}(s_0)\\).\nQue se passe-t-il quand \\(s_0 \\to s_1\\) ? Quand \\(\\|s_0 - s_1\\| \\to \\infty\\) ?\n\n\nSolution\n\\[\\widehat{Z}_{KS}(s_0) = \\mu + r\\, (Z(s_1) - \\mu), \\qquad \\sigma^2_{KS}(s_0) = C(0)\\,(1 - r^2)\\]\n\n\\(s_0 \\to s_1\\) (sans pépite) : \\(r \\to 1\\), on retrouve \\(Z(s_1)\\) et une variance nulle.\n\\(s_0\\) loin : \\(r \\to 0\\), on prédit \\(\\mu\\) avec la variance \\(C(0)\\)."
   },
   {
-    "objectID": "01_tp_sf.html#pour-coller-à-lactualité",
-    "href": "01_tp_sf.html#pour-coller-à-lactualité",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Pour coller à l’actualité",
-    "text": "Pour coller à l’actualité\nLes derniers résultats des élections américaines seront bientôt disponible. Avant de changer d’ère (air), on souhaite faire les deux cartes suivantes\n\nPour tous les états centraux (on omet Hawai et Alaska), on souhaite colorier l’état en fonction de la couleur majoritaire\nOn souhaite faire la carte pour chaque cirsconsription"
+    "objectID": "02_krigeage.html#exercice-deux-observations",
+    "href": "02_krigeage.html#exercice-deux-observations",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Exercice : deux observations",
+    "text": "Exercice : deux observations\nOn se place en 1D : \\(s_0 = 0\\), \\(s_1 = 1\\), \\(s_2 = 2\\), \\(\\mu = 0\\).\nCalculer les poids \\(\\lambda_1, \\lambda_2\\) pour\n\nune covariance exponentielle,\nune covariance gaussienne.\n\n\npoids_ks &lt;- function(s0, s, covf, ...) {\n  Sigma &lt;- covf(as.matrix(dist(s)), ...)\n  c0 &lt;- covf(abs(s - s0), ...)\n  solve(Sigma, c0)\n}\nround(poids_ks(0, c(1, 2), cov_exp, rho = 1), 3)\n\n    1     2 \n0.368 0.000 \n\nround(poids_ks(0, c(1, 2), cov_gauss, rho = 1), 3)\n\n     1      2 \n 0.418 -0.135"
   },
   {
-    "objectID": "01_tp_sf.html#les-ressources-pour-y-arriver",
-    "href": "01_tp_sf.html#les-ressources-pour-y-arriver",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Les ressources pour y arriver",
-    "text": "Les ressources pour y arriver\n\n## liste des codes des états américains\nstate.abb \n\n## pour lire un fichier carto publé par le Census Bureau américain \nlire_census &lt;- function(fichier) {\n  url  &lt;- paste0(\"https://www2.census.gov/geo/tiger/GENZ2024/shp/\", fichier, \".zip\")\n  dest &lt;- file.path(tempdir(), fichier)\n  if (!dir.exists(dest)) {\n    zip &lt;- tempfile(fileext = \".zip\")\n    download.file(url, zip, mode = \"wb\")\n    unzip(zip, exdir = dest)\n  }\n  st_read(file.path(dest, paste0(fichier, \".shp\")), quiet = TRUE)\n}\n\n#le fichier à l'échelle 1:20 000 000\netats &lt;- lire_census(\"cb_2024_us_state_20m\")\nggplot(etats) + geom_sf()\n\n\n# 48 états contigus sulement\netats_48 &lt;- setdiff(state.abb, c(\"AK\", \"HI\"))\n\netats |&gt; \n  filter(STUSPS %in% etats_48) |&gt; \n  ggplot() + geom_sf()\n\n## pour les circonscriptions : \ncirc &lt;- lire_census(\"cb_2024_us_cd119_500k\")\nggplot(circ) + geom_sf()\n\nfips &lt;- etats |&gt; st_drop_geometry() |&gt; select(STATEFP, state = STUSPS)\ncirc &lt;- circ |&gt;  inner_join(fips, by = \"STATEFP\") |&gt;  filter(state %in% etats_48) \ncirc |&gt; \n  ggplot() + geom_sf()\n\n## représentants en fonction \nreps &lt;- read_csv(\n  \"https://raw.githubusercontent.com/unitedstates/congress-legislators/gh-pages/legislators-current.csv\",\n  show_col_types = FALSE\n) |&gt;\n  filter(type == \"rep\", state %in% etats_48)|&gt;\n  select(full_name, state, district, party)"
+    "objectID": "02_krigeage.html#effet-décran-et-poids-négatifs",
+    "href": "02_krigeage.html#effet-décran-et-poids-négatifs",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Effet d’écran et poids négatifs",
+    "text": "Effet d’écran et poids négatifs\n\nEffet d’écran : le site \\(s_1\\) « masque » \\(s_2\\). En 1D avec une covariance exponentielle, \\(\\lambda_2 = 0\\) exactement (propriété de Markov du processus d’Ornstein-Uhlenbeck).\nPoids négatifs : avec une covariance très régulière (gaussienne), le poids de \\(s_2\\) est négatif. Le krigeage extrapole la tendance locale.\n\n\n\n\n\n\n\nNote\n\n\nContrairement à l’inverse de la distance, on n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\) : le prédicteur peut sortir de l’intervalle des valeurs observées."
   },
   {
-    "objectID": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
-    "href": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
-    "title": "TD1 -Manipulation de données spatiales avec R",
-    "section": "Pour aller plus loin (facultatif)",
-    "text": "Pour aller plus loin (facultatif)\n\nTirer uniformément 1000 points en Caroline du nord (Acceptation rejet)\nCalculer le nombre de points par comté et comparer à la superficie du comté\nQu s’attend on à constater"
+    "objectID": "02_krigeage.html#le-meilleur-prédicteur-linéaire-blup",
+    "href": "02_krigeage.html#le-meilleur-prédicteur-linéaire-blup",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Le meilleur prédicteur linéaire (BLUP)",
+    "text": "Le meilleur prédicteur linéaire (BLUP)\nOn ne suppose plus que \\(Z\\) est gaussien. Seuls les deux premiers moments sont connus.\nOn cherche un prédicteur linéaire \\(\\widehat{Z}(s_0) = \\alpha + \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) qui minimise le risque quadratique \\[R(\\alpha, \\boldsymbol{\\lambda}) = {\\mathbb{E}}\\left[ (Z(s_0) - \\alpha - \\boldsymbol{\\lambda}^T \\mathbf{Z})^2 \\right].\\]\nExercice\n\nMontrer que \\(R(\\alpha, \\boldsymbol{\\lambda}) = (\\mu - \\alpha - \\mu \\boldsymbol{\\lambda}^T \\mathbf{1})^2 + \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\nEn déduire \\(\\alpha\\) et \\(\\boldsymbol{\\lambda}\\) optimaux."
   },
   {
-    "objectID": "01_intro.html#cadre",
-    "href": "01_intro.html#cadre",
-    "title": "Introduction",
-    "section": "Cadre",
-    "text": "Cadre\nLa statistique spatiale est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+    "objectID": "02_krigeage.html#solution-1",
+    "href": "02_krigeage.html#solution-1",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Solution",
+    "text": "Solution\n\\[\\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}, \\qquad \\alpha = \\mu (1 - \\boldsymbol{\\lambda}^T \\mathbf{1})\\]\nOn retrouve exactement le même prédicteur et la même variance d’erreur : \\[\\widehat{Z}_{KS}(s_0) = \\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1}), \\qquad {\\mathbb{E}}\\left[(Z(s_0) - \\widehat{Z}_{KS}(s_0))^2\\right] = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]"
   },
   {
-    "objectID": "01_intro.html#données-géostatistiques",
-    "href": "01_intro.html#données-géostatistiques",
-    "title": "Introduction",
-    "section": "1. Données géostatistiques",
-    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
+    "objectID": "02_krigeage.html#gaussien-ou-pas-ce-qui-change",
+    "href": "02_krigeage.html#gaussien-ou-pas-ce-qui-change",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Gaussien ou pas : ce qui change",
+    "text": "Gaussien ou pas : ce qui change\n\n\n\n\n\n\n\n\n\nCas gaussien\nSecond ordre seulement\n\n\n\n\nPrédicteur\n\\(\\widehat{Z}_{KS}(s_0)\\)\n\\(\\widehat{Z}_{KS}(s_0)\\)\n\n\nOptimal parmi\ntous les prédicteurs\nles prédicteurs linéaires\n\n\n\\(\\sigma^2_{KS}(s_0)\\) est\nla variance conditionnelle\nl’erreur quadratique moyenne\n\n\nIntervalle \\(\\pm 1.96\\,\\sigma_{KS}\\)\nexact\napproximatif\n\n\n\\(P(Z(s_0) &gt; \\zeta \\mid \\mathbf{Z})\\)\ndisponible\nnon disponible\n\n\n\nÀ retenir : l’hypothèse gaussienne ne change pas la formule, elle change ce qu’on peut en dire."
   },
   {
-    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
-    "href": "01_intro.html#exemple-de-données-géostatistiques",
-    "title": "Introduction",
-    "section": "1. Exemple de données géostatistiques",
-    "text": "1. Exemple de données géostatistiques"
+    "objectID": "02_krigeage.html#une-illustration-en-1d",
+    "href": "02_krigeage.html#une-illustration-en-1d",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Une illustration en 1D",
+    "text": "Une illustration en 1D"
   },
   {
-    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
-    "title": "Introduction",
-    "section": "2. Données en réseau ou maillage fixe (données lattice)",
-    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
+    "objectID": "02_krigeage.html#interpolation-exacte-et-effet-pépite",
+    "href": "02_krigeage.html#interpolation-exacte-et-effet-pépite",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Interpolation exacte et effet pépite",
+    "text": "Interpolation exacte et effet pépite\n\n\nSans pépite : \\(\\widehat{Z}(s_i) = Z(s_i)\\) et \\(\\sigma^2_{KS}(s_i) = 0\\), le krigeage est un interpolateur exact.\nAvec pépite : le krigeage lisse, on ne fait plus confiance à 100% aux observations."
   },
   {
-    "objectID": "01_intro.html#exemple-de-données-lattice",
-    "href": "01_intro.html#exemple-de-données-lattice",
-    "title": "Introduction",
-    "section": "2. Exemple de données lattice",
-    "text": "2. Exemple de données lattice\n\n\nFigure 1"
+    "objectID": "02_krigeage.html#effet-de-la-portée",
+    "href": "02_krigeage.html#effet-de-la-portée",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Effet de la portée",
+    "text": "Effet de la portée\n\nLoin des données (à l’échelle de la portée) : \\(\\widehat{Z}(s_0) \\to \\mu\\) et \\(\\sigma^2_{KS}(s_0) \\to C(0)\\)."
   },
   {
-    "objectID": "01_intro.html#données-ponctuelles",
-    "href": "01_intro.html#données-ponctuelles",
-    "title": "Introduction",
-    "section": "3. Données ponctuelles",
-    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
+    "objectID": "02_krigeage.html#la-variance-de-krigeage-ne-dépend-pas-des-valeurs-observées",
+    "href": "02_krigeage.html#la-variance-de-krigeage-ne-dépend-pas-des-valeurs-observées",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "La variance de krigeage ne dépend pas des valeurs observées",
+    "text": "La variance de krigeage ne dépend pas des valeurs observées\n\\[\\sigma^2_{KS}(s_0) = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\nne dépend que :\n\nde la position des sites \\(s_1, \\ldots, s_n\\) et de \\(s_0\\),\ndu modèle de covariance.\n\nConséquences\n\nOn peut calculer la carte d’incertitude avant de collecter les données : c’est un outil de plan d’échantillonnage (où placer une nouvelle station ?).\nL’incertitude ne réagit pas à des valeurs surprenantes, si le modèle est faux."
   },
   {
-    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
-    "href": "01_intro.html#exemple-de-données-ponctuelles",
-    "title": "Introduction",
-    "section": "3. Exemple de données ponctuelles",
-    "text": "3. Exemple de données ponctuelles\nFigure extraite de Renner et al. (2015)\n\n\nFigure 2"
+    "objectID": "02_krigeage.html#moyenne-inconnue",
+    "href": "02_krigeage.html#moyenne-inconnue",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Moyenne inconnue",
+    "text": "Moyenne inconnue\nOn suppose maintenant \\(\\mu\\) inconnue (constante), \\(C\\) connue.\nOn cherche \\(\\widehat{Z}(s_0) = \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) :\n\nsans biais pour tout \\(\\mu\\) : \\({\\mathbb{E}}(\\widehat{Z}(s_0)) = \\mu\\) \\(\\Leftrightarrow\\) \\(\\boldsymbol{\\lambda}^T \\mathbf{1}= 1\\),\nde variance d’erreur minimale : \\(\\min \\; \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\n\nExercice\nRésoudre ce problème par la méthode du multiplicateur de Lagrange."
   },
   {
-    "objectID": "01_intro.html#exercice",
-    "href": "01_intro.html#exercice",
-    "title": "Introduction",
-    "section": "Exercice",
-    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+    "objectID": "02_krigeage.html#solution-2",
+    "href": "02_krigeage.html#solution-2",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Solution",
+    "text": "Solution\n\\[\\boldsymbol{\\lambda}_{KO} = \\boldsymbol{\\Sigma}^{-1} (\\boldsymbol{c_0} + m \\mathbf{1}), \\qquad m = \\frac{1 - \\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}}{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1}}\\]\nRelecture\nAvec \\(\\widehat{\\mu} = \\dfrac{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{Z}}{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1}}\\) l’estimateur des moindres carrés généralisés de \\(\\mu\\) (c’est aussi le meilleur estimateur linéaire sans biais, BLUE) : \\[\\widehat{Z}_{KO}(s_0) = \\widehat{\\mu} + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\widehat{\\mu} \\mathbf{1})\\]\nKrigeage ordinaire = krigeage simple dans lequel on remplace \\(\\mu\\) par son estimateur BLUE."
   },
   {
-    "objectID": "01_intro.html#cadre-du-cours",
-    "href": "01_intro.html#cadre-du-cours",
-    "title": "Introduction",
-    "section": "Cadre du cours",
-    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
+    "objectID": "02_krigeage.html#variance-de-krigeage-ordinaire",
+    "href": "02_krigeage.html#variance-de-krigeage-ordinaire",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Variance de krigeage ordinaire",
+    "text": "Variance de krigeage ordinaire\n\\[\\sigma^2_{KO}(s_0) = \\underbrace{\\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}}_{\\sigma^2_{KS}(s_0)} + \\underbrace{\\frac{(1 - \\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})^2}{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1}}}_{\\text{coût de l'estimation de } \\mu}\\]\n\n\\(\\sigma^2_{KO}(s_0) \\ge \\sigma^2_{KS}(s_0)\\).\nPrès des données, \\(\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\) est proche de 1 et le surcoût est faible.\nLoin des données, on prédit \\(\\widehat{\\mu}\\) et on paye \\({\\mathbb{V}\\text{ar}}(\\widehat{\\mu}) = 1 / (\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1})\\)."
   },
   {
-    "objectID": "01_intro.html#references",
-    "href": "01_intro.html#references",
-    "title": "Introduction",
-    "section": "References",
-    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, et al. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
+    "objectID": "02_krigeage.html#simple-vs-ordinaire",
+    "href": "02_krigeage.html#simple-vs-ordinaire",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Simple vs ordinaire",
+    "text": "Simple vs ordinaire"
   },
   {
-    "objectID": "01_pluies.html",
-    "href": "01_pluies.html",
-    "title": "TD2 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
+    "objectID": "02_krigeage.html#estimer-la-moyenne-une-tâche-ingrate",
+    "href": "02_krigeage.html#estimer-la-moyenne-une-tâche-ingrate",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Estimer la moyenne : une tâche ingrate",
+    "text": "Estimer la moyenne : une tâche ingrate\nLe second terme de \\(\\sigma^2_{KO}\\) fait apparaître \\({\\mathbb{V}\\text{ar}}(\\widehat{\\mu}) = 1 / (\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1})\\).\nQue se passe-t-il quand on ajoute des stations dans le même domaine ?\n\n\nDensifier les observations n’apprend presque rien de plus sur \\(\\mu\\) : des données corrélées n’apportent pas \\(n\\) informations indépendantes (taille d’échantillon effective).\nEn revanche, la prédiction devient de plus en plus précise.\n\nLa dépendance spatiale est un handicap pour estimer la moyenne et un atout pour prédire."
   },
   {
-    "objectID": "01_pluies.html#présentation",
-    "href": "01_pluies.html#présentation",
-    "title": "TD2 - Statistique Spatiale",
-    "section": "",
-    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
+    "objectID": "02_krigeage.html#une-moyenne-qui-dépend-de-covariables",
+    "href": "02_krigeage.html#une-moyenne-qui-dépend-de-covariables",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Une moyenne qui dépend de covariables",
+    "text": "Une moyenne qui dépend de covariables\nOn suppose maintenant \\[Z(s) = X(s)^T \\beta + \\varepsilon(s), \\qquad {\\mathbb{E}}(\\varepsilon(s)) = 0, \\quad {\\mathbb{C}\\text{ov}}(\\varepsilon(s), \\varepsilon(s')) = c(s, s') \\text{ connue},\\] avec \\(X(s) \\in {\\mathbb{R}}^p\\) connu en tout site (y compris \\(s_0\\)) et \\(\\beta\\) inconnu.\n\nCovariables : altitude, distance à la rivière… (« dérive externe »)\nCoordonnées : \\(X(s) = (1, x, y)\\) pour une tendance spatiale (« dérive interne »)\n\nNotations\n\\(\\mathbf{X}\\) : matrice \\(n \\times p\\) des covariables aux sites observés, \\(X_0 = X(s_0)\\)."
   },
   {
-    "objectID": "01_pluies.html#objectifs",
-    "href": "01_pluies.html#objectifs",
-    "title": "TD2 - Statistique Spatiale",
-    "section": "Objectifs",
-    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+    "objectID": "02_krigeage.html#le-problème-doptimisation",
+    "href": "02_krigeage.html#le-problème-doptimisation",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Le problème d’optimisation",
+    "text": "Le problème d’optimisation\nOn cherche \\(\\widehat{Z}(s_0) = \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) :\n\nsans biais pour tout \\(\\beta\\) : \\(\\boldsymbol{\\lambda}^T \\mathbf{X} \\beta = X_0^T \\beta \\; \\forall \\beta \\Leftrightarrow \\mathbf{X}^T \\boldsymbol{\\lambda} = X_0\\) (\\(p\\) contraintes),\nde variance d’erreur minimale : \\(\\min \\; \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\n\nExercice\n\nÉcrire le lagrangien avec un vecteur de multiplicateurs \\(\\mathbf{m} \\in {\\mathbb{R}}^p\\).\nMontrer que \\(\\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1}(\\boldsymbol{c_0} + \\mathbf{X}\\mathbf{m})\\) et déterminer \\(\\mathbf{m}\\).\nVérifier que le krigeage ordinaire est le cas \\(X(s) = 1\\)."
   },
   {
-    "objectID": "01_pluies.html#directives",
-    "href": "01_pluies.html#directives",
-    "title": "TD2 - Statistique Spatiale",
-    "section": "Directives",
-    "text": "Directives\n\n1. Chargement et visualisation des données\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \n\nReading layer `swiss_rain_full' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain_full.shp' using driver `ESRI Shapefile'\nSimple feature collection with 467 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -159812 ymin: -109008 xmax: 172891 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\n\nReading layer `swiss_rain' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain.shp' using driver `ESRI Shapefile'\nSimple feature collection with 100 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -140463 ymin: -92327 xmax: 150921 ymax: 105361\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \n\nReading layer `bords' from data source `/__w/statspat/statspat/swiss/bords.shp' using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -169990 ymin: -111696 xmax: 177126 ymax: 108158\nProjected CRS: Bern 1898 (Bern) / LV03C\n\nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\nReading layer `elev' from data source `/__w/statspat/statspat/swiss/elev.shp' using driver `ESRI Shapefile'\nSimple feature collection with 95128 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -185556.4 ymin: -127261.5 xmax: 193184.2 ymax: 127252.2\nProjected CRS: Bern 1898 (Bern) / LV03C\n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n\n\n\n\n\n\n\n\n2. Nuées variographiques à la main\n\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\nWarning: Removed 2125 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\n\n3. Variogramme empirique\n\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n\n\n\n\n\n\n\n\n4. Ajustement du variogramme\n\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", psill = 90000, range = 50000))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120000)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n\n\n\n\n\n\n\n\n5. Krigeage\n\nKfull &lt;- krige(formula = pluies ~ 1, \n               locations = dta_sf, \n               newdata = dta_full_sf, model = v.fit)\n\nRegistered S3 method overwritten by 'stars':\n  method                  from\n  st_interpolate_aw.stars sf  \n\n\n[using ordinary kriging]\n\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies), size=3) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n\n\n\n\n\n\nPrédites en fonction des observées\n\npred_df &lt;- data.frame(pred =Kfull$var1.pred)\ndta_full_sf |&gt; mutate(pred = Kfull$var1.pred) |&gt; ggplot() +geom_point(aes(x=pluies, y = pred))\n\n\n\n\n\n\n\n\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+    "objectID": "02_krigeage.html#solution-3",
+    "href": "02_krigeage.html#solution-3",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Solution",
+    "text": "Solution\n\\[\\mathbf{m} = (\\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X})^{-1} (X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})\\]\nRelecture\nAvec \\(\\widehat{\\beta} = (\\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X})^{-1} \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{Z}\\) l’estimateur des moindres carrés généralisés : \\[\\widehat{Z}_{KU}(s_0) = \\underbrace{X_0^T \\widehat{\\beta}}_{\\text{tendance}} + \\underbrace{\\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mathbf{X} \\widehat{\\beta})}_{\\text{krigeage simple des résidus}}\\]\n\\[\\sigma^2_{KU}(s_0) = \\sigma^2_{KS}(s_0) + \\underbrace{\\left( X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0} \\right)^T \\left( \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X} \\right)^{-1} \\left( X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0} \\right)}_{\\text{coût de l'estimation de } \\beta}\\]"
+  },
+  {
+    "objectID": "02_krigeage.html#illustration-tendance-linéaire-en-1d",
+    "href": "02_krigeage.html#illustration-tendance-linéaire-en-1d",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Illustration : tendance linéaire en 1D",
+    "text": "Illustration : tendance linéaire en 1D\n\nLoin des données, le krigeage universel suit la tendance, avec une incertitude croissante (extrapolation de \\(\\widehat\\beta\\))."
+  },
+  {
+    "objectID": "02_krigeage.html#remarques",
+    "href": "02_krigeage.html#remarques",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Remarques",
+    "text": "Remarques\n\nLes covariables doivent être connues partout où l’on prédit (sur toute la grille).\nCercle vicieux : pour estimer \\(\\beta\\) par moindres carrés généralisés, il faut la covariance des résidus ; pour estimer la covariance des résidus, il faut \\(\\beta\\).\n\nen pratique : \\(\\widehat\\beta\\) par moindres carrés ordinaires, variogramme des résidus, puis krigeage universel (ce que fait gstat),\nou estimation conjointe par maximum de vraisemblance (restreint, REML).\n\nSéparer tendance et dépendance est en partie un choix de modélisation : une tendance mal spécifiée se retrouve dans le variogramme."
+  },
+  {
+    "objectID": "02_krigeage.html#la-question-qui-reste",
+    "href": "02_krigeage.html#la-question-qui-reste",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "La question qui reste",
+    "text": "La question qui reste\nEn pratique, ni \\(\\mu\\) ni la covariance ne sont connues.\n\nIl faudrait connaître \\(c(s_i, s_j)\\) pour chaque paire de sites, et \\(c(s_0, s_i)\\) pour un site jamais observé.\nOr on n’a souvent qu’une seule réalisation du champ : un seul couple \\((Z(s_i), Z(s_j))\\) par paire de sites.\n\nDiscussion\n\nPeut-on estimer \\({\\mathbb{C}\\text{ov}}(Z(s_i), Z(s_j))\\) à partir d’une seule observation de \\((Z(s_i), Z(s_j))\\) ?\nQuelle hypothèse permettrait de « mutualiser » l’information entre paires de sites ?"
+  },
+  {
+    "objectID": "02_krigeage.html#toute-fonction-ne-peut-pas-être-une-covariance",
+    "href": "02_krigeage.html#toute-fonction-ne-peut-pas-être-une-covariance",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Toute fonction ne peut pas être une covariance",
+    "text": "Toute fonction ne peut pas être une covariance\n\\(Z\\) est un processus du second ordre si \\(\\forall s \\in D, \\; {\\mathbb{E}}(Z(s)^2) &lt; \\infty\\), de moyenne \\(m(s) = {\\mathbb{E}}(Z(s))\\) et de covariance \\(c(s, t) = {\\mathbb{C}\\text{ov}}(Z(s), Z(t))\\).\n\nPropriété Une fonction de covariance est semi-définie positive\n\n\\[\\forall n, \\; \\forall s_1, \\ldots, s_n \\in D, \\; \\forall a \\in {\\mathbb{R}}^n, \\quad \\sum_{i,j=1}^n a_i a_j \\, c(s_i, s_j) \\geq 0\\]\n\n\nIdée de preuve : regarder \\({\\mathbb{V}\\text{ar}}\\left(\\sum_{i=1}^n a_i Z(s_i)\\right)\\).\n\n\n\n\n\n\nNote\n\n\nC’est ce qui garantit que les variances de krigeage sont positives et que \\(\\boldsymbol{\\Sigma}\\) est inversible (si définie positive). On ne peut donc pas choisir n’importe quelle fonction : on travaille avec des familles de covariances valides."
+  },
+  {
+    "objectID": "02_krigeage.html#stationnarité-du-second-ordre",
+    "href": "02_krigeage.html#stationnarité-du-second-ordre",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Stationnarité du second ordre",
+    "text": "Stationnarité du second ordre\nDéfinition\nUn processus du second ordre \\(Z\\) est stationnaire sur \\(D \\subset {\\mathbb{R}}^d\\) si\n\nsa moyenne est constante : \\(\\forall s \\in D, \\; m(s) = \\mu\\),\nsa covariance est invariante par translation : \\[\\forall s, s + h \\in D, \\quad c(s, s + h) = C(h).\\]\n\nIsotropie\nLe processus est isotrope si \\(C(h)\\) ne dépend que de \\(\\|h\\|\\) : \\(C(h) = C(\\|h\\|)\\).\nConséquence : toutes les paires de sites séparées par \\(h\\) renseignent sur la même quantité \\(C(h)\\). C’est le choix fait dans les illustrations précédentes."
+  },
+  {
+    "objectID": "02_krigeage.html#stationnarité-des-accroissements",
+    "href": "02_krigeage.html#stationnarité-des-accroissements",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Stationnarité des accroissements",
+    "text": "Stationnarité des accroissements\n\\(Z\\) est à accroissements stationnaires (ou intrinsèque) si \\[{\\mathbb{E}}(Z(s + h) - Z(s)) = 0, \\qquad {\\mathbb{V}\\text{ar}}(Z(s + h) - Z(s)) = 2\\gamma(h).\\]\n\nLa stationnarité du second ordre implique la stationnarité des accroissements.\nLa classe des processus intrinsèques est donc plus large que celle des processus stationnaires.\n\nExemple\nQue dire du mouvement brownien sur \\({\\mathbb{R}}\\) ?\n\n\\({\\mathbb{V}\\text{ar}}(B(t)) = t\\) : il n’est pas stationnaire. Mais \\({\\mathbb{V}\\text{ar}}(B(t + h) - B(t)) = |h|\\) : il est intrinsèque, avec \\(\\gamma(h) = |h| / 2\\)."
+  },
+  {
+    "objectID": "02_krigeage.html#définition-1",
+    "href": "02_krigeage.html#définition-1",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Définition",
+    "text": "Définition\nLe semi-variogramme d’un processus intrinsèque est \\[\\gamma(h) = \\frac{1}{2} {\\mathbb{V}\\text{ar}}(Z(s + h) - Z(s)) = \\frac{1}{2} {\\mathbb{E}}\\left[(Z(s + h) - Z(s))^2\\right].\\]\nPropriétés\n\n\\(\\gamma(h) \\geq 0\\), \\(\\gamma(0) = 0\\), \\(\\gamma(-h) = \\gamma(h)\\).\nSi \\(Z\\) est stationnaire du second ordre : \\[\\gamma(h) = C(0) - C(h).\\]\nUn variogramme borné correspond (à une constante aléatoire près) à un processus stationnaire du second ordre, et sa limite vaut \\(C(0)\\).\n\n\nPourquoi le variogramme ? Il ne fait pas intervenir la moyenne\n\non peut l’estimer sans estimer \\(\\mu\\)."
+  },
+  {
+    "objectID": "02_krigeage.html#modèles-classiques-de-variogramme",
+    "href": "02_krigeage.html#modèles-classiques-de-variogramme",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Modèles classiques de variogramme",
+    "text": "Modèles classiques de variogramme\n\nPépitique : \\(\\gamma(h) = C \\, \\mathbb{1}_{h \\neq 0}\\)\nExponentiel : \\(\\gamma(h) = C(1 - \\exp(-\\|h\\|/\\rho))\\)\nSphérique : \\[\\gamma(h) = \\begin{cases}\nC \\left( \\frac{3}{2} \\frac{\\|h\\|}{\\rho} - \\frac{1}{2} \\left(\\frac{\\|h\\|}{\\rho}\\right)^3 \\right) & \\text{si } \\|h\\| \\leq \\rho \\\\\nC & \\text{si } \\|h\\| &gt; \\rho\n\\end{cases}\\]\nGaussien : \\(\\gamma(h) = C(1 - \\exp(-\\|h\\|^2/\\rho^2))\\)\nPuissance : \\(\\gamma(h) = C \\|h\\|^\\alpha\\), \\(0 &lt; \\alpha &lt; 2\\) (non borné : processus intrinsèque non stationnaire)"
+  },
+  {
+    "objectID": "02_krigeage.html#la-famille-de-matérn",
+    "href": "02_krigeage.html#la-famille-de-matérn",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "La famille de Matérn",
+    "text": "La famille de Matérn\n\\[C(h) = \\sigma^2 \\frac{2^{1 - \\nu}}{\\Gamma(\\nu)} \\left(\\frac{\\sqrt{2\\nu}\\, \\|h\\|}{\\rho}\\right)^{\\nu} K_{\\nu}\\left(\\frac{\\sqrt{2\\nu}\\, \\|h\\|}{\\rho}\\right), \\qquad \\gamma(h) = \\sigma^2 - C(h)\\]\n\\(K_{\\nu}\\) : fonction de Bessel modifiée de seconde espèce, d’ordre \\(\\nu\\).\n\\(\\nu\\) règle la régularité du processus (comportement du variogramme en 0) :\n\n\\(\\nu = 1/2\\) : modèle exponentiel (trajectoires continues, non dérivables),\n\\(\\nu \\to \\infty\\) : modèle gaussien (trajectoires infiniment dérivables).\n\nC’est la famille utilisée par défaut dans INLA (approche SPDE)."
+  },
+  {
+    "objectID": "02_krigeage.html#paramètres-du-variogramme",
+    "href": "02_krigeage.html#paramètres-du-variogramme",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Paramètres du variogramme",
+    "text": "Paramètres du variogramme"
+  },
+  {
+    "objectID": "02_krigeage.html#interprétation-des-paramètres",
+    "href": "02_krigeage.html#interprétation-des-paramètres",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Interprétation des paramètres",
+    "text": "Interprétation des paramètres\n\nPalier \\(\\lim_{h \\to \\infty} \\gamma(h)\\) : s’il est fini, le processus est stationnaire et le palier vaut \\({\\mathbb{V}\\text{ar}}(Z(s))\\).\nÉchelle \\(\\rho\\) : vitesse à laquelle le variogramme rejoint le palier.\nPortée : distance au-delà de laquelle la corrélation est nulle ou négligeable (horizon de dépendance).\nPépite \\(\\tau^2 = \\lim_{h \\to 0^+} \\gamma(h)\\) :\n\nsi \\(\\tau^2 \\neq 0\\), variabilité à très petite échelle ou erreur de mesure (le krigeage lisse),\nsi \\(\\tau^2 = 0\\), la régularité du processus est donnée par le comportement de \\(\\gamma\\) en 0 (paramètre \\(\\nu\\) de Matérn)."
+  },
+  {
+    "objectID": "02_krigeage.html#krigeage-et-variogramme",
+    "href": "02_krigeage.html#krigeage-et-variogramme",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Krigeage et variogramme",
+    "text": "Krigeage et variogramme\nSous stationnarité, on remplace \\(C(h) = C(0) - \\gamma(h)\\) dans les formules.\nRemarque : le krigeage ordinaire (contrainte \\(\\boldsymbol{\\lambda}^T \\mathbf{1}= 1\\)) peut s’écrire uniquement avec \\(\\gamma\\). Il reste donc valable pour des processus intrinsèques non stationnaires. C’est la présentation historique de Matheron."
+  },
+  {
+    "objectID": "02_krigeage.html#exemple-les-données-meuse",
+    "href": "02_krigeage.html#exemple-les-données-meuse",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Exemple : les données Meuse",
+    "text": "Exemple : les données Meuse\nConcentrations en zinc (ppm) dans les sols de la plaine inondable de la Meuse, 155 sites (package sp).\n\nlibrary(sf)\nlibrary(gstat)\ndata(meuse, package = \"sp\")\nmeuse_sf &lt;- st_as_sf(meuse, coords = c(\"x\", \"y\"), crs = 28992)\nggplot(meuse_sf) + geom_sf(aes(col = log(zinc)), size = 2) +\n  scale_color_viridis_c(option = \"plasma\")"
+  },
+  {
+    "objectID": "02_krigeage.html#nuée-variographique",
+    "href": "02_krigeage.html#nuée-variographique",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Nuée variographique",
+    "text": "Nuée variographique\n\\[\\gamma(h) = \\frac{1}{2} {\\mathbb{E}}\\left[(Z(s + h) - Z(s))^2\\right]\\]\nPour chaque paire \\((i, j)\\), on représente \\(\\frac{1}{2}(Z(s_i) - Z(s_j))^2\\) en fonction de \\(\\|s_i - s_j\\|\\).\n\nvario.cloud &lt;- variogram(log(zinc) ~ 1, data = meuse_sf, cloud = TRUE)\nggplot(vario.cloud, aes(x = dist, y = gamma)) + geom_point(alpha = 0.3) +\n  ggtitle(\"Nuée variographique\")"
+  },
+  {
+    "objectID": "02_krigeage.html#variogramme-empirique",
+    "href": "02_krigeage.html#variogramme-empirique",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Variogramme empirique",
+    "text": "Variogramme empirique\nOn regroupe les paires par classes de distance \\(d_k\\) (de largeur \\(\\delta\\)), avec \\(N(k)\\) l’ensemble des \\(n_k\\) paires de la classe \\(k\\) : \\[\\widetilde \\gamma (d_k) = \\frac{1}{2 n_k} \\sum_{(i, j) \\in N(k)} (Z(s_i) - Z(s_j))^2\\]\n\nvario.b &lt;- variogram(log(zinc) ~ 1, data = meuse_sf)\nggplot(vario.b, aes(x = dist, y = gamma)) + geom_point()\n\n\nL’option alpha = c(0, 45, 90, 135) donne des variogrammes directionnels, pour vérifier l’isotropie."
+  },
+  {
+    "objectID": "02_krigeage.html#propriétés-du-variogramme-empirique",
+    "href": "02_krigeage.html#propriétés-du-variogramme-empirique",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Propriétés du variogramme empirique",
+    "text": "Propriétés du variogramme empirique\n\nApproximativement sans biais (à la largeur des classes près).\nNe nécessite pas d’estimer la moyenne (si elle est constante).\nSi \\(Z\\) est gaussien, chaque terme est un \\(\\gamma(h)\\chi^2(1)\\) : estimateur très sensible aux valeurs extrêmes.\nPeu fiable aux grandes distances (peu de paires) : on se limite généralement à la moitié de la distance maximale.\n\nEstimateur robuste (Cressie-Hawkins)\n\\[\\widetilde \\gamma (d_k) = \\frac{\\left\\{\\frac{1}{n_k} \\sum_{(i, j) \\in N(k)} |Z(s_i) - Z(s_j)|^{1/2}\\right\\}^4}{2\\left(0.457 + \\frac{0.494}{n_k}\\right)}\\]"
+  },
+  {
+    "objectID": "02_krigeage.html#ajustement-dun-modèle-de-variogramme",
+    "href": "02_krigeage.html#ajustement-dun-modèle-de-variogramme",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Ajustement d’un modèle de variogramme",
+    "text": "Ajustement d’un modèle de variogramme\nLe variogramme empirique n’est pas un variogramme valide : on ajuste un modèle paramétrique \\(\\gamma_\\theta\\), avec \\(\\theta = (\\sigma^2, \\rho, \\nu, \\tau^2)\\).\nMoindres carrés pondérés \\[\\widehat\\theta = \\arg\\min_{\\theta} \\sum_{k=1}^K w_k \\left(\\gamma_\\theta(d_k) - \\widetilde \\gamma(d_k)\\right)^2, \\qquad w_k = \\frac{n_k}{\\gamma_\\theta(d_k)^2} \\text{ (Cressie)}\\]\n\nv.fit &lt;- fit.variogram(vario.b, vgm(model = \"Sph\", psill = 0.6, range = 900, nugget = 0.05))\nv.fit\n\n  model      psill    range\n1   Nug 0.05066522   0.0000\n2   Sph 0.59061054 897.0412\n\nggplot(vario.b, aes(x = dist, y = gamma)) + geom_point() +\n  geom_line(data = variogramLine(v.fit, maxdist = max(vario.b$dist)), col = \"#C94326\")\n\n\nAlternative : maximum de vraisemblance sous hypothèse gaussienne, qui utilise directement les données et non le variogramme empirique."
+  },
+  {
+    "objectID": "02_krigeage.html#démarche",
+    "href": "02_krigeage.html#démarche",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Démarche",
+    "text": "Démarche\n\nExplorer les données, modéliser la tendance (moyenne) éventuelle.\nCalculer le variogramme empirique (des résidus), vérifier l’isotropie.\nAjuster un modèle de variogramme.\nKriger sur une grille : carte de prédiction et carte de variance.\nValider (validation croisée : krige.cv).\nSi besoin, simuler conditionnellement pour des quantités non linéaires.\n\n\ndata(meuse.grid, package = \"sp\")\ngrille &lt;- st_as_sf(meuse.grid, coords = c(\"x\", \"y\"), crs = 28992)\nK &lt;- krige(log(zinc) ~ 1, locations = meuse_sf, newdata = grille, model = v.fit)\n\n[using ordinary kriging]\n\nggplot(K) + geom_sf(aes(col = var1.pred)) + scale_color_viridis_c()"
+  },
+  {
+    "objectID": "02_krigeage.html#krigeage-universel-avec-gstat",
+    "href": "02_krigeage.html#krigeage-universel-avec-gstat",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Krigeage universel avec gstat",
+    "text": "Krigeage universel avec gstat\nLe zinc décroît avec la distance à la Meuse : on l’utilise comme covariable (connue sur toute la grille meuse.grid).\n\nvario.res &lt;- variogram(log(zinc) ~ sqrt(dist), data = meuse_sf)   # variogramme des résidus\nv.fit.res &lt;- fit.variogram(vario.res, vgm(model = \"Sph\", psill = 0.2, range = 800, nugget = 0.05))\nKU &lt;- krige(log(zinc) ~ sqrt(dist), locations = meuse_sf, newdata = grille, model = v.fit.res)\n\n[using universal kriging]\n\nbind_rows(K |&gt; mutate(methode = \"ordinaire\"), KU |&gt; mutate(methode = \"universel\")) |&gt;\n  ggplot() + geom_sf(aes(col = sqrt(var1.var)), size = 0.5) + facet_wrap(~methode) +\n  scale_color_viridis_c(name = \"écart-type\")\n\n\nLa covariable explique une partie de la variabilité : le palier des résidus est plus faible et l’incertitude diminue."
+  },
+  {
+    "objectID": "02_krigeage.html#pourquoi-simuler",
+    "href": "02_krigeage.html#pourquoi-simuler",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Pourquoi simuler ?",
+    "text": "Pourquoi simuler ?\nLa carte de krigeage est plus lisse que la réalité : \\({\\mathbb{V}\\text{ar}}(\\widehat{Z}(s_0)) = \\sigma_0^2 - \\sigma^2_K(s_0) &lt; \\sigma_0^2\\).\nElle donne la meilleure prédiction site par site, mais elle est mauvaise pour des quantités qui dépendent du champ dans son ensemble :\n\nsurface du domaine où la concentration dépasse un seuil,\nmaximum du champ sur une région,\nlongueur d’un front, connectivité de zones polluées…\n\nPour une fonctionnelle non linéaire \\(\\varphi\\) : \\(\\varphi(\\widehat{Z}) \\neq {\\mathbb{E}}(\\varphi(Z) \\mid \\mathbf{Z})\\).\nIdée : tirer des réalisations du champ sachant les observations et calculer \\(\\varphi\\) sur chacune."
+  },
+  {
+    "objectID": "02_krigeage.html#loi-conditionnelle-dans-le-cas-gaussien",
+    "href": "02_krigeage.html#loi-conditionnelle-dans-le-cas-gaussien",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Loi conditionnelle dans le cas gaussien",
+    "text": "Loi conditionnelle dans le cas gaussien\nOn veut simuler \\(\\mathbf{Z}_G = (Z(g_1), \\ldots, Z(g_N))\\) sur une grille, sachant \\(\\mathbf{Z}\\). Comme pour le krigeage simple :\n\\[\\mathbf{Z}_G \\mid \\mathbf{Z} \\sim \\mathcal{N}\\left( \\mu \\mathbf{1}+ \\mathbf{C}_{G}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1}), \\; \\boldsymbol{\\Sigma}_{GG} - \\mathbf{C}_{G}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{C}_{G} \\right)\\]\navec \\(\\mathbf{C}_G\\) la matrice \\(n \\times N\\) des covariances entre sites observés et points de grille.\n\nMoyenne : la carte de krigeage.\nCovariance : la covariance des erreurs de krigeage (sa diagonale est la variance de krigeage).\n\nSimulation directe\n\\(\\mathbf{Z}_G = \\widehat{Z}_G + \\mathbf{L}\\,\\mathbf{U}\\), avec \\(\\mathbf{L}\\mathbf{L}^T\\) la covariance conditionnelle (Cholesky) et \\(\\mathbf{U} \\sim \\mathcal{N}(0, I_N)\\). Coût en \\(O(N^3)\\) : impossible sur une grande grille."
+  },
+  {
+    "objectID": "02_krigeage.html#conditionnement-par-krigeage",
+    "href": "02_krigeage.html#conditionnement-par-krigeage",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Conditionnement par krigeage",
+    "text": "Conditionnement par krigeage\nPropriété clé du cas gaussien : l’erreur de krigeage \\(Z(s) - \\widehat{Z}(s)\\) est indépendante des données (non corrélée et gaussienne).\nAlgorithme\n\nSimuler une réalisation non conditionnelle \\(Z_s\\) sur la grille et aux sites observés.\nKriger à partir des valeurs simulées \\(Z_s(s_1), \\ldots, Z_s(s_n)\\) : on obtient \\(\\widehat{Z}_s\\).\nPoser \\[Z_{cs} = \\underbrace{\\widehat{Z}}_{\\text{krigeage des vraies données}} + \\underbrace{(Z_s - \\widehat{Z}_s)}_{\\text{erreur de krigeage simulée}}\\]\n\nExercice\nMontrer que \\(Z_{cs}\\) a la bonne loi conditionnelle et qu’elle interpole les données (sans pépite)."
+  },
+  {
+    "objectID": "02_krigeage.html#illustration-en-1d",
+    "href": "02_krigeage.html#illustration-en-1d",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Illustration en 1D",
+    "text": "Illustration en 1D\n\nLes simulations passent par les données et ont la même rugosité que le vrai champ, contrairement au krigeage."
+  },
+  {
+    "objectID": "02_krigeage.html#exemple-proportion-du-domaine-au-dessus-dun-seuil",
+    "href": "02_krigeage.html#exemple-proportion-du-domaine-au-dessus-dun-seuil",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Exemple : proportion du domaine au-dessus d’un seuil",
+    "text": "Exemple : proportion du domaine au-dessus d’un seuil\nOn cherche la proportion de \\([0, 10]\\) où \\(Z(s) &gt; 0.5\\).\n\n\nLes 500 simulations donnent la loi conditionnelle de la proportion : estimation et incertitude.\nLe calcul sur la carte de krigeage, trop lisse, est biaisé."
+  },
+  {
+    "objectID": "02_krigeage.html#en-pratique-avec-gstat",
+    "href": "02_krigeage.html#en-pratique-avec-gstat",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "En pratique avec gstat",
+    "text": "En pratique avec gstat\nkrige(..., nsim = ) utilise la simulation séquentielle gaussienne : on parcourt la grille dans un ordre aléatoire et on simule chaque point selon sa loi conditionnelle sachant les données et les points déjà simulés (dans un voisinage nmax).\n\nset.seed(1)\nsim_meuse &lt;- krige(log(zinc) ~ sqrt(dist), locations = meuse_sf, newdata = grille,\n                   model = v.fit.res, nsim = 4, nmax = 30)\n\ndrawing 4 GLS realisations of beta...\n[using conditional Gaussian simulation]\n\nsim_meuse |&gt; pivot_longer(starts_with(\"sim\"), names_to = \"sim\", values_to = \"logzinc\") |&gt;\n  st_as_sf() |&gt; ggplot() + geom_sf(aes(col = logzinc), size = 0.3) + facet_wrap(~sim, nrow = 1) +\n  scale_color_viridis_c(option = \"plasma\")\n\n\n\n\n\n\n\n\nNote\n\n\n\nLes simulations permettent de revenir à l’échelle d’origine sans biais\n\n\\(\\exp\\) des simulations de \\(\\log(\\text{zinc})\\), alors que \\(\\exp(\\widehat{Z})\\) n’est pas le prédicteur optimal du zinc."
+  },
+  {
+    "objectID": "02_krigeage.html#limites-1",
+    "href": "02_krigeage.html#limites-1",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Limites",
+    "text": "Limites\nLe plug-in\nOn estime la covariance, puis on l’injecte dans les formules comme si elle était connue.\n\n\n\n\n\n\nNote\n\n\nLa variance de krigeage plug-in ne tient pas compte de l’incertitude sur \\(\\widehat{C}\\) : elle sous-estime l’incertitude réelle. L’approche bayésienne (INLA) permet de propager cette incertitude.\n\n\n\nEt si les données ne sont pas gaussiennes ?\n\nLe BLUP reste valable, mais sans intervalles exacts.\nSouvent préférable : transformer (log, Box-Cox) ou utiliser un modèle hiérarchique (GLM spatial, voir INLA)."
+  },
+  {
+    "objectID": "02_krigeage.html#en-pratique",
+    "href": "02_krigeage.html#en-pratique",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "En pratique",
+    "text": "En pratique\nVoir le TP sur les pluies en Suisse."
+  },
+  {
+    "objectID": "02_krigeage.html#références",
+    "href": "02_krigeage.html#références",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Références",
+    "text": "Références\n\n\n\n\nCressie, Noel. 2015. Statistics for Spatial Data. John Wiley & Sons.\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
   },
   {
     "objectID": "02_geostat.html#sources",
@@ -739,14 +935,14 @@
     "href": "02_geostat.html#objectif",
     "title": "Géostatistique",
     "section": "Objectif",
-    "text": "Objectif\nOn observe \\(z(s_1),z(s_2),\\ldots,z(s_n)\\)} aux sites \\(s_1,s_2,\\ldots,s_n\\) et on veut prédire \\(g(Z(s))\\), \\(s\\in D\\)\nPar exemple\n\n\\(Z(s_0)\\), \\(s_0\\) non observé,\n\\(\\frac{1}{|B|}\\int_B Z(s)ds \\quad B \\mbox{ région de } D\\)},\n\\(P(Z(s_0)&gt;\\zeta)\\)"
+    "text": "Objectif\nOn observe \\(z(s_1),z(s_2),\\ldots,z(s_n)\\) aux sites \\(s_1,s_2,\\ldots,s_n\\) et on veut prédire \\(g(Z(s))\\), \\(s\\in D\\)\nPar exemple\n\n\\(Z(s_0)\\), \\(s_0\\) non observé,\n\\(\\frac{1}{|B|}\\int_B Z(s)ds \\quad B \\mbox{ région de } D\\),\n\\(P(Z(s_0)&gt;\\zeta)\\)"
   },
   {
     "objectID": "02_geostat.html#prédicteur-optimal",
     "href": "02_geostat.html#prédicteur-optimal",
     "title": "Géostatistique",
     "section": "Prédicteur optimal",
-    "text": "Prédicteur optimal\nPrédire \\(Z(s_0)\\) sachant \\(Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\)\nPrédicteur optimal\nPar la propriété de l’espérance conditionnelle, le prédicteur optimal est\n\\[p^{opt}_{s_0}(Z(s_1),\\ldots,Z(s_n)) = \\mbox{E}\\big(Z(s_0)/Z(s_1),\\ldots,Z(s_n)\\big) \\] puisqu’il minimise le risque quadratique \\[\\mbox{E}\\big((Z(s_0)-\\widehat{Z}(s_0))^2\\big)\\] Prédicteur linéaire optimal (BLUP) \\[ p^* = \\alpha + \\sum_{i=1}^n\\lambda_i Z(s_i)\\] Si \\(Z\\) gaussien, \\(p^{opt}=p^*\\)\nSolution\n\\[\\begin{align}\n\\lambda &= C^{-1}c \\qquad C_{i,j} = \\mbox{cov}\\big(Z(s_i),Z(s_j)\\big)\n                 \\quad c_i = \\mbox{cov}\\big(Z(s_0),Z(s_i)\\big)\\\\\n     \\alpha  = & \\mbox{E}(Z(s_0)) - \\sum_{i=1}^n\\lambda_i \\mbox{E}(Z(s_i))\n\\end{align}\\]"
+    "text": "Prédicteur optimal\nPrédire \\(Z(s_0)\\) sachant \\(Z(s_1)=z(s_1),\\ldots,Z(s_n)=z(s_n)\\)\nPrédicteur optimal\nPar la propriété de l’espérance conditionnelle, le prédicteur optimal est\n\\[p^{opt}_{s_0}(Z(s_1),\\ldots,Z(s_n)) = \\mbox{E}\\big(Z(s_0)/Z(s_1),\\ldots,Z(s_n)\\big) \\] puisqu’il minimise le risque quadratique \\[\\mbox{E}\\big((Z(s_0)-\\widehat{Z}(s_0))^2\\big)\\]\nPrédicteur linéaire optimal (BLUP) \\[p^* = \\alpha + \\sum_{i=1}^n\\lambda_i Z(s_i)\\] Si \\(Z\\) gaussien, \\(p^{opt}=p^*\\)\nSolution\n\\[\\begin{align}\n\\lambda &= C^{-1}c \\qquad C_{i,j} = \\mbox{cov}\\big(Z(s_i),Z(s_j)\\big)\n                 \\quad c_i = \\mbox{cov}\\big(Z(s_0),Z(s_i)\\big)\\\\\n     \\alpha  = & \\mbox{E}(Z(s_0)) - \\sum_{i=1}^n\\lambda_i \\mbox{E}(Z(s_i))\n\\end{align}\\]"
   },
   {
     "objectID": "02_geostat.html#krigeage-simple",
@@ -775,6 +971,195 @@
     "title": "Géostatistique",
     "section": "Références",
     "text": "Références\n\n\n\n\nGaetan, Carlo, Xavier Guyon, et al. 2010. Spatial Statistics and Modeling. Vol. 90. Springer."
+  },
+  {
+    "objectID": "01_pluies.html",
+    "href": "01_pluies.html",
+    "title": "TD2 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
+  },
+  {
+    "objectID": "01_pluies.html#présentation",
+    "href": "01_pluies.html#présentation",
+    "title": "TD2 - Statistique Spatiale",
+    "section": "",
+    "text": "Ce premier TD vise à explorer les données spatialisées de précipitations en Suisse. Nous utiliserons R et plusieurs packages spécialisés (tidyverse, sf, gstat, etc.) pour visualiser, analyser et modéliser ces données.\nUtilisez les clusters cluster1 et cluster2"
+  },
+  {
+    "objectID": "01_pluies.html#objectifs",
+    "href": "01_pluies.html#objectifs",
+    "title": "TD2 - Statistique Spatiale",
+    "section": "Objectifs",
+    "text": "Objectifs\n\nCharger et visualiser les données spatialisées.\nConstruire et interpréter des nuées variographiques.\nEstimer et ajuster des variogrammes.\nEffectuer un krigeage pour interpoler les précipitations.\nTester différentes structures de variogramme et intégrer une covariable."
+  },
+  {
+    "objectID": "01_pluies.html#directives",
+    "href": "01_pluies.html#directives",
+    "title": "TD2 - Statistique Spatiale",
+    "section": "Directives",
+    "text": "Directives\n\n1. Chargement et visualisation des données\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggforce)\nlibrary(gstat)\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE\n\ndta_full_sf &lt;- st_read(dsn = \"swiss/swiss_rain_full.shp\") \n\nReading layer `swiss_rain_full' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain_full.shp' using driver `ESRI Shapefile'\nSimple feature collection with 467 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -159812 ymin: -109008 xmax: 172891 ymax: 105361\nProjected CRS: CH1903 (Bern) / LV03C\n\ndta_sf &lt;- st_read(dsn = \"swiss/swiss_rain.shp\")\n\nReading layer `swiss_rain' from data source \n  `/__w/statspat/statspat/swiss/swiss_rain.shp' using driver `ESRI Shapefile'\nSimple feature collection with 100 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -140463 ymin: -92327 xmax: 150921 ymax: 105361\nProjected CRS: CH1903 (Bern) / LV03C\n\nbords_sf &lt;- st_read(dsn = \"swiss/bords.shp\") \n\nReading layer `bords' from data source `/__w/statspat/statspat/swiss/bords.shp' using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -169990 ymin: -111696 xmax: 177126 ymax: 108158\nProjected CRS: CH1903 (Bern) / LV03C\n\nelev_sf &lt;- st_read(dsn = \"swiss/elev.shp\") \n\nReading layer `elev' from data source `/__w/statspat/statspat/swiss/elev.shp' using driver `ESRI Shapefile'\nSimple feature collection with 95128 features and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -185556.4 ymin: -127261.5 xmax: 193184.2 ymax: 127252.2\nProjected CRS: CH1903 (Bern) / LV03C\n\ndta_sf |&gt; st_coordinates() |&gt; bind_cols(dta_sf) |&gt; ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\ndta_full_sf |&gt; st_coordinates() |&gt; bind_cols(dta_full_sf) |&gt; \n    ggplot() + \n    geom_sf(data = bords_sf, linewidth = 0.1) +\n    geom_circle(aes(x0=X, y0=Y, r=pluies*10, fill = pluies)) +\n    scale_fill_viridis_c(name = \"Pluies\", option = \"mako\", direction = -1) \n\n\n\n\n\n\n\nelev_sf |&gt; ggplot() + \n    geom_sf(aes(col = elevation)) + \n    geom_sf(data = bords_sf, fill = NA, linewidth = 1.5) + \n    theme_minimal() +\n    theme(legend.position = \"right\") +\n    scale_color_viridis_c(name = \"Z\", option = \"mako\", transform= \"log10\")\n\n\n\n\n\n\n\n\n\n\n2. Nuées variographiques à la main\n\nnuees_dta &lt;- do.call(rbind, lapply(1:nrow(dta_sf), function(i) {\n    xy &lt;- st_coordinates(dta_sf)\n    x0 &lt;- xy[i, 1]\n    y0 &lt;- xy[i, 2]\n    pluie0 &lt;- dta_sf$pluies[i]\n    dta_sf |&gt; rownames_to_column('Id')  |&gt; \n        mutate(delta_x = xy[,1] - x0, delta_y = xy[,2] - y0, ecart = pluies - pluie0) |&gt; \n        filter(Id &gt; i) |&gt; \n        mutate(h = sqrt(delta_x^2 + delta_y^2), ecart2 = ecart^2 / 2) |&gt; \n        select(Id, h, ecart2)\n}))\n\nnuees_dta |&gt; ggplot() + geom_point(aes(x=h, y=ecart2)) + xlim(c(0, 120000))\n\nWarning: Removed 2125 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\n\n3. Variogramme empirique\n\nvario.cloud &lt;- variogram(pluies~1, data = dta_sf, cloud = TRUE)\nvario.cloud |&gt; ggplot(aes(x=dist, y=gamma)) + geom_point() + ggtitle(\"Nuée variographique\")\n\n\n\n\n\n\n\n\n\n\n4. Ajustement du variogramme\n\nvario.iso &lt;- variogram(pluies~1, data = dta_sf)\nv.fit &lt;- fit.variogram(vario.iso, vgm(model = \"Exp\", psill = 90000, range = 50000))\nvario_fit_exp &lt;- variogramLine(v.fit, maxdist = 120000)\n\nggplot(data = vario.iso, aes(x=dist, y=gamma)) + \n    geom_point() + geom_line(data= vario_fit_exp , aes(x=dist, y=gamma))\n\n\n\n\n\n\n\n\n\n\n5. Krigeage\n\nKfull &lt;- krige(formula = pluies ~ 1, \n               locations = dta_sf, \n               newdata = dta_full_sf, model = v.fit)\n\nRegistered S3 method overwritten by 'stars':\n  method                  from\n  st_interpolate_aw.stars sf  \n\n\n[using ordinary kriging]\n\nKfull |&gt; ggplot() + geom_sf(aes(fill = var1.pred)) +\n    geom_sf(data = dta_sf, aes(col = pluies), size=3) +\n    scale_fill_viridis_c(option = \"mako\", transform = \"log10\")\n\n\n\n\n\n\n\n\nPrédites en fonction des observées\n\npred_df &lt;- data.frame(pred =Kfull$var1.pred)\ndta_full_sf |&gt; mutate(pred = Kfull$var1.pred) |&gt; ggplot() +geom_point(aes(x=pluies, y = pred))\n\n\n\n\n\n\n\n\n\n\n6. À votre tour\n\nTester différentes formes de variogramme (exponentiel, gaussien, sphérique).\nAjouter une covariable (altitude) au modèle de krigeage et comparer les résultats."
+  },
+  {
+    "objectID": "01_intro.html#cadre",
+    "href": "01_intro.html#cadre",
+    "title": "Introduction",
+    "section": "Cadre",
+    "text": "Cadre\nLa statistique spatiale est une branche de la statistique qui se concentre sur l’analyse et la modélisation de données localisées géographiquement ou spatialement.\nElle prend en compte la localisation des observations et les relations spatiales entre elles, notamment elle permet de lier la dépendance et la localisation spatiale.\nPour quelles applications ?\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#données-géostatistiques",
+    "href": "01_intro.html#données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Données géostatistiques",
+    "text": "1. Données géostatistiques\nDescription\n\nObservation : A un point \\(s\\) d’un domaine spatial \\(D\\), on associe une valeur observée \\(Z(s)\\). La grandeur mesurée est définie partout mais on l’observe seulement en \\(n\\) points \\(s_1, \\ldots, s_n\\).\nCaractéristiques :\n\nPositions continues.\nGénéralement irrégulièrement espacées.\nModèles courants : modèles de champs spatiaux\n\nExemples : Porosité du sol, concentrations de polluants.Températures mesurées à des stations météo,\n\nVisualisation\n\nCarte avec des points représentant les positions des observations.\n\nObjectifs\n\nModélisation.\nSéparation des variations à différentes échelles.\nPrédiction (krigeage)."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-géostatistiques",
+    "href": "01_intro.html#exemple-de-données-géostatistiques",
+    "title": "Introduction",
+    "section": "1. Exemple de données géostatistiques",
+    "text": "1. Exemple de données géostatistiques"
+  },
+  {
+    "objectID": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "href": "01_intro.html#données-en-réseau-ou-maillage-fixe-données-lattice",
+    "title": "Introduction",
+    "section": "2. Données en réseau ou maillage fixe (données lattice)",
+    "text": "2. Données en réseau ou maillage fixe (données lattice)\n\nObservation : pour un réseau donné, on associe à chaque maille \\(i\\) du réseau une valeur \\(Z_i\\). La grandeur mesurée est définie pour l’ensemble de la maille, elle ne varie pas continuement. Les données sont donc agrégées sur des zones géographiques définies (polygones).\nExemples :\n\nPourcentage de groupe sanguin par région.\nPrix au m2 par arrondissement à Paris.\nPixels dans une image.\n\n\nVisualisation\n\nCartes choroplèthes.\n\nObjectifs\n\nExplicatifs (lien avec des covariables)\nAnalyse des corrélations spatiales.\nRestauration d’images."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-lattice",
+    "href": "01_intro.html#exemple-de-données-lattice",
+    "title": "Introduction",
+    "section": "2. Exemple de données lattice",
+    "text": "2. Exemple de données lattice\n\n\nFigure 1"
+  },
+  {
+    "objectID": "01_intro.html#données-ponctuelles",
+    "href": "01_intro.html#données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Données ponctuelles",
+    "text": "3. Données ponctuelles\n\nObservations on note la présence d’un évènement en la position \\(s\\). \\(s_i\\) est donc la position du ième évènement d’intérêt\nExemples : Positions des chênes dans une forêt, position des épicentres de séismes\n\nVisualisation\n\nCarte de points.\n\nObjectifs\n\nRégularité.\nDistribution aléatoire (Poisson).\nAgrégation."
+  },
+  {
+    "objectID": "01_intro.html#exemple-de-données-ponctuelles",
+    "href": "01_intro.html#exemple-de-données-ponctuelles",
+    "title": "Introduction",
+    "section": "3. Exemple de données ponctuelles",
+    "text": "3. Exemple de données ponctuelles\nFigure extraite de Renner et al. (2015)\n\n\nFigure 2"
+  },
+  {
+    "objectID": "01_intro.html#exercice",
+    "href": "01_intro.html#exercice",
+    "title": "Introduction",
+    "section": "Exercice",
+    "text": "Exercice\n\nSciences de la terre : position des séismes.\nEnvironnement : température, pluie\nEpdémiologie : nombre de cander par régions administratives\nEcologie : localisation des différents arbre d’une espeèce au sein d’une parcelle,\nAgrnomie : répartition des pucerons dans une parcelle cultivée\nEconomie spatiale : taux de chomage par région administrative, prix au m2 des appartements au sein d’une ville\nSociologie : Localisation des crimes, des stations de service.\nImagerie : Couleur d’un pixel en fonction de sa localisation sur l’image"
+  },
+  {
+    "objectID": "01_intro.html#cadre-du-cours",
+    "href": "01_intro.html#cadre-du-cours",
+    "title": "Introduction",
+    "section": "Cadre du cours",
+    "text": "Cadre du cours\nLa statistique spatiale analyse des données localisées dans l’espace.\nCes données se classent en trois grandes catégories, nous étudierons les deux premières dans ce cours.\n\nChamps spatiaux observés en quelques positions\nValeurs associées à des régions (données lattice)\nÉvénements géolocalisés (processus ponctuels)"
+  },
+  {
+    "objectID": "01_intro.html#references",
+    "href": "01_intro.html#references",
+    "title": "Introduction",
+    "section": "References",
+    "text": "References\n\n\nRenner, Ian W, Jane Elith, Adrian Baddeley, et al. 2015. “Point Process Models for Presence-Only Analysis.” Methods in Ecology and Evolution 6 (4): 366–79."
+  },
+  {
+    "objectID": "01_tp_sf.html",
+    "href": "01_tp_sf.html",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+  },
+  {
+    "objectID": "01_tp_sf.html#clusters",
+    "href": "01_tp_sf.html#clusters",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "",
+    "text": "Les packages que nous utiliserons sont disponibles sur les clusters cluster1 et cluster2 uniquement !"
+  },
+  {
+    "objectID": "01_tp_sf.html#objectifs-du-tp",
+    "href": "01_tp_sf.html#objectifs-du-tp",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Objectifs du TP",
+    "text": "Objectifs du TP\nL’objectif de ce TP est d’acquérir les outils de manipulation de données spatiales utiles pour la manipulation de celles-ci en R, notamment pour\n\nlire des données spatiales sous différents formats (shapefile, CSV avec lat/long) ;\ncomprendre et manipuler les systèmes de coordonnées (CRS) ;\ntransformer des données de WGS84 (lat/long) vers un système projeté adapté ;\ncréer des buffers autour de géométries (points, polygones) ;\nréaliser des unions et intersections spatiales ;\ncalculer des surfaces ;\nconstruire une grille régulière (fishnet) et agréger une variable par mailles.\n\nLe but des TPS en général est de se creuser un peu la tête et de chercher des solutions. Il est donc vivement déconseillé de faire appel à l’IA à la moindre difficulté. Utilisez\n\nvotre cerveau,\nvotre voisin,\nvotre enseignant.\nen désespoir de cause, si personne ne résoud votre question Claude sera votre dernier espoir !"
+  },
+  {
+    "objectID": "01_tp_sf.html#packages",
+    "href": "01_tp_sf.html#packages",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Packages",
+    "text": "Packages\n\nPackages : sf, dplyr, ggplot2, readr.\n\n\n# install.packages(c(\"sf\", \"dplyr\", \"ggplot2\", \"readr\"))\n\n\nlibrary(sf)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)"
+  },
+  {
+    "objectID": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "href": "01_tp_sf.html#données-utilisées-dans-le-tp",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Données utilisées dans le TP",
+    "text": "Données utilisées dans le TP\nNous utiliserons :\n\nle shapefile d’exemple nc.shp fourni par le package sf (comtés de Caroline du Nord) ;\nun fichier CSV nc_cities.csv contenant des points en longitude/latitude (WGS84) et disponibles ici"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "href": "01_tp_sf.html#partie-1-données-en-latitude-longitude-wgs84-et-changement-de-référentiel",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel",
+    "text": "Partie 1 — Données en latitude / longitude (WGS84) et changement de référentiel\n\n1.1 Lecture de données en WGS84\n\nLire le fichier nc_cities.csv dans un objet data.frame nommé nc_cities.df\nConvertir ce tableau en objet sf en utilisant les colonnes lon et lat comme coordonnées, avec le CRS WGS84 (EPSG:4326) et stocker le résultat dans nc_cities.sf\nVérifier la structure de l’objet obtenu et son CRS.\nCartographier les données\n\n\nnc_cities.sf |&gt; ggplot() + geom_sf() +   geom_sf_text( aes(label = name))\n\nDes fonctions utiles :read_csv(), st_as_sf(), st_crs(),glimpse().\n\n\n1.2 Lecture du shapefile projeté et comparaison des CRS\nOn utilisera le shapefile nc fourni par sf.\n\nCharger le shapefile nc.shp dans un object nc.sf en utilisant le chemin renvoyé par system.file(\"shape/nc.shp\", package = \"sf\").\n\n\nnc.shp &lt;- st_read(system.file(\"shape/nc.shp\", package=\"sf\"))\n\n\nInspecter sa structure (glimpse) et vérifier son CRS. 3 Afficherla classe de l’objet nc.\nAfficher les premières lignes de nc.\nLister les noms de colonnes disponibles et repérer au moins une variable numérique.\nComparer le CRS de nc et celui de votre jeu de données importé depuis le csv (nc_cities.sf).\nCartographier les données nc.sf\n\nDes fonctions utiles :st_read(), st_crs(), glimpse().\n\n\n1.3 Transformation des stations vers le CRS de nc\n\nReprésenter les deux types de données sur une même carte.\nTransformer les données de nc_cities.sf de WGS84 (EPSG:4326) vers le CRS de nc.\nVérifier le CRS de l’objet transformé.\nAfficher une carte rapide montrant les comtés (nc) et les villes.\nReprésenter une variable quantitative (par exemple BIR74) en choroplèthe.\n\nDes fonctions utiles :st_transform(), st_crs(). ggplot() + geom_sf(aes(fill = ...))."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "href": "01_tp_sf.html#partie-2-buffers-et-opérations-géométriques",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 2 — Buffers et opérations géométriques",
+    "text": "Partie 2 — Buffers et opérations géométriques\n\n2.1 Centroïdes des polygones\nQuestion 2.1\n\nCalculer les centroïdes des polygones de nc.\nVisualiser les centroïdes superposés aux polygones.\n\nDes fonctions utiles : st_centroid().\n\n\n2.2 Buffers autour des points\nOn souhaite créer un buffer de 20 km autour de chaque centroïde.\nQuestion 2.2\n\nCréer un objet contenant les buffers de rayon 20 km (en mètres) autour des centroïdes.\nVisualiser les buffers et les polygones sur une même carte.\nDiscuter de l’importance de l’unité du CRS pour le choix du rayon du buffer.\n\nDes fonctions utiles : : st_buffer() (argument dist en mètres).\n\n\n2.3 Buffers autour des polygones\nQuestion 2.3\n\nCréer un buffer de 5 km autour de chaque polygone de nc.\nVisualiser la différence entre les polygones originaux et les buffers.\nExpliquer un cas où un buffer autour d’un polygone serait plus pertinent qu’un buffer autour de son centroïde.\n\nDes fonctions utiles : : st_buffer() appliquée directement à nc."
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "href": "01_tp_sf.html#partie-3-unions-spatiales-et-calcul-de-surfaces",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 3 — Unions spatiales et calcul de surfaces",
+    "text": "Partie 3 — Unions spatiales et calcul de surfaces\n\n3.1 Union de polygones (dissolve)\nOn souhaite regrouper les comtés en 2 grandes régions fictives (Est et Ouest)\n\nCalculer le centroid de la Caroline du Nord.\nCréer une nouvelle variable region dans nc qui prend deux modalités (\"Est\", \"Ouest\") en fonction de sa position par rapport au centroide et vérifier graphiquement.\nRegrouper les comtés par region et réaliser l’union géométrique des polygones pour obtenir un polygone par région.\nCalculer, pour chaque région, le total de la variable BIR74.\nVisualiser les 2 régions obtenues et le nombre de naissances.\n\nLes fonctions utiles : st_union, st_coordinates, mutate(), case_when(), summarise();\n\n\n3.2 Calcul de surfaces\n\nCalculer la surface de chaque comté de nc (en m²), puis convertir cette surface en km².\nAjouter ces deux colonnes (area_m2, area_km2) à l’objet nc.\nAfficher les noms de quelques comtés et leur surface (en km²).\nReprésenter la surface des comtés sur une carte (choroplèthe).\n\nLes fonctions utiles : st_area()"
+  },
+  {
+    "objectID": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "href": "01_tp_sf.html#partie-4-grille-régulière-et-moyenne-par-maille",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Partie 4 — Grille régulière et moyenne par maille",
+    "text": "Partie 4 — Grille régulière et moyenne par maille\n\n4.1 Définir une grille régulière\nOn souhaite créer une grille de polygones carrés de côté 30 km couvrant l’ensemble des comtés.\n\nRécupérer l’étendue spatiale (bounding box) de nc.\nCréer une grille régulière (carrés) de cellule 0.5 degres de coté couvrant cette étendue.\nConvertir cette grille en objet sf avec un identifiant de maille (id_cell).\nVisualiser la grille et les comtés superposés.\n\nLes fonctions utiles st_bbox(), st_make_grid(), st_sf().\n\n\n4.2 Intersections comtés / grille\nNous voulons découper les comtés selon la grille.\n\nIntersecter nc (ou nc_area si vous avez déjà les surfaces) avec la grille.\nExaminer la structure du résultat : combien d’observations par rapport au nombre de comtés initial ? Quelles nouvelles colonnes apparaissent ?\n\nDes fonctions utiles : : st_intersection().\n\n\n4.3 Surface des morceaux de polygones\n\nCalculer la surface de chaque polygone issu de l’intersection (en km²).\nAjouter cette surface comme colonne (area_piece_km2).\n\n\n\n4.4 Moyenne simple de BIR74 par maille\nDans un premier temps, on calcule la moyenne simple de BIR74 pour les comtés (ou morceaux de comtés) présents dans chaque maille de la grille.\n\nExtraire la partie attributaire (non spatiale) des données intersectées.\nCalculer, pour chaque maille (id_cell), la moyenne simple de BIR74 (ignorer les valeurs manquantes si besoin).\nJoindre ce résultat à l’objet sf représentant la grille.\nReprésenter cartographiquement la moyenne simple de BIR74 par maille.\n\nDes fonctions utiles : st_drop_geometry(), left_join()\n\n\n4.5 Moyenne pondérée par surface\nOn souhaite maintenant calculer une moyenne de BIR74 pondérée par la surface des morceaux de comtés dans chaque maille.\n\nUtiliser la surface des morceaux (area_piece_km2) comme poids.\nPour chaque maille (id_cell), calculer la moyenne pondérée de BIR74 : [ = ]\nJoindre ce résultat à la grille.\nComparer visuellement les cartes de moyenne simple et de moyenne pondérée : quelles différences observez-vous ?"
+  },
+  {
+    "objectID": "01_tp_sf.html#pour-coller-à-lactualité",
+    "href": "01_tp_sf.html#pour-coller-à-lactualité",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Pour coller à l’actualité",
+    "text": "Pour coller à l’actualité\nLes derniers résultats des élections américaines seront bientôt disponible. Avant de changer d’ère (air), on souhaite faire les deux cartes suivantes\n\nPour tous les états centraux (on omet Hawai et Alaska), on souhaite colorier l’état en fonction de la couleur majoritaire\nOn souhaite faire la carte pour chaque cirsconsription"
+  },
+  {
+    "objectID": "01_tp_sf.html#les-ressources-pour-y-arriver",
+    "href": "01_tp_sf.html#les-ressources-pour-y-arriver",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Les ressources pour y arriver",
+    "text": "Les ressources pour y arriver\n\n## liste des codes des états américains\nstate.abb \n\n## pour lire un fichier carto publé par le Census Bureau américain \nlire_census &lt;- function(fichier) {\n  url  &lt;- paste0(\"https://www2.census.gov/geo/tiger/GENZ2024/shp/\", fichier, \".zip\")\n  dest &lt;- file.path(tempdir(), fichier)\n  if (!dir.exists(dest)) {\n    zip &lt;- tempfile(fileext = \".zip\")\n    download.file(url, zip, mode = \"wb\")\n    unzip(zip, exdir = dest)\n  }\n  st_read(file.path(dest, paste0(fichier, \".shp\")), quiet = TRUE)\n}\n\n#le fichier à l'échelle 1:20 000 000\netats &lt;- lire_census(\"cb_2024_us_state_20m\")\nggplot(etats) + geom_sf()\n\n\n# 48 états contigus sulement\netats_48 &lt;- setdiff(state.abb, c(\"AK\", \"HI\"))\n\netats |&gt; \n  filter(STUSPS %in% etats_48) |&gt; \n  ggplot() + geom_sf()\n\n## pour les circonscriptions : \ncirc &lt;- lire_census(\"cb_2024_us_cd119_500k\")\nggplot(circ) + geom_sf()\n\nfips &lt;- etats |&gt; st_drop_geometry() |&gt; select(STATEFP, state = STUSPS)\ncirc &lt;- circ |&gt;  inner_join(fips, by = \"STATEFP\") |&gt;  filter(state %in% etats_48) \ncirc |&gt; \n  ggplot() + geom_sf()\n\n## représentants en fonction \nreps &lt;- read_csv(\n  \"https://raw.githubusercontent.com/unitedstates/congress-legislators/gh-pages/legislators-current.csv\",\n  show_col_types = FALSE\n) |&gt;\n  filter(type == \"rep\", state %in% etats_48)|&gt;\n  select(full_name, state, district, party)"
+  },
+  {
+    "objectID": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "href": "01_tp_sf.html#pour-aller-plus-loin-facultatif",
+    "title": "TD1 -Manipulation de données spatiales avec R",
+    "section": "Pour aller plus loin (facultatif)",
+    "text": "Pour aller plus loin (facultatif)\n\nTirer uniformément 1000 points en Caroline du nord (Acceptation rejet)\nCalculer le nombre de points par comté et comparer à la superficie du comté\nQu s’attend on à constater"
+  },
+  {
+    "objectID": "02_introduction_inla.html",
+    "href": "02_introduction_inla.html",
+    "title": "TD2 - Introduction to INLA",
+    "section": "",
+    "text": "Ce TP est construit sur la base des exemples du livre Gómez-Rubio (2020)"
   },
   {
     "objectID": "02_tpintro_inla.html",
@@ -816,7 +1201,7 @@
     "href": "03_tp_inlaspatial.html",
     "title": "TD5 - Ajuster un modèle hiérarchique spatial avec INLA",
     "section": "",
-    "text": "# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE"
+    "text": "# Base de R INLA\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(INLA)\n\nLoading required package: Matrix\n\nAttaching package: 'Matrix'\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE"
   },
   {
     "objectID": "03_tp_inlaspatial.html#references",

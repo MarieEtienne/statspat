@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marie-Pierre Etienne (sur la base du TD de Liliane Bel)">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-12">
 
 <title>TD2 - Statistique Spatiale – Statistique Spatiale</title>
 <style>
@@ -159,8 +159,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Introduction</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./02_geostat.html">
- <span class="dropdown-text">Géostatistique</span></a>
+    <a class="dropdown-item" href="./02_krigeage.html">
+ <span class="dropdown-text">Prédiction spatiale : le krigeage</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./03_lattice.html">
@@ -169,6 +169,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="./04_inla.html">
  <span class="dropdown-text">INLA et Modèles Hiérarchiques</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Versions PDF</li>
+        <li>
+    <a class="dropdown-item" href="./01_intro.pdf">
+ <span class="dropdown-text">Introduction (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02_krigeage.pdf">
+ <span class="dropdown-text">Krigeage (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03_lattice.pdf">
+ <span class="dropdown-text">Modèles sur grille (PDF)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04_inla.pdf">
+ <span class="dropdown-text">INLA (PDF)</span></a>
   </li>  
     </ul>
   </li>
@@ -282,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 12, 2026</p>
     </div>
   </div>
   
@@ -331,7 +349,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE</code></pre>
+<pre><code>Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dta_full_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"swiss/swiss_rain_full.shp"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -341,7 +359,7 @@ Simple feature collection with 467 features and 1 field
 Geometry type: POINT
 Dimension:     XY
 Bounding box:  xmin: -159812 ymin: -109008 xmax: 172891 ymax: 105361
-Projected CRS: Bern 1898 (Bern) / LV03C</code></pre>
+Projected CRS: CH1903 (Bern) / LV03C</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dta_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"swiss/swiss_rain.shp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -351,7 +369,7 @@ Simple feature collection with 100 features and 1 field
 Geometry type: POINT
 Dimension:     XY
 Bounding box:  xmin: -140463 ymin: -92327 xmax: 150921 ymax: 105361
-Projected CRS: Bern 1898 (Bern) / LV03C</code></pre>
+Projected CRS: CH1903 (Bern) / LV03C</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bords_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"swiss/bords.shp"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -360,7 +378,7 @@ Simple feature collection with 1 feature and 1 field
 Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: -169990 ymin: -111696 xmax: 177126 ymax: 108158
-Projected CRS: Bern 1898 (Bern) / LV03C</code></pre>
+Projected CRS: CH1903 (Bern) / LV03C</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>elev_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"swiss/elev.shp"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -369,7 +387,7 @@ Simple feature collection with 95128 features and 1 field
 Geometry type: POINT
 Dimension:     XY
 Bounding box:  xmin: -185556.4 ymin: -127261.5 xmax: 193184.2 ymax: 127252.2
-Projected CRS: Bern 1898 (Bern) / LV03C</code></pre>
+Projected CRS: CH1903 (Bern) / LV03C</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dta_sf <span class="sc">|&gt;</span> <span class="fu">st_coordinates</span>() <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>(dta_sf) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data =</span> bords_sf, <span class="at">linewidth =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
