@@ -16,7 +16,7 @@ editor:
 format:
   revealjs:
     css: mpe_pres_revealjs.css
-    theme: [default, custom.scss]
+    theme: [default, custom]
     width: 1050
     margin: 0.05
     slide-number: true
@@ -80,9 +80,9 @@ aléatoires indexée par un ensemble $D$ : $$\{Z(s), \; s \in D\}$$
 - $D \subset {\mathbb{R}}^d$, $d \geq 2$ (l'espace) : on parle de
   **champ aléatoire**.
 
-Une [réalisation]{.rouge} est une fonction $s \mapsto z(s)$ sur tout $D$
+Une [réalisation]{.rouge} est
 
-:   une carte.
+une fonction $s \mapsto z(s)$ sur tout $D$ : une carte.
 
 La loi du champ est caractérisée par ses lois fini-dimensionnelles :
 celles de $(Z(s_1), \ldots, Z(s_n))$ pour tous $n$ et tous
@@ -116,7 +116,7 @@ ggplot(champs, aes(x, y)) + geom_raster(aes(fill = z)) +
 En statistique spatiale, on n'observe en général qu'[une seule
 réalisation]{.rouge}, et seulement en quelques sites (points noirs).
 
-## Le problème
+## Une question classique en statistique spatiale
 
 On observe $z(s_1), \ldots, z(s_n)$ aux sites $s_1, \ldots, s_n$ d'un
 domaine $D$ et on veut :
@@ -125,9 +125,9 @@ domaine $D$ et on veut :
 - construire une [carte]{.rouge} de prédiction sur tout $D$,
 - [quantifier l'incertitude]{.rouge} associée à cette carte.
 
-### Exemple
+### Exemples
 
-**La température en France**
+- **La température en France**
 
 ```{r}
 #| echo: false
@@ -172,9 +172,9 @@ ggplot() +
 
 ```
 
-**Pluies en Suisse** : $n = 100$ stations, on veut une carte de la pluie
-sur tout le territoire (voir le
-[TD](https://marieetienne.github.io/statspat/01_pluies.html#/title-slide)).
+- **Pluies en Suisse** : $n = 100$ stations, on veut une carte de la
+  pluie sur tout le territoire (voir le
+  [TD](https://marieetienne.github.io/statspat/01_pluies.html#/title-slide)).
 
 ## Pourquoi ne pas simplement interpoler ?
 
@@ -189,10 +189,38 @@ $$\widehat{Z}(s_0) = \sum_{i=1}^n \lambda_i Z(s_i), \qquad \lambda_i \propto \fr
 - Les poids ne s'adaptent pas à la structure de dépendance des données
   (portée, régularité).
 
-[Idée du krigeage]{.rouge} : choisir les poids à partir d'un **modèle de
-la dépendance spatiale**.
+Le [krigeage]{.rouge} est une méthode d'interpolation qui choisit les
+poids à partir d'un **modèle de la dépendance spatiale**.
 
 # Cadre : champ aléatoire du second ordre
+
+## Champ aléatoire du second ordre
+
+### Définition
+
+Un champ aléatoire $\{Z(s), \; s \in D\}$, $D \subset {\mathbb{R}}^d$,
+est dit [du second ordre]{.rouge} si
+$$\forall s \in D, \quad {\mathbb{E}}\left(Z(s)^2\right) < \infty.$$
+
+On peut alors définir :
+
+- sa [fonction moyenne]{.rouge} : $\mu(s) = {\mathbb{E}}(Z(s))$,
+- sa [fonction de covariance]{.rouge} :
+  $c(s, s') = {\mathbb{C}\text{ov}}(Z(s), Z(s'))$, (finie par
+  Cauchy-Schwarz.)
+
+### Propriétés de $c$
+
+- $c(s, s) = {\mathbb{V}\text{ar}}(Z(s)) \geq 0$ et
+  $c(s, s') = c(s', s)$,
+- $|c(s, s')| \leq \sqrt{c(s, s)\, c(s', s')}$,
+- $c$ est semi-définie positive :
+  $\sum_{i,j} a_i a_j \, c(s_i, s_j) = {\mathbb{V}\text{ar}}\left(\sum_i a_i Z(s_i)\right) \geq 0$.
+
+::: callout-note
+Le second ordre ne suppose rien sur la loi. Un champ gaussien est du
+second ordre, et sa loi est entièrement déterminée par $\mu$ et $c$.
+:::
 
 ## Ce dont on a besoin pour prédire
 
@@ -210,18 +238,16 @@ On modélise $Z$ comme un champ aléatoire du second ordre :
 - $\boldsymbol{c_0}$ : vecteur de taille $n$, $c_{0,i} = c(s_0, s_i)$
 - $\sigma_0^2 = {\mathbb{V}\text{ar}}(Z(s_0))$
 
-[Dans ce cours]{.rouge} : on suppose la moyenne et la covariance
-**connues**. La question de leur estimation est repoussée à la fin.
-
-::: callout-note
-Les formules du krigeage ne font intervenir que $\boldsymbol{\Sigma}$,
-$\boldsymbol{c_0}$ et $\sigma_0^2$, quelle que soit la forme de la
-covariance $c(s, s')$.
-:::
+[Dans cette première partie du cours]{.rouge} : on suppose la moyenne et
+la covariance **connues**. La question de leur estimation est repoussée
+à la fin.
 
 ## Covariance utilisée dans les illustrations
 
-Une covariance qui décroît avec la distance entre les sites :
+La covariance exponentielle est une forme de covariance classique dans
+les applications.
+
+Elle décroît avec la distance entre les sites :
 $$c(s, s') = \sigma^2 \exp\left(-\|s - s'\|/\rho\right) \; + \; \tau^2 \mathbb{1}_{s = s'}$$
 
 - $\sigma^2$ : variance du signal,
@@ -250,7 +276,7 @@ cov_gauss <- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-(h / rho)^2)
   $(Z(s_0), Z(s_1), \ldots, Z(s_n))$ est gaussien.
 
 $$\begin{pmatrix} Z(s_0) \\ \mathbf{Z} \end{pmatrix} \sim
-\mathcal{N}\left( \begin{pmatrix} \mu \\ \mu \mathbf{1}\end{pmatrix},
+\mathcal{N}\left( \begin{pmatrix} \mu_0 \\ \boldsymbol{\mu} \end{pmatrix},
 \begin{pmatrix} \sigma_0^2 & \boldsymbol{c_0}^T \\
 \boldsymbol{c_0} & \boldsymbol{\Sigma} \end{pmatrix} \right)$$
 
@@ -261,7 +287,7 @@ Quelle est la loi de $Z(s_0)$ sachant $\mathbf{Z} = \mathbf{z}$ ?
 ## Conditionnement gaussien
 
 $$Z(s_0) \mid \mathbf{Z} = \mathbf{z} \sim \mathcal{N}\left(
-\mu + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{z} - \mu \mathbf{1}),
+\mu_0 + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{z} - \boldsymbol{\mu}),
 \; \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}
 \right)$$
 
@@ -271,14 +297,9 @@ $$\widehat{Z}_{KS}(s_0) = {\mathbb{E}}(Z(s_0) \mid \mathbf{Z}) = \mu + \boldsymb
 [Variance de krigeage]{.rouge}
 $$\sigma^2_{KS}(s_0) = {\mathbb{V}\text{ar}}(Z(s_0) \mid \mathbf{Z}) = \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
 
-[Bonus du cadre gaussien]{.rouge} : on a la loi prédictive complète,
-donc des intervalles de prédiction
-$\widehat{Z}_{KS}(s_0) \pm 1.96\, \sigma_{KS}(s_0)$, et toute quantité
-$P(Z(s_0) > \zeta \mid \mathbf{Z})$.
+### Interprétation
 
-## Interprétation
-
-$$\widehat{Z}_{KS}(s_0) = \mu + \sum_{i=1}^n \lambda_i (Z(s_i) - \mu), \qquad \boldsymbol{\lambda} = \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
+$$\widehat{Z}_{KS}(s_0) = \mu + \sum_{i=1}^n \lambda_i (Z(s_i) - \mu(s_i)), \qquad \boldsymbol{\lambda} = \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
 
 - On part de la moyenne $\mu$ et on la **corrige** en fonction des
   écarts observés à la moyenne.
@@ -288,33 +309,37 @@ $$\widehat{Z}_{KS}(s_0) = \mu + \sum_{i=1}^n \lambda_i (Z(s_i) - \mu), \qquad \b
 - Les données font **baisser** la variance :
   $\sigma^2_{KS}(s_0) \le \sigma_0^2$.
 
-## Exercice : une observation
+[Bonus du cadre gaussien]{.rouge} : on a la loi prédictive complète,
+donc des intervalles de prédiction
+$\widehat{Z}_{KS}(s_0) \pm 1.96\, \sigma_{KS}(s_0)$, et toute quantité
+$P(Z(s_0) > \zeta \mid \mathbf{Z})$.
 
-On observe un seul site $s_1$. On note $r = C(\|s_0 - s_1\|) / C(0)$ la
-corrélation entre $Z(s_0)$ et $Z(s_1)$.
+## Exercice 1 : une observation
 
-1.  Donner $\widehat{Z}_{KS}(s_0)$ et $\sigma^2_{KS}(s_0)$.
-2.  Que se passe-t-il quand $s_0 \to s_1$ ? Quand
+On observe un seul site $s_1$. On suppose que la covariance entre 2
+sites ne dépend que de leur distance. On note $c(s,s')=\tilde{c}(h)$,
+avec $h=\|s - s'\|$
+
+1.  Que représente $c(0)$ dans ce cas ?
+
+On note $r = c(\|s_0 - s_1\|) / c(0)$
+
+2.  Que représente $r$ ?
+3.  Donner $\widehat{Z}_{KS}(s_0)$ et $\sigma^2_{KS}(s_0)$.
+4.  Que se passe-t-il quand $s_0 \to s_1$ ? Quand
     $\|s_0 - s_1\| \to \infty$ ?
 
-. . .
+## Exercice 2: deux observations
 
-### Solution
-
-$$\widehat{Z}_{KS}(s_0) = \mu + r\, (Z(s_1) - \mu), \qquad \sigma^2_{KS}(s_0) = C(0)\,(1 - r^2)$$
-
-- $s_0 \to s_1$ (sans pépite) : $r \to 1$, on retrouve $Z(s_1)$ et une
-  variance nulle.
-- $s_0$ loin : $r \to 0$, on prédit $\mu$ avec la variance $C(0)$.
-
-## Exercice : deux observations
-
-On se place en 1D : $s_0 = 0$, $s_1 = 1$, $s_2 = 2$, $\mu = 0$.
+On se place en 1D : $s_0 = 0$, $s_1 = 1$, $s_2 = 2$, $\mu(s) = 0$.
 
 Calculer les poids $\lambda_1, \lambda_2$ pour
 
-1.  une covariance exponentielle,
-2.  une covariance gaussienne.
+1.  une covariance exponentielle :
+    $$c(s, s') = \sigma^2 \exp\left(-\|s - s'\|/\rho\right)  $$
+
+2.  une covariance gaussienne.:
+    $$c(s, s') = \sigma^2 \exp\left(-\|s - s'\|^2/\rho^2\right)  $$
 
 ```{r}
 #| label: poids_deux_sites

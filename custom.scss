@@ -1,0 +1,62 @@
+
+// fonts
+$font-family-sans-serif: 'Droid Serif', "Palatino Linotype", "Book Antiqua", Palatino,  FreeSerif, serif !default;
+
+
+// colors
+$body-color: #51483d !default;
+$link-color: #B40F20 !default;
+$selection-bg: #26351c !default;
+
+// headings
+$presentation-heading-font: "Ubuntu", "Palatino Linotype", "Book Antiqua", Palatino,
+  FreeSerif, serif !default;
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
+
+$presentation-h1-font-size: 2em !default;
+
+/* changing color of callout-note*/
+.definitionbox{
+  margin-top: 1em;
+  margin-bottom: 1em;  
+  border-radius: .25rem;
+  border-left: solid #acacac .3rem;
+  border-right: solid 1px silver;
+  border-top: solid 1px silver;
+  border-bottom: solid 1px silver;
+  border-left-color: #C94326!important;
+}
+
+
+.definitionbox.no-icon::before {
+  display: none !important;
+}
+
+
+.definitionbox.header{
+  padding-top: 0.2em;
+  margin-bottom: -0.2em;
+  margin-bottom: 0.5em;
+  margin-top: 0.7em;
+  border-bottom: none;
+  font-weight: 600;
+  opacity: 85%;
+  font-size: 0.9rem;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  display: flex
+}
+
+
+.definitionbox.body{
+    font-size: 0.9rem;
+  font-weight: 400;
+      display: flex;
+        flex-grow: 1;
+}
