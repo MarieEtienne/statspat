@@ -43,47 +43,68 @@ library(mapdata)
 
 ## Objectif de l'étude : Estimer l'abondance de merlus à partir d'un sondage stratifié dans le Golfe de Gascogne et en Mer Celtique.
 
+Dans le cadre de l'étude d'une population marine, l'Institut Français de
+Recherche pour l'Exploitation de la Mer (IFREMER) organise chaque année
+des campagnes océanographiques qui permettent de récolter des données et
+d'obtenir des estimations de l'abondance.
 
-Dans le cadre de l'étude d'une population marine, l'Institut Français de Recherche pour l'Exploitation de la Mer (IFREMER) organise  chaque année des campagnes océanographiques qui permettent de récolter des données et d'obtenir des estimations de l'abondance. 
-
-Ces données sont cruciales pour le suivi des espèces marines afin d'évaluer le bon état écologique des populations exploitées. Pour ce TP, nous allons étudier la campagne EVHOE dont un déscriptif est donné au lien: https://campagnes.flotteoceanographique.fr/series/8/fr/.
+Ces données sont cruciales pour le suivi des espèces marines afin
+d'évaluer le bon état écologique des populations exploitées. Pour ce TP,
+nous allons étudier la campagne EVHOE dont un déscriptif est donné au
+lien: https://campagnes.flotteoceanographique.fr/series/8/fr/.
 
 ## Données
 
-Les données EVHOE (Evaluation Halieutique Ouest de l'Europe) sont des données échantillonnées chaque année en Octobre/Novembre. Cette campagne cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer Celtique (MC). L'échantillonnage est stratifié suivant les classes de profondeur et les grandes unités écologiques du GdG et de MC 
+Les données EVHOE (Evaluation Halieutique Ouest de l'Europe) sont des
+données échantillonnées chaque année en Octobre/Novembre. Cette campagne
+cible les espèces bentho-démersales du golfe de Gascogne (GdG) et de Mer
+Celtique (MC). L'échantillonnage est stratifié suivant les classes de
+profondeur et les grandes unités écologiques du GdG et de MC
 
-(voir le shapefile `Agreed_Strata_EVHOE_Polyg_WGS84.shp` et l'objet `evhoe_shp`)datr.
+(voir le shapefile `Agreed_Strata_EVHOE_Polyg_WGS84.shp` et l'objet
+`evhoe_shp`).
 
-Les poissons sont échantillonnées à l'aide d'un chalut ; ils sont comptés, pesés, sexés pour tout ou partie du trait de chalut. Les données entre 2008 et 2019 sont stockés dans le fichier `EVHOE_2008_2019.RData`. Il est constitué de trois data frame:
+Les poissons sont échantillonnées à l'aide d'un chalut ; ils sont
+comptés, pesés, sexés pour tout ou partie du trait de chalut. Les
+données entre 2008 et 2019 sont stockées dans le fichier
+`EVHOE_2008_2019.RData`. Il est constitué de trois data frame:
 
-- `Save_Datras$datras_HH.full` regroupe les principales informations de chaque trait de chalut (e.g. localisation, période de relevé)
+-   `Save_Datras$datras_HH.full` regroupe les principales informations
+    de chaque trait de chalut (e.g. localisation, période de relevé)
 
-  - Year: année
-  - long: longitude
-  - lati: latitude
-  - StNo: numéro de station
-  - HaulNo: numéro du trait de chalut
-  - Depth: profondeur
-  - Distance: distance parcourue pour un trait de chalut (en métres). Il y a des NA dans cette colonne (données manquantes). Dans ce cas, on prend la moyenne de la distance des autres traits de chaluts pour remplacer les NA.
+    -   Year: année
+    -   long: longitude
+    -   lati: latitude
+    -   StNo: numéro de station
+    -   HaulNo: numéro du trait de chalut
+    -   Depth: profondeur
+    -   Distance: distance parcourue pour un trait de chalut (en
+        métres). Il y a des NA dans cette colonne (données manquantes).
+        Dans ce cas, on prend la moyenne de la distance des autres
+        traits de chaluts pour remplacer les NA.
 
-- `Save_Datras$datras_sp.HL.full` regroupe le poids et les abondances sur l'ensemble d'un trait de chalut de chaque combinaison 'trait de chalut x espèce x classe de taille x sexe' (données ré-haussées)
+-   `Save_Datras$datras_sp.HL.full` regroupe le poids et les abondances
+    sur l'ensemble d'un trait de chalut de chaque combinaison 'trait de
+    chalut x espèce x classe de taille x sexe' (données ré-haussées)
 
-  - Year: année
-  - long: longitude
-  - lati: latitude
-  - StNo: numéro de station
-  - HaulNo: numéro du trait de chalut
-  - scientificname: nom scientifique
-  - LngtClass: classe de taille
-  - TotalNo: comptages (nombre d'individus par combinaison de facteur)
+    -   Year: année
+    -   long: longitude
+    -   lati: latitude
+    -   StNo: numéro de station
+    -   HaulNo: numéro du trait de chalut
+    -   scientificname: nom scientifique
+    -   LngtClass: classe de taille
+    -   TotalNo: comptages (nombre d'individus par combinaison de
+        facteur)
 
-![Récolte des données EVHOE.](images/evhoe.png){#id .class width=80%}
-
+![Récolte des données EVHOE.](images/evhoe.png){#id .class width="80%"}
 
 ## Chargement des données
 
-### La zone d'intérêt 
-Le jeu de donées `evhoe_shp` défini ci-dessous contient les contours de la zone de suivi.
+### La zone d'intérêt
+
+Le jeu de donées `evhoe_shp` défini ci-dessous contient les contours de
+la zone de suivi.
 
 ```{r}
 #| echo: true
@@ -115,9 +136,7 @@ mapBase |> ggplot() + geom_sf(aes(geometry = geom)) +
 species <- "Merluccius_merluccius"
 ```
 
-
 ### Données de traits de chaluts
-
 
 ```{r}
 # Pour le calcul de la taille de l'échantillon:
@@ -152,7 +171,6 @@ ggplot(Haul_sf_evohe)+
   ylab("")+xlab("")
 
 ```
-
 
 ### Données de captures
 
@@ -195,26 +213,43 @@ ggplot(Catch_sf_3)+
 
 ```
 
+Nous souhaitons ajuster un modèle liant l'abondance (i.e le nombre de
+merlus pechés ) à la profondeur, en prenant en compte une éventuelle
+struture spatiale dans le but d'estimer l'abondance sur l'ensemble de la
+zone pour chaque année.
 
-
-Nous souhaitons ajuster un modèle liant l'abondance (i.e le nombre de merlus pechés ) à la profondeur, en prenant en compte une éventuelle struture spatiale dans le but d'estimer l'abondance sur l'ensemble de la zone pour chaque année.
-
-On veut obtenir pour chaque année une carte d"abondance spatialisée et une abondance totale sur la zone d'intérêt. 
-On souhaite également mesuré l'effet de la profondeur (bathymétrie) sur l'abondance et regarder si cet effet potentiel est constant d'une année sur l'autre. 
-Pour obtenir l'abondance totale, nous allons prédire l'abondance en tout point d'une grille et approcher l'abondance totale par la somme de l'abondance sur les points de la grille multiplié par la taille d'une celleule de grille.
-
+On veut obtenir pour chaque année une carte d"abondance spatialisée et
+une abondance totale sur la zone d'intérêt. On souhaite également mesuré
+l'effet de la profondeur (bathymétrie) sur l'abondance et regarder si
+cet effet potentiel est constant d'une année sur l'autre. Pour obtenir
+l'abondance totale, nous allons prédire l'abondance en tout point d'une
+grille et approcher l'abondance totale par la somme de l'abondance sur
+les points de la grille multiplié par la taille d'une celleule de
+grille.
 
 Programme de travail :
 
-1. Si l'abondance dépend de la profondeur on va avoir besoin de la profondeur en tout point de la  grille sur laquelle on souhaite prédire. Commencer par utiliser l'ensemble des points du jeu de données pour estimer la profondeur en tout point d'une grille que vous aurez choisi.
+1.  Si l'abondance dépend de la profondeur on va avoir besoin de la
+    profondeur en tout point de la grille sur laquelle on souhaite
+    prédire. Commencer par utiliser l'ensemble des points du jeu de
+    données pour estimer la profondeur en tout point d'une grille que
+    vous aurez choisi.
 
-2. Ajuster pour chaque année un modèle spatial faisait le lien entre le nombre de merlus pêchés et la profondeur tout en intégrant une dépendance spatiale.
+2.  Ajuster pour chaque année un modèle spatial faisait le lien entre le
+    nombre de merlus pêchés et la profondeur tout en intégrant une
+    dépendance spatiale.
 
-3. Prédire l'abondance en tout point de la grille et calculer l'abondance totale sur la zone pour chaque année. Représenter la série des abondances estimées sur un graphique (années x abondance). Comment se porte le stock de merlu ?
+3.  Prédire l'abondance en tout point de la grille et calculer
+    l'abondance totale sur la zone pour chaque année. Représenter la
+    série des abondances estimées sur un graphique (années x abondance).
+    Comment se porte le stock de merlu ?
 
-4. La série des abondances estimées est-elle sensible à la finesse de la grille ? A la finesse du maillage utilisé dans INLA ?
+4.  La série des abondances estimées est-elle sensible à la finesse de
+    la grille ? A la finesse du maillage utilisé dans INLA ?
 
-Rendu : vous me rendrez un document en pdf (avec le code R annexe ) présentant votre démarche, les modèles choisis et vous discuterez les résultats obtenus. Le document (hors annexe) doit faire 10 pages maximum. Faites attention à la lisibilité de vos sorties R.
+Rendu : vous me rendrez un document en pdf (avec le code R annexe )
+présentant votre démarche, les modèles choisis et vous discuterez les
+résultats obtenus. Le document (hors annexe) doit faire 10 pages
+maximum. Faites attention à la lisibilité de vos sorties R.
 
 ## References
-

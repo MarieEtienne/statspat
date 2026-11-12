@@ -48,11 +48,11 @@ les précipitation à Parana au Brésil.
 
 Les données sont disponibles dan ls le pakage \`geoR et contiennent
 
--   parana\$coords les coordonnées en km dans un système arbitraire,
+- parana\$coords les coordonnées en km dans un système arbitraire,
 
--   parana\$borders les contours de l'état dans le même système,
+- parana\$borders les contours de l'état dans le même système,
 
--   parana\$data les données de précipitation
+- parana\$data les données de précipitation
 
 Nous allons mettre ces données au standar `sf` et créer une grille de
 prédiction.
@@ -155,9 +155,7 @@ $D \subset {\mathbb{R}}^2$ avec une matrice de covariance de Matérn peut
 stochastique aux dérivées partielles (SPDE)** suivante dans un domaine
 continu :
 
-$$
-(\kappa^2 - \Delta)^{\alpha/2} (\tau z(s)) = W(s).
-$$
+$$(\kappa^2 - \Delta)^{\alpha/2} (\tau z(s)) = W(s).$$
 
 Ici $W(s)$ est un **bruit blanc spatial gaussien**. Le paramètre
 \$\alpha \$contrôle la **régularité** du champ $z(s)$ ,
@@ -167,20 +165,16 @@ $est un **paramètre d'échelle**.$\Delta \$ représente le **laplacien**
 Les paramètres de la **fonction de covariance de Matérn** et ceux de
 l’**équation SPDE** sont couplés de la manière suivante :
 
--   Le **paramètre de régularité** $\nu$ de la fonction de covariance de
-    Matérn est lié au paramètre $\alpha$ de l’équation SPDE par la
-    relation (valable sur ${\mathbb{R}}^2$):
+- Le **paramètre de régularité** $\nu$ de la fonction de covariance de
+  Matérn est lié au paramètre $\alpha$ de l’équation SPDE par la
+  relation (valable sur ${\mathbb{R}}^2$):
 
-    $$
-    \nu = \alpha - 1.
-    $$
+  $$\nu = \alpha - 1.$$
 
--   La **variance marginale** $\sigma^2_Z$ est reliée aux paramètres de
-    l'équation SPDE par :
+- La **variance marginale** $\sigma^2_Z$ est reliée aux paramètres de
+  l'équation SPDE par :
 
-    $$
-    \sigma^2_Z = \frac{\Gamma(\nu)}{\Gamma(\alpha)} \frac{1}{(4\pi)^{d/2}} \frac{1}{\kappa^{2\nu} \tau^2}.
-    $$
+  $$\sigma^2_Z = \frac{\Gamma(\nu)}{\Gamma(\alpha)} \frac{1}{(4\pi)^{d/2}} \frac{1}{\kappa^{2\nu} \tau^2}.$$
 
 Pour $\nu = \frac{1}{2}$ (ce qui correspond à la fonction de covariance
 exponentielle), on obtient $\alpha = 3/2$. Dans le package **R-INLA**,

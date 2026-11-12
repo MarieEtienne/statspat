@@ -19,4 +19,4 @@ bibliography: spatstat.bib
 
 Ce TP est construit sur la base des exemples du livre @gomez2020bayesian
 
-## Le nombre de 
+## Le nombre de

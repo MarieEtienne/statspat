@@ -1,0 +1,1187 @@
+---
+title: "Prédiction spatiale : le krigeage"
+author:
+  - name: Marie-Pierre Etienne
+    affiliation:
+      - ENSAI - CREST
+    email: marie-pierre.etienne@ensai.fr
+date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
+institute: https://marieetienne.github.io/statspat
+execute:
+  freeze: true
+editor:
+  markdown:
+    wrap: 72
+    canonical: true
+format:
+  revealjs:
+    css: mpe_pres_revealjs.css
+    theme: [default, custom.scss]
+    width: 1050
+    margin: 0.05
+    slide-number: true
+    slide-level: 2
+    show-slide-number: print
+    menu:
+      useTextContentForMissingTitles: false
+    mathjax: true
+    embed-resources: true
+  mpe-beamer:
+    keep-tex: true
+bibliography: spatstat.bib
+---
+
+```{r setup, include=FALSE, eval = TRUE}
+library(RefManageR)
+library(tidyverse) ## to benefit from the tydiverse coding system
+library(lubridate)
+library(wesanderson)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("./spatstat.bib", check = FALSE)
+
+theme_set(theme_minimal())
+pal <- wes_palette("Darjeeling1")
+```
+
+::: hidden
+\$\$
+
+\newcommand\E{{\mathbb{E}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Cov{{\mathbb{C}\text{ov}}}
+\newcommand\Var{{\mathbb{V}\text{ar}}}
+\newcommand\Zchap{\widehat{Z}}
+\newcommand\un{\mathbf{1}}
+
+\$\$
+:::
+
+# Introduction
+
+## Sources
+
+Ce cours est construit principalement à partir de celui de Liliane Bel
+et des livres de @gaetan2010spatial et @cressie2015statistics.
+
+## Champs aléatoires et processus
+
+::::: columns
+::: {.column width="52%"}
+Un [processus stochastique]{.rouge} est une famille de variables
+aléatoires indexée par un ensemble $D$ : $$\{Z(s), \; s \in D\}$$
+
+- $D \subset {\mathbb{R}}$ (le temps) : on parle de **processus**,
+- $D \subset {\mathbb{R}}^d$, $d \geq 2$ (l'espace) : on parle de
+  **champ aléatoire**.
+
+Une [réalisation]{.rouge} est une fonction $s \mapsto z(s)$ sur tout $D$
+
+:   une carte.
+
+La loi du champ est caractérisée par ses lois fini-dimensionnelles :
+celles de $(Z(s_1), \ldots, Z(s_n))$ pour tous $n$ et tous
+$s_1, \ldots, s_n$.
+
+[Champ gaussien]{.rouge} : toutes ces lois sont gaussiennes, donc la loi
+est entièrement déterminée par la moyenne $\mu(s)$ et la covariance
+$c(s, s')$.
+:::
+
+::: {.column width="44%"}
+```{r}
+#| label: realisations_champ
+#| echo: false
+#| fig-height: 7
+
+set.seed(2)
+xy <- expand.grid(x = seq(0, 1, length.out = 35), y = seq(0, 1, length.out = 35))
+L_xy <- t(chol(exp(-as.matrix(dist(xy)) / 0.2)))
+champs <- map_dfr(1:3, function(k)
+  xy |> mutate(z = as.vector(L_xy %*% rnorm(nrow(xy))), realisation = paste("Réalisation", k)))
+sites <- champs |> filter(realisation == "Réalisation 1") |> slice_sample(n = 25)
+ggplot(champs, aes(x, y)) + geom_raster(aes(fill = z)) +
+  geom_point(data = sites, size = 1.5) +
+  facet_wrap(~realisation, ncol = 1) + coord_equal() +
+  scale_fill_viridis_c() + theme_void() + theme(legend.position = "none")
+```
+:::
+:::::
+
+En statistique spatiale, on n'observe en général qu'[une seule
+réalisation]{.rouge}, et seulement en quelques sites (points noirs).
+
+## Le problème
+
+On observe $z(s_1), \ldots, z(s_n)$ aux sites $s_1, \ldots, s_n$ d'un
+domaine $D$ et on veut :
+
+- [prédire]{.rouge} $Z(s_0)$ en un site $s_0$ non observé,
+- construire une [carte]{.rouge} de prédiction sur tout $D$,
+- [quantifier l'incertitude]{.rouge} associée à cette carte.
+
+### Exemple
+
+**La température en France**
+
+```{r}
+#| echo: false
+
+library(sf)
+library(tidyverse)
+temp_df <- read.csv('synop.202412.csv', sep = ";") |> 
+  select(numer_sta,	date, t) |> 
+  mutate(date= as.character(date)) |> 
+  filter(date > 240000000000) |> 
+  filter(t != "mq") |> 
+  mutate(anneemois = parse_date_time(date, orders= "YmdHMS")) |> 
+  filter(hour(anneemois)==12) |> 
+  mutate(t = as.numeric(t)) |> 
+  group_by(numer_sta, anneemois) |> 
+  summarise(temp_moy = mean(t)-273.15)
+
+box = c(xmin = -5, ymin = 20, xmax = 10, ymax = 55)
+  
+
+station <- read.csv('postesSynop.csv') 
+temp_df <- temp_df |> left_join(station, by = join_by(numer_sta == ID)) |>   st_as_sf( coords = c("Longitude", "Latitude"), crs = 4326)  |> # CRS 4326 = WGS84 
+filter(month(anneemois) == 12, day(anneemois)==31)   |> st_crop(box)
+  
+region <- read_sf('france_shp/') |> st_crop(box)
+
+
+
+ggplot() +
+  geom_sf(data = region,  fill = "#f0f2f0",) +
+  geom_sf(data = temp_df, aes(col = temp_moy), size= 2)  +
+  labs(
+    col = "Temp",
+    title = "Temp à 12H le 31/12/2024",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_viridis_c(name = "Température", option = "plasma")
+  
+
+```
+
+**Pluies en Suisse** : $n = 100$ stations, on veut une carte de la pluie
+sur tout le territoire (voir le
+[TD](https://marieetienne.github.io/statspat/01_pluies.html#/title-slide)).
+
+## Pourquoi ne pas simplement interpoler ?
+
+Interpolateur par inverse de la distance :
+$$\widehat{Z}(s_0) = \sum_{i=1}^n \lambda_i Z(s_i), \qquad \lambda_i \propto \frac{1}{\|s_0 - s_i\|^p}$$
+
+### Limites
+
+- Aucune mesure d'incertitude.
+- Le poids d'un site ne dépend pas de la position des [autres]{.rouge}
+  sites (deux sites collés comptent double).
+- Les poids ne s'adaptent pas à la structure de dépendance des données
+  (portée, régularité).
+
+[Idée du krigeage]{.rouge} : choisir les poids à partir d'un **modèle de
+la dépendance spatiale**.
+
+# Cadre : champ aléatoire du second ordre
+
+## Ce dont on a besoin pour prédire
+
+On modélise $Z$ comme un champ aléatoire du second ordre :
+
+- moyenne $\mu(s) = {\mathbb{E}}(Z(s))$,
+- covariance $c(s, s') = {\mathbb{C}\text{ov}}(Z(s), Z(s'))$.
+
+### Notations
+
+- $\mathbf{Z} = (Z(s_1), \ldots, Z(s_n))^T$,
+  $\widehat{Z}_0 = \widehat{Z}(s_0)$
+- $\boldsymbol{\Sigma}$ : matrice $n\times n$,
+  $\Sigma_{ij} = c(s_i, s_j)$
+- $\boldsymbol{c_0}$ : vecteur de taille $n$, $c_{0,i} = c(s_0, s_i)$
+- $\sigma_0^2 = {\mathbb{V}\text{ar}}(Z(s_0))$
+
+[Dans ce cours]{.rouge} : on suppose la moyenne et la covariance
+**connues**. La question de leur estimation est repoussée à la fin.
+
+::: callout-note
+Les formules du krigeage ne font intervenir que $\boldsymbol{\Sigma}$,
+$\boldsymbol{c_0}$ et $\sigma_0^2$, quelle que soit la forme de la
+covariance $c(s, s')$.
+:::
+
+## Covariance utilisée dans les illustrations
+
+Une covariance qui décroît avec la distance entre les sites :
+$$c(s, s') = \sigma^2 \exp\left(-\|s - s'\|/\rho\right) \; + \; \tau^2 \mathbb{1}_{s = s'}$$
+
+- $\sigma^2$ : variance du signal,
+- $\rho$ : vitesse de décroissance de la corrélation avec la distance («
+  portée »),
+- $\tau^2$ : bruit de mesure (« pépite »).
+
+On note $C(h) = \sigma^2 e^{-h/\rho}$ (+ $\tau^2$ si $h = 0$), de sorte
+que $c(s, s') = C(\|s - s'\|)$ : la covariance ne dépend que de la
+distance. Ce choix n'est pas anodin, on y reviendra.
+
+```{r}
+#| label: fonctions
+#| echo: true
+
+cov_exp <- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-h / rho)
+cov_gauss <- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-(h / rho)^2)
+```
+
+# Krigeage simple : le cas gaussien
+
+## Hypothèses
+
+- $\mu$ **connue** et $C$ **connue**,
+- $Z$ est un [champ gaussien]{.rouge} : tout vecteur
+  $(Z(s_0), Z(s_1), \ldots, Z(s_n))$ est gaussien.
+
+$$\begin{pmatrix} Z(s_0) \\ \mathbf{Z} \end{pmatrix} \sim
+\mathcal{N}\left( \begin{pmatrix} \mu \\ \mu \mathbf{1}\end{pmatrix},
+\begin{pmatrix} \sigma_0^2 & \boldsymbol{c_0}^T \\
+\boldsymbol{c_0} & \boldsymbol{\Sigma} \end{pmatrix} \right)$$
+
+### Question
+
+Quelle est la loi de $Z(s_0)$ sachant $\mathbf{Z} = \mathbf{z}$ ?
+
+## Conditionnement gaussien
+
+$$Z(s_0) \mid \mathbf{Z} = \mathbf{z} \sim \mathcal{N}\left(
+\mu + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{z} - \mu \mathbf{1}),
+\; \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}
+\right)$$
+
+[Prédicteur de krigeage simple]{.rouge}
+$$\widehat{Z}_{KS}(s_0) = {\mathbb{E}}(Z(s_0) \mid \mathbf{Z}) = \mu + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{Z} - \mu \mathbf{1})$$
+
+[Variance de krigeage]{.rouge}
+$$\sigma^2_{KS}(s_0) = {\mathbb{V}\text{ar}}(Z(s_0) \mid \mathbf{Z}) = \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
+
+[Bonus du cadre gaussien]{.rouge} : on a la loi prédictive complète,
+donc des intervalles de prédiction
+$\widehat{Z}_{KS}(s_0) \pm 1.96\, \sigma_{KS}(s_0)$, et toute quantité
+$P(Z(s_0) > \zeta \mid \mathbf{Z})$.
+
+## Interprétation
+
+$$\widehat{Z}_{KS}(s_0) = \mu + \sum_{i=1}^n \lambda_i (Z(s_i) - \mu), \qquad \boldsymbol{\lambda} = \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
+
+- On part de la moyenne $\mu$ et on la **corrige** en fonction des
+  écarts observés à la moyenne.
+- Les poids $\lambda_i$ dépendent de la covariance entre $s_0$ et les
+  sites ($\boldsymbol{c_0}$) **et** de la redondance entre les sites
+  ($\boldsymbol{\Sigma}^{-1}$).
+- Les données font **baisser** la variance :
+  $\sigma^2_{KS}(s_0) \le \sigma_0^2$.
+
+## Exercice : une observation
+
+On observe un seul site $s_1$. On note $r = C(\|s_0 - s_1\|) / C(0)$ la
+corrélation entre $Z(s_0)$ et $Z(s_1)$.
+
+1.  Donner $\widehat{Z}_{KS}(s_0)$ et $\sigma^2_{KS}(s_0)$.
+2.  Que se passe-t-il quand $s_0 \to s_1$ ? Quand
+    $\|s_0 - s_1\| \to \infty$ ?
+
+. . .
+
+### Solution
+
+$$\widehat{Z}_{KS}(s_0) = \mu + r\, (Z(s_1) - \mu), \qquad \sigma^2_{KS}(s_0) = C(0)\,(1 - r^2)$$
+
+- $s_0 \to s_1$ (sans pépite) : $r \to 1$, on retrouve $Z(s_1)$ et une
+  variance nulle.
+- $s_0$ loin : $r \to 0$, on prédit $\mu$ avec la variance $C(0)$.
+
+## Exercice : deux observations
+
+On se place en 1D : $s_0 = 0$, $s_1 = 1$, $s_2 = 2$, $\mu = 0$.
+
+Calculer les poids $\lambda_1, \lambda_2$ pour
+
+1.  une covariance exponentielle,
+2.  une covariance gaussienne.
+
+```{r}
+#| label: poids_deux_sites
+#| echo: true
+
+poids_ks <- function(s0, s, covf, ...) {
+  Sigma <- covf(as.matrix(dist(s)), ...)
+  c0 <- covf(abs(s - s0), ...)
+  solve(Sigma, c0)
+}
+round(poids_ks(0, c(1, 2), cov_exp, rho = 1), 3)
+round(poids_ks(0, c(1, 2), cov_gauss, rho = 1), 3)
+```
+
+## Effet d'écran et poids négatifs
+
+- [Effet d'écran]{.rouge} : le site $s_1$ « masque » $s_2$. En 1D avec
+  une covariance exponentielle, $\lambda_2 = 0$ exactement (propriété de
+  Markov du processus d'Ornstein-Uhlenbeck).
+- [Poids négatifs]{.rouge} : avec une covariance très régulière
+  (gaussienne), le poids de $s_2$ est négatif. Le krigeage **extrapole**
+  la tendance locale.
+
+::: callout-note
+Contrairement à l'inverse de la distance, on n'a pas forcément
+$0 \le \lambda_i \le 1$ : le prédicteur peut sortir de l'intervalle des
+valeurs observées.
+:::
+
+# Krigeage simple sans hypothèse gaussienne
+
+## Le meilleur prédicteur linéaire (BLUP)
+
+On ne suppose plus que $Z$ est gaussien. Seuls les deux premiers moments
+sont connus.
+
+On cherche un prédicteur **linéaire**
+$\widehat{Z}(s_0) = \alpha + \boldsymbol{\lambda}^T \mathbf{Z}$ qui
+minimise le risque quadratique
+$$R(\alpha, \boldsymbol{\lambda}) = {\mathbb{E}}\left[ (Z(s_0) - \alpha - \boldsymbol{\lambda}^T \mathbf{Z})^2 \right].$$
+
+### Exercice
+
+1.  Montrer que
+    $R(\alpha, \boldsymbol{\lambda}) = (\mu - \alpha - \mu \boldsymbol{\lambda}^T \mathbf{1})^2 + \sigma_0^2 - 2 \boldsymbol{\lambda}^T \boldsymbol{c_0} + \boldsymbol{\lambda}^T \boldsymbol{\Sigma} \boldsymbol{\lambda}$.
+2.  En déduire $\alpha$ et $\boldsymbol{\lambda}$ optimaux.
+
+## Solution
+
+$$\boldsymbol{\lambda} = \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}, \qquad \alpha = \mu (1 - \boldsymbol{\lambda}^T \mathbf{1})$$
+
+On retrouve [exactement le même prédicteur]{.rouge} et la même variance
+d'erreur :
+$$\widehat{Z}_{KS}(s_0) = \mu + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{Z} - \mu \mathbf{1}), \qquad {\mathbb{E}}\left[(Z(s_0) - \widehat{Z}_{KS}(s_0))^2\right] = \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
+
+## Gaussien ou pas : ce qui change
+
+|   | Cas gaussien | Second ordre seulement |
+|----|----|----|
+| Prédicteur | $\widehat{Z}_{KS}(s_0)$ | $\widehat{Z}_{KS}(s_0)$ |
+| Optimal parmi | **tous** les prédicteurs | les prédicteurs **linéaires** |
+| $\sigma^2_{KS}(s_0)$ est | la variance conditionnelle | l'erreur quadratique moyenne |
+| Intervalle $\pm 1.96\,\sigma_{KS}$ | exact | approximatif |
+| $P(Z(s_0) > \zeta \mid \mathbf{Z})$ | disponible | non disponible |
+
+[À retenir]{.rouge} : l'hypothèse gaussienne ne change pas la formule,
+elle change ce qu'on peut **en dire**.
+
+# Propriétés du krigeage
+
+## Une illustration en 1D
+
+```{r}
+#| label: simu_1d
+#| echo: false
+
+set.seed(123)
+krige_simple <- function(s0, s, z, mu, covf, tau2 = 0, ...) {
+  Sigma <- covf(as.matrix(dist(s)), ...) + diag(tau2, length(s))
+  C0 <- covf(abs(outer(s0, s, "-")), ...)
+  W <- t(solve(Sigma, t(C0)))
+  pred <- mu + as.vector(W %*% (z - mu))
+  var <- covf(0, ...) - rowSums(W * C0)
+  tibble(s0 = s0, pred = pred, sd = sqrt(pmax(var, 0)))
+}
+
+grille <- seq(0, 10, by = 0.02)
+Sig_grille <- cov_exp(as.matrix(dist(grille)), rho = 1.5)
+z_grille <- as.vector(t(chol(Sig_grille + diag(1e-8, length(grille)))) %*% rnorm(length(grille)))
+idx_obs <- sort(sample(seq_along(grille), 12))
+obs <- tibble(s = grille[idx_obs], z = z_grille[idx_obs])
+
+res <- krige_simple(grille, obs$s, obs$z, mu = 0, covf = cov_exp, rho = 1.5)
+
+ggplot(res, aes(x = s0)) +
+  geom_ribbon(aes(ymin = pred - 1.96 * sd, ymax = pred + 1.96 * sd), fill = pal[2], alpha = 0.25) +
+  geom_line(data = tibble(s0 = grille, z = z_grille), aes(y = z), col = "grey60") +
+  geom_line(aes(y = pred), col = pal[1], linewidth = 1) +
+  geom_point(data = obs, aes(x = s, y = z), size = 2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  labs(x = "s", y = "Z(s)", title = "Krigeage simple, covariance exponentielle",
+       subtitle = "gris : vrai champ, rouge : prédiction, bande : intervalle à 95%")
+```
+
+## Interpolation exacte et effet pépite
+
+```{r}
+#| label: pepite
+#| echo: false
+
+bind_rows(
+  krige_simple(grille, obs$s, obs$z, 0, cov_exp, tau2 = 0, rho = 1.5) |> mutate(modele = "tau2 = 0"),
+  krige_simple(grille, obs$s, obs$z, 0, cov_exp, tau2 = 0.3, rho = 1.5) |> mutate(modele = "tau2 = 0.3")
+) |>
+  ggplot(aes(x = s0)) +
+  geom_ribbon(aes(ymin = pred - 1.96 * sd, ymax = pred + 1.96 * sd), fill = pal[2], alpha = 0.25) +
+  geom_line(aes(y = pred), col = pal[1], linewidth = 1) +
+  geom_point(data = obs, aes(x = s, y = z), size = 2) +
+  facet_wrap(~modele, ncol = 1) +
+  labs(x = "s", y = "Z(s)")
+```
+
+- Sans pépite : $\widehat{Z}(s_i) = Z(s_i)$ et $\sigma^2_{KS}(s_i) = 0$,
+  le krigeage est un [interpolateur exact]{.rouge}.
+- Avec pépite : le krigeage **lisse**, on ne fait plus confiance à 100%
+  aux observations.
+
+## Effet de la portée
+
+```{r}
+#| label: portee
+#| echo: false
+
+map_dfr(c(0.3, 1.5, 5), function(r)
+  krige_simple(grille, obs$s, obs$z, 0, cov_exp, rho = r) |> mutate(modele = paste("rho =", r))) |>
+  ggplot(aes(x = s0)) +
+  geom_ribbon(aes(ymin = pred - 1.96 * sd, ymax = pred + 1.96 * sd), fill = pal[2], alpha = 0.25) +
+  geom_line(aes(y = pred), col = pal[1], linewidth = 1) +
+  geom_point(data = obs, aes(x = s, y = z), size = 2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  facet_wrap(~modele, ncol = 1) +
+  labs(x = "s", y = "Z(s)")
+```
+
+Loin des données (à l'échelle de la portée) : $\widehat{Z}(s_0) \to \mu$
+et $\sigma^2_{KS}(s_0) \to C(0)$.
+
+## La variance de krigeage ne dépend pas des valeurs observées
+
+$$\sigma^2_{KS}(s_0) = \sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$$
+
+ne dépend que :
+
+- de la **position** des sites $s_1, \ldots, s_n$ et de $s_0$,
+- du **modèle** de covariance.
+
+### Conséquences
+
+- On peut calculer la carte d'incertitude [avant]{.rouge} de collecter
+  les données : c'est un outil de **plan d'échantillonnage** (où placer
+  une nouvelle station ?).
+- L'incertitude ne réagit pas à des valeurs surprenantes, si le modèle
+  est faux.
+
+# Krigeage ordinaire
+
+## Moyenne inconnue
+
+On suppose maintenant $\mu$ [inconnue]{.rouge} (constante), $C$ connue.
+
+On cherche $\widehat{Z}(s_0) = \boldsymbol{\lambda}^T \mathbf{Z}$ :
+
+- **sans biais** pour tout $\mu$ :
+  ${\mathbb{E}}(\widehat{Z}(s_0)) = \mu$ $\Leftrightarrow$
+  $\boldsymbol{\lambda}^T \mathbf{1}= 1$,
+- de **variance d'erreur minimale** :
+  $\min \; \sigma_0^2 - 2 \boldsymbol{\lambda}^T \boldsymbol{c_0} + \boldsymbol{\lambda}^T \boldsymbol{\Sigma} \boldsymbol{\lambda}$.
+
+### Exercice
+
+Résoudre ce problème par la méthode du multiplicateur de Lagrange.
+
+## Solution
+
+$$\boldsymbol{\lambda}_{KO} = \boldsymbol{\Sigma}^{-1} (\boldsymbol{c_0} + m \mathbf{1}), \qquad m = \frac{1 - \mathbf{1}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}}{\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1}}$$
+
+### Relecture
+
+Avec
+$\widehat{\mu} = \dfrac{\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{Z}}{\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1}}$
+l'estimateur des moindres carrés généralisés de $\mu$ (c'est aussi le
+meilleur estimateur linéaire sans biais, BLUE) :
+$$\widehat{Z}_{KO}(s_0) = \widehat{\mu} + \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{Z} - \widehat{\mu} \mathbf{1})$$
+
+[Krigeage ordinaire = krigeage simple dans lequel on remplace $\mu$ par
+son estimateur BLUE.]{.rouge}
+
+## Variance de krigeage ordinaire
+
+$$\sigma^2_{KO}(s_0) = \underbrace{\sigma_0^2 - \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}}_{\sigma^2_{KS}(s_0)} + \underbrace{\frac{(1 - \mathbf{1}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})^2}{\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1}}}_{\text{coût de l'estimation de } \mu}$$
+
+- $\sigma^2_{KO}(s_0) \ge \sigma^2_{KS}(s_0)$.
+- Près des données,
+  $\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0}$ est proche de
+  1 et le surcoût est faible.
+- Loin des données, on prédit $\widehat{\mu}$ et on paye
+  ${\mathbb{V}\text{ar}}(\widehat{\mu}) = 1 / (\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1})$.
+
+## Simple vs ordinaire
+
+```{r}
+#| label: ks_vs_ko
+#| echo: false
+
+krige_ord <- function(s0, s, z, covf, ...) {
+  Sigma <- covf(as.matrix(dist(s)), ...)
+  Si <- solve(Sigma)
+  un <- rep(1, length(s))
+  mu_hat <- sum(Si %*% z) / sum(Si)
+  C0 <- covf(abs(outer(s0, s, "-")), ...)
+  W <- C0 %*% Si
+  pred <- mu_hat + as.vector(W %*% (z - mu_hat))
+  var <- covf(0, ...) - rowSums(W * C0) + (1 - rowSums(W))^2 / sum(Si)
+  tibble(s0 = s0, pred = pred, sd = sqrt(pmax(var, 0)))
+}
+
+obs_dec <- obs |> mutate(z = z + 2)  # vraie moyenne = 2
+bind_rows(
+  krige_simple(grille, obs_dec$s, obs_dec$z, mu = 0, covf = cov_exp, rho = 1.5) |> mutate(modele = "Simple, mu = 0 (fausse)"),
+  krige_ord(grille, obs_dec$s, obs_dec$z, covf = cov_exp, rho = 1.5) |> mutate(modele = "Ordinaire, mu estimée")
+) |>
+  ggplot(aes(x = s0)) +
+  geom_ribbon(aes(ymin = pred - 1.96 * sd, ymax = pred + 1.96 * sd), fill = pal[2], alpha = 0.25) +
+  geom_line(aes(y = pred), col = pal[1], linewidth = 1) +
+  geom_point(data = obs_dec, aes(x = s, y = z), size = 2) +
+  geom_hline(yintercept = 2, linetype = 2) +
+  facet_wrap(~modele, ncol = 1) +
+  labs(x = "s", y = "Z(s)", subtitle = "Données de moyenne 2 (pointillés)")
+```
+
+## Estimer la moyenne : une tâche ingrate
+
+Le second terme de $\sigma^2_{KO}$ fait apparaître
+${\mathbb{V}\text{ar}}(\widehat{\mu}) = 1 / (\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1})$.
+
+Que se passe-t-il quand on ajoute des stations **dans le même domaine**
+?
+
+```{r}
+#| label: infill
+#| echo: false
+
+L <- 10; s0 <- seq(0.01, L - 0.01, length.out = 200)
+res_infill <- map_dfr(c(5, 10, 20, 50, 100, 200), function(n) {
+  s <- seq(0, L, length.out = n)
+  Sigma <- cov_exp(as.matrix(dist(s)), rho = 1.5)
+  C0 <- cov_exp(abs(outer(s, s0, "-")), rho = 1.5)
+  tibble(n = n,
+         `Var(mu chapeau), données indépendantes` = 1 / n,
+         `Var(mu chapeau), données spatiales` = 1 / sum(solve(Sigma)),
+         `Variance de krigeage (moyenne sur le domaine)` = mean(1 - colSums(C0 * solve(Sigma, C0))))
+}) |>
+  pivot_longer(-n, names_to = "quantite", values_to = "variance")
+
+ggplot(res_infill, aes(x = n, y = variance, col = quantite)) +
+  geom_line(linewidth = 1) + geom_point() +
+  scale_x_log10() + scale_y_log10() +
+  scale_color_manual(values = pal[c(5, 1, 2)]) +
+  labs(x = "nombre de sites dans [0, 10]", y = "variance (échelle log)", col = NULL) +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+- [Densifier]{.rouge} les observations n'apprend presque rien de plus
+  sur $\mu$ : des données corrélées n'apportent pas $n$ informations
+  indépendantes (taille d'échantillon effective).
+- En revanche, la [prédiction]{.rouge} devient de plus en plus précise.
+
+La dépendance spatiale est un handicap pour estimer la moyenne et un
+atout pour prédire.
+
+# Krigeage universel
+
+## Une moyenne qui dépend de covariables
+
+On suppose maintenant
+$$Z(s) = X(s)^T \beta + \varepsilon(s), \qquad {\mathbb{E}}(\varepsilon(s)) = 0, \quad {\mathbb{C}\text{ov}}(\varepsilon(s), \varepsilon(s')) = c(s, s') \text{ connue},$$
+avec $X(s) \in {\mathbb{R}}^p$ connu en **tout** site (y compris $s_0$)
+et $\beta$ [inconnu]{.rouge}.
+
+- Covariables : altitude, distance à la rivière... (« dérive externe »)
+- Coordonnées : $X(s) = (1, x, y)$ pour une tendance spatiale (« dérive
+  interne »)
+
+### Notations
+
+$\mathbf{X}$ : matrice $n \times p$ des covariables aux sites observés,
+$X_0 = X(s_0)$.
+
+## Le problème d'optimisation
+
+On cherche $\widehat{Z}(s_0) = \boldsymbol{\lambda}^T \mathbf{Z}$ :
+
+- **sans biais pour tout** $\beta$ :
+  $\boldsymbol{\lambda}^T \mathbf{X} \beta = X_0^T \beta \; \forall \beta \Leftrightarrow \mathbf{X}^T \boldsymbol{\lambda} = X_0$
+  ($p$ contraintes),
+- de **variance d'erreur minimale** :
+  $\min \; \sigma_0^2 - 2 \boldsymbol{\lambda}^T \boldsymbol{c_0} + \boldsymbol{\lambda}^T \boldsymbol{\Sigma} \boldsymbol{\lambda}$.
+
+### Exercice
+
+1.  Écrire le lagrangien avec un vecteur de multiplicateurs
+    $\mathbf{m} \in {\mathbb{R}}^p$.
+2.  Montrer que
+    $\boldsymbol{\lambda} = \boldsymbol{\Sigma}^{-1}(\boldsymbol{c_0} + \mathbf{X}\mathbf{m})$
+    et déterminer $\mathbf{m}$.
+3.  Vérifier que le krigeage ordinaire est le cas $X(s) = 1$.
+
+## Solution
+
+$$\mathbf{m} = (\mathbf{X}^T \boldsymbol{\Sigma}^{-1} \mathbf{X})^{-1} (X_0 - \mathbf{X}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})$$
+
+### Relecture
+
+Avec
+$\widehat{\beta} = (\mathbf{X}^T \boldsymbol{\Sigma}^{-1} \mathbf{X})^{-1} \mathbf{X}^T \boldsymbol{\Sigma}^{-1} \mathbf{Z}$
+l'estimateur des moindres carrés généralisés :
+$$\widehat{Z}_{KU}(s_0) = \underbrace{X_0^T \widehat{\beta}}_{\text{tendance}} + \underbrace{\boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} (\mathbf{Z} - \mathbf{X} \widehat{\beta})}_{\text{krigeage simple des résidus}}$$
+
+$$\sigma^2_{KU}(s_0) = \sigma^2_{KS}(s_0) + \underbrace{\left( X_0 - \mathbf{X}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0} \right)^T \left( \mathbf{X}^T \boldsymbol{\Sigma}^{-1} \mathbf{X} \right)^{-1} \left( X_0 - \mathbf{X}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0} \right)}_{\text{coût de l'estimation de } \beta}$$
+
+## Illustration : tendance linéaire en 1D
+
+```{r}
+#| label: ku_1d
+#| echo: false
+
+krige_univ <- function(s0, s, z, X, X0, covf, ...) {
+  Sigma <- covf(as.matrix(dist(s)), ...)
+  Si_X <- solve(Sigma, X)
+  A <- solve(t(X) %*% Si_X)
+  beta_hat <- A %*% t(Si_X) %*% z
+  C0 <- covf(abs(outer(s, s0, "-")), ...)          # n x N
+  Si_C0 <- solve(Sigma, C0)
+  R <- t(X0) - t(X) %*% Si_C0                      # p x N
+  pred <- as.vector(X0 %*% beta_hat + t(Si_C0) %*% (z - X %*% beta_hat))
+  var <- covf(0, ...) - colSums(C0 * Si_C0) + colSums(R * (A %*% R))
+  tibble(s0 = s0, pred = pred, sd = sqrt(pmax(var, 0)))
+}
+
+grille_ext <- seq(0, 14, by = 0.02)
+obs_tend <- obs |> mutate(z = z + 1 + 0.4 * s)       # vraie tendance 1 + 0.4 s
+bind_rows(
+  krige_univ(grille_ext, obs_tend$s, obs_tend$z, matrix(1, nrow(obs_tend)),
+             matrix(1, length(grille_ext)), cov_exp, rho = 1.5) |>
+    mutate(modele = "Krigeage ordinaire (X = 1)"),
+  krige_univ(grille_ext, obs_tend$s, obs_tend$z, cbind(1, obs_tend$s),
+             cbind(1, grille_ext), cov_exp, rho = 1.5) |>
+    mutate(modele = "Krigeage universel (X = (1, s))")
+) |>
+  ggplot(aes(x = s0)) +
+  geom_ribbon(aes(ymin = pred - 1.96 * sd, ymax = pred + 1.96 * sd), fill = pal[2], alpha = 0.25) +
+  geom_line(aes(y = pred), col = pal[1], linewidth = 1) +
+  geom_point(data = obs_tend, aes(x = s, y = z), size = 2) +
+  geom_abline(intercept = 1, slope = 0.4, linetype = 2) +
+  geom_vline(xintercept = 10, col = "grey50") +
+  facet_wrap(~modele, ncol = 1) +
+  labs(x = "s", y = "Z(s)", subtitle = "Pointillés : vraie tendance ; à droite de s = 10, pas de données")
+```
+
+Loin des données, le krigeage universel **suit la tendance**, avec une
+incertitude croissante (extrapolation de $\widehat\beta$).
+
+## Remarques
+
+- Les covariables doivent être connues **partout** où l'on prédit (sur
+  toute la grille).
+- [Cercle vicieux]{.rouge} : pour estimer $\beta$ par moindres carrés
+  généralisés, il faut la covariance des résidus ; pour estimer la
+  covariance des résidus, il faut $\beta$.
+  - en pratique : $\widehat\beta$ par moindres carrés ordinaires,
+    variogramme des résidus, puis krigeage universel (ce que fait
+    `gstat`),
+  - ou estimation conjointe par maximum de vraisemblance (restreint,
+    REML).
+- Séparer tendance et dépendance est en partie un **choix de
+  modélisation** : une tendance mal spécifiée se retrouve dans le
+  variogramme.
+
+# D'où vient la covariance ?
+
+## La question qui reste
+
+En pratique, ni $\mu$ ni la covariance ne sont connues.
+
+- Il faudrait connaître $c(s_i, s_j)$ pour **chaque paire** de sites, et
+  $c(s_0, s_i)$ pour un site **jamais observé**.
+- Or on n'a souvent qu'[une seule réalisation]{.rouge} du champ : un
+  seul couple $(Z(s_i), Z(s_j))$ par paire de sites.
+
+### Discussion
+
+- Peut-on estimer ${\mathbb{C}\text{ov}}(Z(s_i), Z(s_j))$ à partir d'une
+  seule observation de $(Z(s_i), Z(s_j))$ ?
+- Quelle hypothèse permettrait de « mutualiser » l'information entre
+  paires de sites ?
+
+## Toute fonction ne peut pas être une covariance
+
+$Z$ est un processus du second ordre si
+$\forall s \in D, \; {\mathbb{E}}(Z(s)^2) < \infty$, de moyenne
+$m(s) = {\mathbb{E}}(Z(s))$ et de covariance
+$c(s, t) = {\mathbb{C}\text{ov}}(Z(s), Z(t))$.
+
+[Propriété]{.rouge} Une fonction de covariance est semi-définie positive
+
+:   $$\forall n, \; \forall s_1, \ldots, s_n \in D, \; \forall a \in {\mathbb{R}}^n, \quad \sum_{i,j=1}^n a_i a_j \, c(s_i, s_j) \geq 0$$
+
+*Idée de preuve* : regarder
+${\mathbb{V}\text{ar}}\left(\sum_{i=1}^n a_i Z(s_i)\right)$.
+
+::: callout-note
+C'est ce qui garantit que les variances de krigeage sont positives et
+que $\boldsymbol{\Sigma}$ est inversible (si définie positive). On ne
+peut donc pas choisir n'importe quelle fonction : on travaille avec des
+**familles de covariances valides**.
+:::
+
+## Stationnarité du second ordre
+
+### Définition
+
+Un processus du second ordre $Z$ est stationnaire sur
+$D \subset {\mathbb{R}}^d$ si
+
+1.  sa moyenne est constante : $\forall s \in D, \; m(s) = \mu$,
+2.  sa covariance est invariante par translation :
+    $$\forall s, s + h \in D, \quad c(s, s + h) = C(h).$$
+
+### Isotropie
+
+Le processus est isotrope si $C(h)$ ne dépend que de $\|h\|$ :
+$C(h) = C(\|h\|)$.
+
+[Conséquence]{.rouge} : toutes les paires de sites séparées par $h$
+renseignent sur la même quantité $C(h)$. C'est le choix fait dans les
+illustrations précédentes.
+
+## Stationnarité des accroissements
+
+$Z$ est à accroissements stationnaires (ou intrinsèque) si
+$${\mathbb{E}}(Z(s + h) - Z(s)) = 0, \qquad {\mathbb{V}\text{ar}}(Z(s + h) - Z(s)) = 2\gamma(h).$$
+
+- La stationnarité du second ordre implique la stationnarité des
+  accroissements.
+- La classe des processus intrinsèques est donc plus **large** que celle
+  des processus stationnaires.
+
+### Exemple
+
+Que dire du mouvement brownien sur ${\mathbb{R}}$ ?
+
+. . .
+
+${\mathbb{V}\text{ar}}(B(t)) = t$ : il n'est pas stationnaire. Mais
+${\mathbb{V}\text{ar}}(B(t + h) - B(t)) = |h|$ : il est intrinsèque,
+avec $\gamma(h) = |h| / 2$.
+
+# Le variogramme
+
+## Définition
+
+Le semi-variogramme d'un processus intrinsèque est
+$$\gamma(h) = \frac{1}{2} {\mathbb{V}\text{ar}}(Z(s + h) - Z(s)) = \frac{1}{2} {\mathbb{E}}\left[(Z(s + h) - Z(s))^2\right].$$
+
+### Propriétés
+
+- $\gamma(h) \geq 0$, $\gamma(0) = 0$, $\gamma(-h) = \gamma(h)$.
+- Si $Z$ est stationnaire du second ordre : $$\gamma(h) = C(0) - C(h).$$
+- Un variogramme **borné** correspond (à une constante aléatoire près) à
+  un processus stationnaire du second ordre, et sa limite vaut $C(0)$.
+
+[Pourquoi le variogramme ?]{.rouge} Il ne fait pas intervenir la moyenne
+
+:   on peut l'estimer sans estimer $\mu$.
+
+## Modèles classiques de variogramme
+
+1.  **Pépitique** : $\gamma(h) = C \, \mathbb{1}_{h \neq 0}$
+2.  **Exponentiel** : $\gamma(h) = C(1 - \exp(-\|h\|/\rho))$
+3.  **Sphérique** : $$\gamma(h) = \begin{cases}
+    C \left( \frac{3}{2} \frac{\|h\|}{\rho} - \frac{1}{2} \left(\frac{\|h\|}{\rho}\right)^3 \right) & \text{si } \|h\| \leq \rho \\
+    C & \text{si } \|h\| > \rho
+    \end{cases}$$
+4.  **Gaussien** : $\gamma(h) = C(1 - \exp(-\|h\|^2/\rho^2))$
+5.  **Puissance** : $\gamma(h) = C \|h\|^\alpha$, $0 < \alpha < 2$ (non
+    borné : processus intrinsèque non stationnaire)
+
+## La famille de Matérn
+
+$$C(h) = \sigma^2 \frac{2^{1 - \nu}}{\Gamma(\nu)} \left(\frac{\sqrt{2\nu}\, \|h\|}{\rho}\right)^{\nu} K_{\nu}\left(\frac{\sqrt{2\nu}\, \|h\|}{\rho}\right), \qquad \gamma(h) = \sigma^2 - C(h)$$
+
+$K_{\nu}$ : fonction de Bessel modifiée de seconde espèce, d'ordre
+$\nu$.
+
+$\nu$ règle la [régularité]{.rouge} du processus (comportement du
+variogramme en 0) :
+
+- $\nu = 1/2$ : modèle exponentiel (trajectoires continues, non
+  dérivables),
+- $\nu \to \infty$ : modèle gaussien (trajectoires infiniment
+  dérivables).
+
+C'est la famille utilisée par défaut dans INLA (approche SPDE).
+
+## Paramètres du variogramme
+
+```{r}
+#| label: param_vario
+#| echo: false
+
+portee <- 1; pepite <- 0.2; palier <- 1
+h <- seq(0, 1.5, by = 0.01)
+gamma <- ifelse(h <= portee, palier * (1.5 * (h / portee) - 0.5 * (h / portee)^3), palier) + pepite
+gamma[1] <- 0
+
+ggplot(tibble(h = h, gamma = gamma), aes(x = h, y = gamma)) +
+  geom_line(color = "#0c324e", linewidth = 1) +
+  geom_hline(yintercept = palier + pepite, linetype = "dashed", color = "#F7A913") +
+  geom_vline(xintercept = portee, linetype = "solid", color = "#C94326") +
+  annotate("text", x = portee + 0.08, y = 0.05, label = "portée", col = "#C94326") +
+  annotate("text", x = 0.1, y = palier + pepite + 0.05, label = "palier", col = "#F7A913") +
+  annotate("text", x = 0.08, y = 0.1, label = "pépite", col = "#398d55") +
+  annotate("segment", x = 0, y = 0, xend = 0, yend = pepite, col = "#398d55", linewidth = 1) +
+  labs(title = "Variogramme sphérique avec pépite", x = "h", y = "semi-variogramme") +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+```
+
+## Interprétation des paramètres
+
+- [Palier]{.rouge} $\lim_{h \to \infty} \gamma(h)$ : s'il est fini, le
+  processus est stationnaire et le palier vaut
+  ${\mathbb{V}\text{ar}}(Z(s))$.
+- [Échelle]{.rouge} $\rho$ : vitesse à laquelle le variogramme rejoint
+  le palier.
+- [Portée]{.rouge} : distance au-delà de laquelle la corrélation est
+  nulle ou négligeable (horizon de dépendance).
+- [Pépite]{.rouge} $\tau^2 = \lim_{h \to 0^+} \gamma(h)$ :
+  - si $\tau^2 \neq 0$, variabilité à très petite échelle ou erreur de
+    mesure (le krigeage lisse),
+  - si $\tau^2 = 0$, la régularité du processus est donnée par le
+    comportement de $\gamma$ en 0 (paramètre $\nu$ de Matérn).
+
+## Krigeage et variogramme
+
+Sous stationnarité, on remplace $C(h) = C(0) - \gamma(h)$ dans les
+formules.
+
+[Remarque]{.rouge} : le krigeage ordinaire (contrainte
+$\boldsymbol{\lambda}^T \mathbf{1}= 1$) peut s'écrire **uniquement**
+avec $\gamma$. Il reste donc valable pour des processus intrinsèques non
+stationnaires. C'est la présentation historique de Matheron.
+
+# Estimation du variogramme
+
+## Exemple : les données Meuse
+
+Concentrations en zinc (ppm) dans les sols de la plaine inondable de la
+Meuse, 155 sites (package `sp`).
+
+```{r}
+#| label: donnees_meuse
+#| echo: true
+#| message: false
+#| fig-height: 3.5
+
+library(sf)
+library(gstat)
+data(meuse, package = "sp")
+meuse_sf <- st_as_sf(meuse, coords = c("x", "y"), crs = 28992)
+ggplot(meuse_sf) + geom_sf(aes(col = log(zinc)), size = 2) +
+  scale_color_viridis_c(option = "plasma")
+```
+
+## Nuée variographique
+
+$$\gamma(h) = \frac{1}{2} {\mathbb{E}}\left[(Z(s + h) - Z(s))^2\right]$$
+
+Pour chaque paire $(i, j)$, on représente
+$\frac{1}{2}(Z(s_i) - Z(s_j))^2$ en fonction de $\|s_i - s_j\|$.
+
+```{r}
+#| label: nuees
+#| echo: true
+#| fig-height: 3.5
+
+vario.cloud <- variogram(log(zinc) ~ 1, data = meuse_sf, cloud = TRUE)
+ggplot(vario.cloud, aes(x = dist, y = gamma)) + geom_point(alpha = 0.3) +
+  ggtitle("Nuée variographique")
+```
+
+## Variogramme empirique
+
+On regroupe les paires par classes de distance $d_k$ (de largeur
+$\delta$), avec $N(k)$ l'ensemble des $n_k$ paires de la classe $k$ :
+$$\widetilde \gamma (d_k) = \frac{1}{2 n_k} \sum_{(i, j) \in N(k)} (Z(s_i) - Z(s_j))^2$$
+
+```{r}
+#| label: vario_experimental
+#| echo: true
+#| fig-height: 3.5
+
+vario.b <- variogram(log(zinc) ~ 1, data = meuse_sf)
+ggplot(vario.b, aes(x = dist, y = gamma)) + geom_point()
+```
+
+L'option `alpha = c(0, 45, 90, 135)` donne des variogrammes
+**directionnels**, pour vérifier l'isotropie.
+
+## Propriétés du variogramme empirique
+
+- Approximativement sans biais (à la largeur des classes près).
+- Ne nécessite pas d'estimer la moyenne (si elle est constante).
+- Si $Z$ est gaussien, chaque terme est un $\gamma(h)\chi^2(1)$ :
+  estimateur très **sensible aux valeurs extrêmes**.
+- Peu fiable aux grandes distances (peu de paires) : on se limite
+  généralement à la moitié de la distance maximale.
+
+### Estimateur robuste (Cressie-Hawkins)
+
+$$\widetilde \gamma (d_k) = \frac{\left\{\frac{1}{n_k} \sum_{(i, j) \in N(k)} |Z(s_i) - Z(s_j)|^{1/2}\right\}^4}{2\left(0.457 + \frac{0.494}{n_k}\right)}$$
+
+## Ajustement d'un modèle de variogramme
+
+Le variogramme empirique n'est pas un variogramme valide : on ajuste un
+modèle paramétrique $\gamma_\theta$, avec
+$\theta = (\sigma^2, \rho, \nu, \tau^2)$.
+
+[Moindres carrés pondérés]{.rouge}
+$$\widehat\theta = \arg\min_{\theta} \sum_{k=1}^K w_k \left(\gamma_\theta(d_k) - \widetilde \gamma(d_k)\right)^2, \qquad w_k = \frac{n_k}{\gamma_\theta(d_k)^2} \text{ (Cressie)}$$
+
+```{r}
+#| label: fit_vario
+#| echo: true
+#| fig-height: 3
+
+v.fit <- fit.variogram(vario.b, vgm(model = "Sph", psill = 0.6, range = 900, nugget = 0.05))
+v.fit
+ggplot(vario.b, aes(x = dist, y = gamma)) + geom_point() +
+  geom_line(data = variogramLine(v.fit, maxdist = max(vario.b$dist)), col = "#C94326")
+```
+
+[Alternative]{.rouge} : maximum de vraisemblance sous hypothèse
+gaussienne, qui utilise directement les données et non le variogramme
+empirique.
+
+# Le krigeage en pratique
+
+## Démarche
+
+1.  Explorer les données, modéliser la **tendance** (moyenne)
+    éventuelle.
+2.  Calculer le variogramme empirique (des résidus), vérifier
+    l'isotropie.
+3.  Ajuster un modèle de variogramme.
+4.  Kriger sur une grille : carte de prédiction **et** carte de
+    variance.
+5.  Valider (validation croisée : `krige.cv`).
+6.  Si besoin, simuler conditionnellement pour des quantités non
+    linéaires.
+
+```{r}
+#| label: krigeage_meuse
+#| echo: true
+#| fig-height: 3
+
+data(meuse.grid, package = "sp")
+grille <- st_as_sf(meuse.grid, coords = c("x", "y"), crs = 28992)
+K <- krige(log(zinc) ~ 1, locations = meuse_sf, newdata = grille, model = v.fit)
+ggplot(K) + geom_sf(aes(col = var1.pred)) + scale_color_viridis_c()
+```
+
+## Krigeage universel avec `gstat`
+
+Le zinc décroît avec la distance à la Meuse : on l'utilise comme
+covariable (connue sur toute la grille `meuse.grid`).
+
+```{r}
+#| label: ku_meuse
+#| echo: true
+#| fig-height: 2.8
+
+vario.res <- variogram(log(zinc) ~ sqrt(dist), data = meuse_sf)   # variogramme des résidus
+v.fit.res <- fit.variogram(vario.res, vgm(model = "Sph", psill = 0.2, range = 800, nugget = 0.05))
+KU <- krige(log(zinc) ~ sqrt(dist), locations = meuse_sf, newdata = grille, model = v.fit.res)
+bind_rows(K |> mutate(methode = "ordinaire"), KU |> mutate(methode = "universel")) |>
+  ggplot() + geom_sf(aes(col = sqrt(var1.var)), size = 0.5) + facet_wrap(~methode) +
+  scale_color_viridis_c(name = "écart-type")
+```
+
+La covariable explique une partie de la variabilité : le palier des
+résidus est plus faible et l'incertitude diminue.
+
+# Simulation conditionnelle
+
+## Pourquoi simuler ?
+
+La carte de krigeage est [plus lisse]{.rouge} que la réalité :
+${\mathbb{V}\text{ar}}(\widehat{Z}(s_0)) = \sigma_0^2 - \sigma^2_K(s_0) < \sigma_0^2$.
+
+Elle donne la meilleure prédiction **site par site**, mais elle est
+mauvaise pour des quantités qui dépendent du champ **dans son ensemble**
+:
+
+- surface du domaine où la concentration dépasse un seuil,
+- maximum du champ sur une région,
+- longueur d'un front, connectivité de zones polluées...
+
+Pour une fonctionnelle non linéaire $\varphi$ :
+$\varphi(\widehat{Z}) \neq {\mathbb{E}}(\varphi(Z) \mid \mathbf{Z})$.
+
+[Idée]{.rouge} : tirer des réalisations du champ **sachant les
+observations** et calculer $\varphi$ sur chacune.
+
+## Loi conditionnelle dans le cas gaussien
+
+On veut simuler $\mathbf{Z}_G = (Z(g_1), \ldots, Z(g_N))$ sur une
+grille, sachant $\mathbf{Z}$. Comme pour le krigeage simple :
+
+$$\mathbf{Z}_G \mid \mathbf{Z} \sim \mathcal{N}\left( \mu \mathbf{1}+ \mathbf{C}_{G}^T \boldsymbol{\Sigma}^{-1} (\mathbf{Z} - \mu \mathbf{1}), \; \boldsymbol{\Sigma}_{GG} - \mathbf{C}_{G}^T \boldsymbol{\Sigma}^{-1} \mathbf{C}_{G} \right)$$
+
+avec $\mathbf{C}_G$ la matrice $n \times N$ des covariances entre sites
+observés et points de grille.
+
+- [Moyenne]{.rouge} : la carte de krigeage.
+- [Covariance]{.rouge} : la covariance des erreurs de krigeage (sa
+  diagonale est la variance de krigeage).
+
+### Simulation directe
+
+$\mathbf{Z}_G = \widehat{Z}_G + \mathbf{L}\,\mathbf{U}$, avec
+$\mathbf{L}\mathbf{L}^T$ la covariance conditionnelle (Cholesky) et
+$\mathbf{U} \sim \mathcal{N}(0, I_N)$. Coût en $O(N^3)$ : impossible sur
+une grande grille.
+
+## Conditionnement par krigeage
+
+Propriété clé du cas gaussien : l'erreur de krigeage
+$Z(s) - \widehat{Z}(s)$ est **indépendante** des données (non corrélée
+et gaussienne).
+
+### Algorithme
+
+1.  Simuler une réalisation **non conditionnelle** $Z_s$ sur la grille
+    et aux sites observés.
+2.  Kriger à partir des valeurs simulées $Z_s(s_1), \ldots, Z_s(s_n)$ :
+    on obtient $\widehat{Z}_s$.
+3.  Poser
+    $$Z_{cs} = \underbrace{\widehat{Z}}_{\text{krigeage des vraies données}} + \underbrace{(Z_s - \widehat{Z}_s)}_{\text{erreur de krigeage simulée}}$$
+
+### Exercice
+
+Montrer que $Z_{cs}$ a la bonne loi conditionnelle et qu'elle interpole
+les données (sans pépite).
+
+## Illustration en 1D
+
+```{r}
+#| label: simu_cond_1d
+#| echo: false
+
+g <- seq(0, 10, by = 0.05)
+Sigma_obs <- cov_exp(as.matrix(dist(obs$s)), rho = 1.5)
+C_G <- cov_exp(abs(outer(obs$s, g, "-")), rho = 1.5)
+moy_cond <- as.vector(t(C_G) %*% solve(Sigma_obs, obs$z))
+cov_cond <- cov_exp(as.matrix(dist(g)), rho = 1.5) - t(C_G) %*% solve(Sigma_obs, C_G)
+L_cond <- t(chol(cov_cond + diag(1e-8, length(g))))
+set.seed(42)
+sims <- moy_cond + L_cond %*% matrix(rnorm(length(g) * 500), ncol = 500)
+
+as_tibble(sims[, 1:5], .name_repair = ~ paste0("sim", 1:5)) |>
+  mutate(s = g) |>
+  pivot_longer(-s, names_to = "sim", values_to = "z") |>
+  ggplot(aes(x = s, y = z)) +
+  geom_line(aes(group = sim), col = pal[5], alpha = 0.7) +
+  geom_line(data = tibble(s = g, z = moy_cond), col = pal[1], linewidth = 1.2) +
+  geom_point(data = obs, size = 2) +
+  labs(x = "s", y = "Z(s)", subtitle = "Bleu : 5 simulations conditionnelles ; rouge : krigeage")
+```
+
+Les simulations passent par les données et ont la **même rugosité** que
+le vrai champ, contrairement au krigeage.
+
+## Exemple : proportion du domaine au-dessus d'un seuil
+
+On cherche la proportion de $[0, 10]$ où $Z(s) > 0.5$.
+
+```{r}
+#| label: fonctionnelle_1d
+#| echo: false
+#| fig-height: 3
+
+prop_sims <- colMeans(sims > 0.5)
+ggplot(tibble(prop = prop_sims), aes(x = prop)) +
+  geom_histogram(bins = 30, fill = pal[5], col = "white") +
+  geom_vline(xintercept = mean(moy_cond > 0.5), col = pal[1], linewidth = 1) +
+  geom_vline(xintercept = mean(z_grille > 0.5), linetype = 2) +
+  labs(x = "proportion de [0, 10] où Z > 0.5", y = "nombre de simulations",
+       subtitle = "Rouge : calcul sur la carte de krigeage ; pointillés : vraie valeur")
+```
+
+- Les 500 simulations donnent la [loi conditionnelle]{.rouge} de la
+  proportion : estimation **et** incertitude.
+- Le calcul sur la carte de krigeage, trop lisse, est biaisé.
+
+## En pratique avec `gstat`
+
+`krige(..., nsim = )` utilise la [simulation séquentielle
+gaussienne]{.rouge} : on parcourt la grille dans un ordre aléatoire et
+on simule chaque point selon sa loi conditionnelle sachant les données
+et les points déjà simulés (dans un voisinage `nmax`).
+
+```{r}
+#| label: simu_meuse
+#| echo: true
+#| fig-height: 2.8
+
+set.seed(1)
+sim_meuse <- krige(log(zinc) ~ sqrt(dist), locations = meuse_sf, newdata = grille,
+                   model = v.fit.res, nsim = 4, nmax = 30)
+sim_meuse |> pivot_longer(starts_with("sim"), names_to = "sim", values_to = "logzinc") |>
+  st_as_sf() |> ggplot() + geom_sf(aes(col = logzinc), size = 0.3) + facet_wrap(~sim, nrow = 1) +
+  scale_color_viridis_c(option = "plasma")
+```
+
+::: callout-note
+
+Les simulations permettent de revenir à l'échelle d'origine sans biais
+
+:   $\exp$ des simulations de $\log(\text{zinc})$, alors que
+    $\exp(\widehat{Z})$ n'est pas le prédicteur optimal du zinc.
+:::
+
+# Conclusion
+
+## Limites
+
+### Le plug-in
+
+On estime la covariance, puis on l'injecte dans les formules comme si
+elle était connue.
+
+::: callout-note
+La variance de krigeage plug-in ne tient pas compte de l'incertitude sur
+$\widehat{C}$ : elle [sous-estime]{.rouge} l'incertitude réelle.
+L'approche bayésienne (INLA) permet de propager cette incertitude.
+:::
+
+### Et si les données ne sont pas gaussiennes ?
+
+- Le BLUP reste valable, mais sans intervalles exacts.
+- Souvent préférable : transformer (log, Box-Cox) ou utiliser un modèle
+  hiérarchique (GLM spatial, voir INLA).
+
+## En pratique
+
+Voir le
+[TP](https://marieetienne.github.io/statspat/01_pluies.html#/title-slide)
+sur les pluies en Suisse.
+
+## Références

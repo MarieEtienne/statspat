@@ -436,7 +436,7 @@ $$(0,0,0) \text{ ou } (1,1,1)$$
 mais les trois conditionnelles imposent des contraintes **sur-déterminées** :
 
 - elles doivent être vraies **quelle que soit** la valeur du troisième site
-** aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**
+**aucune loi jointe ne peut satisfaire simultanément ces trois conditionnelles.**
 
 :::
 
