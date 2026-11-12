@@ -21,15 +21,15 @@ website:
       - text: "Cours"
         menu: 
           - href: 01_intro.qmd
-          - href: 02_geostat.qmd
+          - href: 02_krigeage.qmd
           - href: 03_lattice.qmd
           - href: 04_inla.qmd
           - text: "---"
           - text: "Versions PDF"
           - text: "Introduction (PDF)"
             href: 01_intro.pdf
-          - text: "Géostatistique (PDF)"
-            href: 02_geostat.pdf
+          - text: "Krigeage (PDF)"
+            href: 02_krigeage.pdf
           - text: "Modèles sur grille (PDF)"
             href: 03_lattice.pdf
           - text: "INLA (PDF)"
