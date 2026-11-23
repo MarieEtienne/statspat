@@ -442,7 +442,7 @@
   <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Marie-Pierre Etienne">
-  <meta name="dcterms.date" content="2026-11-12">
+  <meta name="dcterms.date" content="2026-11-23">
   <title>Statistique Spatiale – Géostatistique</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1695,7 +1695,7 @@ Marie-Pierre Etienne
     </div>
 </div>
 
-  <p class="date">2026-11-12</p>
+  <p class="date">2026-11-23</p>
 </section>
 <section class="slide level2">
 
@@ -1838,8 +1838,7 @@ Marie-Pierre Etienne
 <ol type="1">
 <li>Moyenne constante : <span class="math inline">\(\forall s\in D, \quad m(s) = \mu\)</span>.</li>
 <li>Covariance invariante par translation : <span class="math display">\[\forall (s, t)\in D^2
-c(s,t) = C(t - s) \quad \text{ou} \forall h; s+h \in D,  \quad c(s,s+h) = C(h)
-\]</span></li>
+c(s,t) = C(t - s) \quad \text{ou} \forall h; s+h \in D,  \quad c(s,s+h) = C(h)\]</span></li>
 </ol>
 <h3 id="isotropie">Isotropie</h3>
 <p>Un processus est isotrope si <span class="math inline">\(C(h)\)</span> dépend uniquement de <span class="math inline">\(\|h\|\)</span> i.e <span class="math display">\[C(h) = C(\|h\|)\]</span></p>
@@ -1999,8 +1998,7 @@ C &amp; \text{si } \|h\| &gt; \rho
 <p>On cherche <span class="math inline">\(\widehat{Z}(s_0) = \sum_{i=1}^n\lambda_iZ(s_i)\)</span>} avec <span class="math display">\[E(\widehat{Z}(s_0)) = E(Z(s_0)) \mbox{ et }  E(\widehat{Z}(s_0) - Z(s_0))^2 \mbox{ minimum}\]</span></p>
 <p>Covariance : <span class="math inline">\(C(h) = Cov(Z(s+h),Z(s))\)</span>, <span class="math inline">\(\boldsymbol{\Sigma}\)</span> the covariance matrix (<span class="math inline">\(\Sigma_{ij}= C(s_j-s_i)\)</span>), <span class="math inline">\(\boldsymbol{c_0}\)</span> the covariance vector (<span class="math inline">\(c_j =C(s_o-s_j)\)</span>)</p>
 <p>Proposition :</p>
-<p><span class="math display">\[\widehat{Z}(s_0) = \left \lbrace \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} + (X_0 - X^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})^T (X^T \boldsymbol{\Sigma}^{-1} X)^{-1} X^T  \boldsymbol{\Sigma}^{-1}  \right\rbrace Z\]</span> <span class="math display">\[
-\tau^2(s_0) = \sigma_0^2 -  \mathbf{c_0}^T \mathbf{\Sigma}^{-1} \mathbf{c_0}
+<p><span class="math display">\[\widehat{Z}(s_0) = \left \lbrace \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} + (X_0 - X^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})^T (X^T \boldsymbol{\Sigma}^{-1} X)^{-1} X^T  \boldsymbol{\Sigma}^{-1}  \right\rbrace Z\]</span> <span class="math display">\[\tau^2(s_0) = \sigma_0^2 -  \mathbf{c_0}^T \mathbf{\Sigma}^{-1} \mathbf{c_0}
 +  \left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)^T
 \left(  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{X} \right)^{-1}
 \left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)\]</span> <!--    Variogramme : $\gamma(h) = \frac{1}{2}\mbox{Var}(Z(s+h)-Z(s))$ --></p>
@@ -3198,7 +3196,7 @@ window.QuartoSupport = function () {
         height: 700,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.1,
+        margin: 5.0e-2,
 
         math: {
           mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',

@@ -410,70 +410,70 @@
     "href": "02_krigeage.html#champs-aléatoires-et-processus",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Champs aléatoires et processus",
-    "text": "Champs aléatoires et processus\n\n\nUn processus stochastique est une famille de variables aléatoires indexée par un ensemble \\(D\\) : \\[\\{Z(s), \\; s \\in D\\}\\]\n\n\\(D \\subset {\\mathbb{R}}\\) (le temps) : on parle de processus,\n\\(D \\subset {\\mathbb{R}}^d\\), \\(d \\geq 2\\) (l’espace) : on parle de champ aléatoire.\n\n\nUne réalisation est une fonction \\(s \\mapsto z(s)\\) sur tout \\(D\\)\n\nune carte.\n\n\nLa loi du champ est caractérisée par ses lois fini-dimensionnelles : celles de \\((Z(s_1), \\ldots, Z(s_n))\\) pour tous \\(n\\) et tous \\(s_1, \\ldots, s_n\\).\nChamp gaussien : toutes ces lois sont gaussiennes, donc la loi est entièrement déterminée par la moyenne \\(\\mu(s)\\) et la covariance \\(c(s, s')\\).\n\n\n\n\n\n\n\n\n\n\n\nEn statistique spatiale, on n’observe en général qu’une seule réalisation, et seulement en quelques sites (points noirs)."
+    "text": "Champs aléatoires et processus\n\n\nUn processus stochastique est une famille de variables aléatoires indexée par un ensemble \\(D\\) : \\[\\{Z(s), \\; s \\in D\\}\\]\n\n\\(D \\subset {\\mathbb{R}}\\) (le temps) : on parle de processus,\n\\(D \\subset {\\mathbb{R}}^d\\), \\(d \\geq 2\\) (l’espace) : on parle de champ aléatoire.\n\nUne réalisation est\nune fonction \\(s \\mapsto z(s)\\) sur tout \\(D\\) : une carte.\nLa loi du champ est caractérisée par ses lois fini-dimensionnelles : celles de \\((Z(s_1), \\ldots, Z(s_n))\\) pour tous \\(n\\) et tous \\(s_1, \\ldots, s_n\\).\nChamp gaussien : toutes ces lois sont gaussiennes, donc la loi est entièrement déterminée par la moyenne \\(\\mu(s)\\) et la covariance \\(c(s, s')\\).\n\n\n\n\n\n\n\n\n\n\n\nEn statistique spatiale, on n’observe en général qu’une seule réalisation, et seulement en quelques sites (points noirs)."
   },
   {
-    "objectID": "02_krigeage.html#le-problème",
-    "href": "02_krigeage.html#le-problème",
+    "objectID": "02_krigeage.html#une-question-classique-en-statistique-spatiale",
+    "href": "02_krigeage.html#une-question-classique-en-statistique-spatiale",
     "title": "Prédiction spatiale : le krigeage",
-    "section": "Le problème",
-    "text": "Le problème\nOn observe \\(z(s_1), \\ldots, z(s_n)\\) aux sites \\(s_1, \\ldots, s_n\\) d’un domaine \\(D\\) et on veut :\n\nprédire \\(Z(s_0)\\) en un site \\(s_0\\) non observé,\nconstruire une carte de prédiction sur tout \\(D\\),\nquantifier l’incertitude associée à cette carte.\n\nExemple\nLa température en France\n\nPluies en Suisse : \\(n = 100\\) stations, on veut une carte de la pluie sur tout le territoire (voir le TD)."
+    "section": "Une question classique en statistique spatiale",
+    "text": "Une question classique en statistique spatiale\nOn observe \\(z(s_1), \\ldots, z(s_n)\\) aux sites \\(s_1, \\ldots, s_n\\) d’un domaine \\(D\\) et on veut :\n\nprédire \\(Z(s_0)\\) en un site \\(s_0\\) non observé,\nconstruire une carte de prédiction sur tout \\(D\\),\nquantifier l’incertitude associée à cette carte.\n\nExemples\n\nLa température en France\n\n\n\nPluies en Suisse : \\(n = 100\\) stations, on veut une carte de la pluie sur tout le territoire (voir le TD)."
   },
   {
     "objectID": "02_krigeage.html#pourquoi-ne-pas-simplement-interpoler",
     "href": "02_krigeage.html#pourquoi-ne-pas-simplement-interpoler",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Pourquoi ne pas simplement interpoler ?",
-    "text": "Pourquoi ne pas simplement interpoler ?\nInterpolateur par inverse de la distance : \\[\\widehat{Z}(s_0) = \\sum_{i=1}^n \\lambda_i Z(s_i), \\qquad \\lambda_i \\propto \\frac{1}{\\|s_0 - s_i\\|^p}\\]\nLimites\n\nAucune mesure d’incertitude.\nLe poids d’un site ne dépend pas de la position des autres sites (deux sites collés comptent double).\nLes poids ne s’adaptent pas à la structure de dépendance des données (portée, régularité).\n\nIdée du krigeage : choisir les poids à partir d’un modèle de la dépendance spatiale."
+    "text": "Pourquoi ne pas simplement interpoler ?\nInterpolateur par inverse de la distance : \\[\\widehat{Z}(s_0) = \\sum_{i=1}^n \\lambda_i Z(s_i), \\qquad \\lambda_i \\propto \\frac{1}{\\|s_0 - s_i\\|^p}\\]\nLimites\n\nAucune mesure d’incertitude.\nLe poids d’un site ne dépend pas de la position des autres sites (deux sites collés comptent double).\nLes poids ne s’adaptent pas à la structure de dépendance des données (portée, régularité).\n\nLe krigeage est une méthode d’interpolation qui choisit les poids à partir d’un modèle de la dépendance spatiale."
+  },
+  {
+    "objectID": "02_krigeage.html#champ-aléatoire-du-second-ordre",
+    "href": "02_krigeage.html#champ-aléatoire-du-second-ordre",
+    "title": "Prédiction spatiale : le krigeage",
+    "section": "Champ aléatoire du second ordre",
+    "text": "Champ aléatoire du second ordre\nDéfinition\nUn champ aléatoire \\(\\{Z(s), \\; s \\in D\\}\\), \\(D \\subset {\\mathbb{R}}^d\\), est dit du second ordre si \\[\\forall s \\in D, \\quad {\\mathbb{E}}\\left(Z(s)^2\\right) &lt; \\infty.\\]\nOn peut alors définir :\n\nsa fonction moyenne : \\(\\mu(s) = {\\mathbb{E}}(Z(s))\\),\nsa fonction de covariance : \\(c(s, s') = {\\mathbb{C}\\text{ov}}(Z(s), Z(s'))\\), (finie par Cauchy-Schwarz.)\n\nPropriétés de \\(c\\)\n\n\\(c(s, s) = {\\mathbb{V}\\text{ar}}(Z(s)) \\geq 0\\) et \\(c(s, s') = c(s', s)\\),\n\\(|c(s, s')| \\leq \\sqrt{c(s, s)\\, c(s', s')}\\),\n\\(c\\) est semi-définie positive : \\(\\sum_{i,j} a_i a_j \\, c(s_i, s_j) = {\\mathbb{V}\\text{ar}}\\left(\\sum_i a_i Z(s_i)\\right) \\geq 0\\).\n\n\n\n\n\n\n\nNote\n\n\nLe second ordre ne suppose rien sur la loi. Un champ gaussien est du second ordre, et sa loi est entièrement déterminée par \\(\\mu\\) et \\(c\\)."
   },
   {
     "objectID": "02_krigeage.html#ce-dont-on-a-besoin-pour-prédire",
     "href": "02_krigeage.html#ce-dont-on-a-besoin-pour-prédire",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Ce dont on a besoin pour prédire",
-    "text": "Ce dont on a besoin pour prédire\nOn modélise \\(Z\\) comme un champ aléatoire du second ordre :\n\nmoyenne \\(\\mu(s) = {\\mathbb{E}}(Z(s))\\),\ncovariance \\(c(s, s') = {\\mathbb{C}\\text{ov}}(Z(s), Z(s'))\\).\n\nNotations\n\n\\(\\mathbf{Z} = (Z(s_1), \\ldots, Z(s_n))^T\\), \\(\\widehat{Z}_0 = \\widehat{Z}(s_0)\\)\n\\(\\boldsymbol{\\Sigma}\\) : matrice \\(n\\times n\\), \\(\\Sigma_{ij} = c(s_i, s_j)\\)\n\\(\\boldsymbol{c_0}\\) : vecteur de taille \\(n\\), \\(c_{0,i} = c(s_0, s_i)\\)\n\\(\\sigma_0^2 = {\\mathbb{V}\\text{ar}}(Z(s_0))\\)\n\nDans ce cours : on suppose la moyenne et la covariance connues. La question de leur estimation est repoussée à la fin.\n\n\n\n\n\n\nNote\n\n\nLes formules du krigeage ne font intervenir que \\(\\boldsymbol{\\Sigma}\\), \\(\\boldsymbol{c_0}\\) et \\(\\sigma_0^2\\), quelle que soit la forme de la covariance \\(c(s, s')\\)."
+    "text": "Ce dont on a besoin pour prédire\nOn modélise \\(Z\\) comme un champ aléatoire du second ordre :\n\nmoyenne \\(\\mu(s) = {\\mathbb{E}}(Z(s))\\),\ncovariance \\(c(s, s') = {\\mathbb{C}\\text{ov}}(Z(s), Z(s'))\\).\n\nNotations\n\n\\(\\mathbf{Z} = (Z(s_1), \\ldots, Z(s_n))^T\\), \\(\\widehat{Z}_0 = \\widehat{Z}(s_0)\\)\n\\(\\boldsymbol{\\Sigma}\\) : matrice \\(n\\times n\\), \\(\\Sigma_{ij} = c(s_i, s_j)\\)\n\\(\\boldsymbol{c_0}\\) : vecteur de taille \\(n\\), \\(c_{0,i} = c(s_0, s_i)\\)\n\\(\\sigma_0^2 = {\\mathbb{V}\\text{ar}}(Z(s_0))\\)\n\nDans cette première partie du cours : on suppose la moyenne et la covariance connues. La question de leur estimation est repoussée à la fin."
   },
   {
     "objectID": "02_krigeage.html#covariance-utilisée-dans-les-illustrations",
     "href": "02_krigeage.html#covariance-utilisée-dans-les-illustrations",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Covariance utilisée dans les illustrations",
-    "text": "Covariance utilisée dans les illustrations\nUne covariance qui décroît avec la distance entre les sites : \\[c(s, s') = \\sigma^2 \\exp\\left(-\\|s - s'\\|/\\rho\\right) \\; + \\; \\tau^2 \\mathbb{1}_{s = s'}\\]\n\n\\(\\sigma^2\\) : variance du signal,\n\\(\\rho\\) : vitesse de décroissance de la corrélation avec la distance (« portée »),\n\\(\\tau^2\\) : bruit de mesure (« pépite »).\n\nOn note \\(C(h) = \\sigma^2 e^{-h/\\rho}\\) (+ \\(\\tau^2\\) si \\(h = 0\\)), de sorte que \\(c(s, s') = C(\\|s - s'\\|)\\) : la covariance ne dépend que de la distance. Ce choix n’est pas anodin, on y reviendra.\n\ncov_exp &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-h / rho)\ncov_gauss &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-(h / rho)^2)"
+    "text": "Covariance utilisée dans les illustrations\nLa covariance exponentielle est une forme de covariance classique dans les applications.\nElle décroît avec la distance entre les sites : \\[c(s, s') = \\sigma^2 \\exp\\left(-\\|s - s'\\|/\\rho\\right) \\; + \\; \\tau^2 \\mathbb{1}_{s = s'}\\]\n\n\\(\\sigma^2\\) : variance du signal,\n\\(\\rho\\) : vitesse de décroissance de la corrélation avec la distance (« portée »),\n\\(\\tau^2\\) : bruit de mesure (« pépite »).\n\nOn note \\(C(h) = \\sigma^2 e^{-h/\\rho}\\) (+ \\(\\tau^2\\) si \\(h = 0\\)), de sorte que \\(c(s, s') = C(\\|s - s'\\|)\\) : la covariance ne dépend que de la distance. Ce choix n’est pas anodin, on y reviendra.\n\ncov_exp &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-h / rho)\ncov_gauss &lt;- function(h, sigma2 = 1, rho = 1) sigma2 * exp(-(h / rho)^2)"
   },
   {
     "objectID": "02_krigeage.html#hypothèses",
     "href": "02_krigeage.html#hypothèses",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Hypothèses",
-    "text": "Hypothèses\n\n\\(\\mu\\) connue et \\(C\\) connue,\n\\(Z\\) est un champ gaussien : tout vecteur \\((Z(s_0), Z(s_1), \\ldots, Z(s_n))\\) est gaussien.\n\n\\[\\begin{pmatrix} Z(s_0) \\\\ \\mathbf{Z} \\end{pmatrix} \\sim\n\\mathcal{N}\\left( \\begin{pmatrix} \\mu \\\\ \\mu \\mathbf{1}\\end{pmatrix},\n\\begin{pmatrix} \\sigma_0^2 & \\boldsymbol{c_0}^T \\\\\n\\boldsymbol{c_0} & \\boldsymbol{\\Sigma} \\end{pmatrix} \\right)\\]\nQuestion\nQuelle est la loi de \\(Z(s_0)\\) sachant \\(\\mathbf{Z} = \\mathbf{z}\\) ?"
+    "text": "Hypothèses\n\n\\(\\mu\\) connue et \\(C\\) connue,\n\\(Z\\) est un champ gaussien : tout vecteur \\((Z(s_0), Z(s_1), \\ldots, Z(s_n))\\) est gaussien.\n\n\\[\\begin{pmatrix} Z(s_0) \\\\ \\mathbf{Z} \\end{pmatrix} \\sim\n\\mathcal{N}\\left( \\begin{pmatrix} \\mu_0 \\\\ \\boldsymbol{\\mu} \\end{pmatrix},\n\\begin{pmatrix} \\sigma_0^2 & \\boldsymbol{c_0}^T \\\\\n\\boldsymbol{c_0} & \\boldsymbol{\\Sigma} \\end{pmatrix} \\right)\\]\nQuestion\nQuelle est la loi de \\(Z(s_0)\\) sachant \\(\\mathbf{Z} = \\mathbf{z}\\) ?"
   },
   {
     "objectID": "02_krigeage.html#conditionnement-gaussien",
     "href": "02_krigeage.html#conditionnement-gaussien",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Conditionnement gaussien",
-    "text": "Conditionnement gaussien\n\\[Z(s_0) \\mid \\mathbf{Z} = \\mathbf{z} \\sim \\mathcal{N}\\left(\n\\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{z} - \\mu \\mathbf{1}),\n\\; \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\n\\right)\\]\nPrédicteur de krigeage simple \\[\\widehat{Z}_{KS}(s_0) = {\\mathbb{E}}(Z(s_0) \\mid \\mathbf{Z}) = \\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1})\\]\nVariance de krigeage \\[\\sigma^2_{KS}(s_0) = {\\mathbb{V}\\text{ar}}(Z(s_0) \\mid \\mathbf{Z}) = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\nBonus du cadre gaussien : on a la loi prédictive complète, donc des intervalles de prédiction \\(\\widehat{Z}_{KS}(s_0) \\pm 1.96\\, \\sigma_{KS}(s_0)\\), et toute quantité \\(P(Z(s_0) &gt; \\zeta \\mid \\mathbf{Z})\\)."
+    "text": "Conditionnement gaussien\n\\[Z(s_0) \\mid \\mathbf{Z} = \\mathbf{z} \\sim \\mathcal{N}\\left(\n\\mu_0 + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{z} - \\boldsymbol{\\mu}),\n\\; \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\n\\right)\\]\nPrédicteur de krigeage simple \\[\\widehat{Z}_{KS}(s_0) = {\\mathbb{E}}(Z(s_0) \\mid \\mathbf{Z}) = \\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1})\\]\nVariance de krigeage \\[\\sigma^2_{KS}(s_0) = {\\mathbb{V}\\text{ar}}(Z(s_0) \\mid \\mathbf{Z}) = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\nInterprétation\n\\[\\widehat{Z}_{KS}(s_0) = \\mu + \\sum_{i=1}^n \\lambda_i (Z(s_i) - \\mu(s_i)), \\qquad \\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\n\nOn part de la moyenne \\(\\mu\\) et on la corrige en fonction des écarts observés à la moyenne.\nLes poids \\(\\lambda_i\\) dépendent de la covariance entre \\(s_0\\) et les sites (\\(\\boldsymbol{c_0}\\)) et de la redondance entre les sites (\\(\\boldsymbol{\\Sigma}^{-1}\\)).\nLes données font baisser la variance : \\(\\sigma^2_{KS}(s_0) \\le \\sigma_0^2\\).\n\nBonus du cadre gaussien : on a la loi prédictive complète, donc des intervalles de prédiction \\(\\widehat{Z}_{KS}(s_0) \\pm 1.96\\, \\sigma_{KS}(s_0)\\), et toute quantité \\(P(Z(s_0) &gt; \\zeta \\mid \\mathbf{Z})\\)."
   },
   {
-    "objectID": "02_krigeage.html#interprétation",
-    "href": "02_krigeage.html#interprétation",
+    "objectID": "02_krigeage.html#exercice-1-une-observation",
+    "href": "02_krigeage.html#exercice-1-une-observation",
     "title": "Prédiction spatiale : le krigeage",
-    "section": "Interprétation",
-    "text": "Interprétation\n\\[\\widehat{Z}_{KS}(s_0) = \\mu + \\sum_{i=1}^n \\lambda_i (Z(s_i) - \\mu), \\qquad \\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]\n\nOn part de la moyenne \\(\\mu\\) et on la corrige en fonction des écarts observés à la moyenne.\nLes poids \\(\\lambda_i\\) dépendent de la covariance entre \\(s_0\\) et les sites (\\(\\boldsymbol{c_0}\\)) et de la redondance entre les sites (\\(\\boldsymbol{\\Sigma}^{-1}\\)).\nLes données font baisser la variance : \\(\\sigma^2_{KS}(s_0) \\le \\sigma_0^2\\)."
+    "section": "Exercice 1 : une observation",
+    "text": "Exercice 1 : une observation\nOn observe un seul site \\(s_1\\). On suppose que la covariance entre 2 sites ne dépend que de leur distance. On note \\(c(s,s')=\\tilde{c}(h)\\), avec \\(h=\\|s - s'\\|\\)\n\nQue représente \\(c(0)\\) dans ce cas ?\n\nOn note \\(r = c(\\|s_0 - s_1\\|) / c(0)\\)\n\nQue représente \\(r\\) ?\nDonner \\(\\widehat{Z}_{KS}(s_0)\\) et \\(\\sigma^2_{KS}(s_0)\\).\nQue se passe-t-il quand \\(s_0 \\to s_1\\) ? Quand \\(\\|s_0 - s_1\\| \\to \\infty\\) ?"
   },
   {
-    "objectID": "02_krigeage.html#exercice-une-observation",
-    "href": "02_krigeage.html#exercice-une-observation",
+    "objectID": "02_krigeage.html#exercice-2-deux-observations",
+    "href": "02_krigeage.html#exercice-2-deux-observations",
     "title": "Prédiction spatiale : le krigeage",
-    "section": "Exercice : une observation",
-    "text": "Exercice : une observation\nOn observe un seul site \\(s_1\\). On note \\(r = C(\\|s_0 - s_1\\|) / C(0)\\) la corrélation entre \\(Z(s_0)\\) et \\(Z(s_1)\\).\n\nDonner \\(\\widehat{Z}_{KS}(s_0)\\) et \\(\\sigma^2_{KS}(s_0)\\).\nQue se passe-t-il quand \\(s_0 \\to s_1\\) ? Quand \\(\\|s_0 - s_1\\| \\to \\infty\\) ?\n\n\nSolution\n\\[\\widehat{Z}_{KS}(s_0) = \\mu + r\\, (Z(s_1) - \\mu), \\qquad \\sigma^2_{KS}(s_0) = C(0)\\,(1 - r^2)\\]\n\n\\(s_0 \\to s_1\\) (sans pépite) : \\(r \\to 1\\), on retrouve \\(Z(s_1)\\) et une variance nulle.\n\\(s_0\\) loin : \\(r \\to 0\\), on prédit \\(\\mu\\) avec la variance \\(C(0)\\)."
-  },
-  {
-    "objectID": "02_krigeage.html#exercice-deux-observations",
-    "href": "02_krigeage.html#exercice-deux-observations",
-    "title": "Prédiction spatiale : le krigeage",
-    "section": "Exercice : deux observations",
-    "text": "Exercice : deux observations\nOn se place en 1D : \\(s_0 = 0\\), \\(s_1 = 1\\), \\(s_2 = 2\\), \\(\\mu = 0\\).\nCalculer les poids \\(\\lambda_1, \\lambda_2\\) pour\n\nune covariance exponentielle,\nune covariance gaussienne.\n\n\npoids_ks &lt;- function(s0, s, covf, ...) {\n  Sigma &lt;- covf(as.matrix(dist(s)), ...)\n  c0 &lt;- covf(abs(s - s0), ...)\n  solve(Sigma, c0)\n}\nround(poids_ks(0, c(1, 2), cov_exp, rho = 1), 3)\n\n    1     2 \n0.368 0.000 \n\nround(poids_ks(0, c(1, 2), cov_gauss, rho = 1), 3)\n\n     1      2 \n 0.418 -0.135"
+    "section": "Exercice 2: deux observations",
+    "text": "Exercice 2: deux observations\nOn se place en 1D : \\(s_0 = 0\\), \\(s_1 = 1\\), \\(s_2 = 2\\), \\(\\mu(s) = 0\\).\nCalculer les poids \\(\\lambda_1, \\lambda_2\\) pour\n\nune covariance exponentielle : \\[c(s, s') = \\sigma^2 \\exp\\left(-\\|s - s'\\|/\\rho\\right)  \\]\nune covariance gaussienne.: \\[c(s, s') = \\sigma^2 \\exp\\left(-\\|s - s'\\|^2/\\rho^2\\right)  \\]\n\n\npoids_ks &lt;- function(s0, s, covf, ...) {\n  Sigma &lt;- covf(as.matrix(dist(s)), ...)\n  c0 &lt;- covf(abs(s - s0), ...)\n  solve(Sigma, c0)\n}\nround(poids_ks(0, c(1, 2), cov_exp, rho = 1), 3)\n\n    1     2 \n0.368 0.000 \n\nround(poids_ks(0, c(1, 2), cov_gauss, rho = 1), 3)\n\n     1      2 \n 0.418 -0.135"
   },
   {
     "objectID": "02_krigeage.html#effet-décran-et-poids-négatifs",
@@ -490,8 +490,8 @@
     "text": "Le meilleur prédicteur linéaire (BLUP)\nOn ne suppose plus que \\(Z\\) est gaussien. Seuls les deux premiers moments sont connus.\nOn cherche un prédicteur linéaire \\(\\widehat{Z}(s_0) = \\alpha + \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) qui minimise le risque quadratique \\[R(\\alpha, \\boldsymbol{\\lambda}) = {\\mathbb{E}}\\left[ (Z(s_0) - \\alpha - \\boldsymbol{\\lambda}^T \\mathbf{Z})^2 \\right].\\]\nExercice\n\nMontrer que \\(R(\\alpha, \\boldsymbol{\\lambda}) = (\\mu - \\alpha - \\mu \\boldsymbol{\\lambda}^T \\mathbf{1})^2 + \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\nEn déduire \\(\\alpha\\) et \\(\\boldsymbol{\\lambda}\\) optimaux."
   },
   {
-    "objectID": "02_krigeage.html#solution-1",
-    "href": "02_krigeage.html#solution-1",
+    "objectID": "02_krigeage.html#solution",
+    "href": "02_krigeage.html#solution",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Solution",
     "text": "Solution\n\\[\\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}, \\qquad \\alpha = \\mu (1 - \\boldsymbol{\\lambda}^T \\mathbf{1})\\]\nOn retrouve exactement le même prédicteur et la même variance d’erreur : \\[\\widehat{Z}_{KS}(s_0) = \\mu + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mu \\mathbf{1}), \\qquad {\\mathbb{E}}\\left[(Z(s_0) - \\widehat{Z}_{KS}(s_0))^2\\right] = \\sigma_0^2 - \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}\\]"
@@ -539,8 +539,8 @@
     "text": "Moyenne inconnue\nOn suppose maintenant \\(\\mu\\) inconnue (constante), \\(C\\) connue.\nOn cherche \\(\\widehat{Z}(s_0) = \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) :\n\nsans biais pour tout \\(\\mu\\) : \\({\\mathbb{E}}(\\widehat{Z}(s_0)) = \\mu\\) \\(\\Leftrightarrow\\) \\(\\boldsymbol{\\lambda}^T \\mathbf{1}= 1\\),\nde variance d’erreur minimale : \\(\\min \\; \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\n\nExercice\nRésoudre ce problème par la méthode du multiplicateur de Lagrange."
   },
   {
-    "objectID": "02_krigeage.html#solution-2",
-    "href": "02_krigeage.html#solution-2",
+    "objectID": "02_krigeage.html#solution-1",
+    "href": "02_krigeage.html#solution-1",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Solution",
     "text": "Solution\n\\[\\boldsymbol{\\lambda}_{KO} = \\boldsymbol{\\Sigma}^{-1} (\\boldsymbol{c_0} + m \\mathbf{1}), \\qquad m = \\frac{1 - \\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0}}{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1}}\\]\nRelecture\nAvec \\(\\widehat{\\mu} = \\dfrac{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{Z}}{\\mathbf{1}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{1}}\\) l’estimateur des moindres carrés généralisés de \\(\\mu\\) (c’est aussi le meilleur estimateur linéaire sans biais, BLUE) : \\[\\widehat{Z}_{KO}(s_0) = \\widehat{\\mu} + \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\widehat{\\mu} \\mathbf{1})\\]\nKrigeage ordinaire = krigeage simple dans lequel on remplace \\(\\mu\\) par son estimateur BLUE."
@@ -581,8 +581,8 @@
     "text": "Le problème d’optimisation\nOn cherche \\(\\widehat{Z}(s_0) = \\boldsymbol{\\lambda}^T \\mathbf{Z}\\) :\n\nsans biais pour tout \\(\\beta\\) : \\(\\boldsymbol{\\lambda}^T \\mathbf{X} \\beta = X_0^T \\beta \\; \\forall \\beta \\Leftrightarrow \\mathbf{X}^T \\boldsymbol{\\lambda} = X_0\\) (\\(p\\) contraintes),\nde variance d’erreur minimale : \\(\\min \\; \\sigma_0^2 - 2 \\boldsymbol{\\lambda}^T \\boldsymbol{c_0} + \\boldsymbol{\\lambda}^T \\boldsymbol{\\Sigma} \\boldsymbol{\\lambda}\\).\n\nExercice\n\nÉcrire le lagrangien avec un vecteur de multiplicateurs \\(\\mathbf{m} \\in {\\mathbb{R}}^p\\).\nMontrer que \\(\\boldsymbol{\\lambda} = \\boldsymbol{\\Sigma}^{-1}(\\boldsymbol{c_0} + \\mathbf{X}\\mathbf{m})\\) et déterminer \\(\\mathbf{m}\\).\nVérifier que le krigeage ordinaire est le cas \\(X(s) = 1\\)."
   },
   {
-    "objectID": "02_krigeage.html#solution-3",
-    "href": "02_krigeage.html#solution-3",
+    "objectID": "02_krigeage.html#solution-2",
+    "href": "02_krigeage.html#solution-2",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Solution",
     "text": "Solution\n\\[\\mathbf{m} = (\\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X})^{-1} (X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})\\]\nRelecture\nAvec \\(\\widehat{\\beta} = (\\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X})^{-1} \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{Z}\\) l’estimateur des moindres carrés généralisés : \\[\\widehat{Z}_{KU}(s_0) = \\underbrace{X_0^T \\widehat{\\beta}}_{\\text{tendance}} + \\underbrace{\\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} (\\mathbf{Z} - \\mathbf{X} \\widehat{\\beta})}_{\\text{krigeage simple des résidus}}\\]\n\\[\\sigma^2_{KU}(s_0) = \\sigma^2_{KS}(s_0) + \\underbrace{\\left( X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0} \\right)^T \\left( \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\mathbf{X} \\right)^{-1} \\left( X_0 - \\mathbf{X}^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0} \\right)}_{\\text{coût de l'estimation de } \\beta}\\]"
@@ -630,8 +630,8 @@
     "text": "Stationnarité des accroissements\n\\(Z\\) est à accroissements stationnaires (ou intrinsèque) si \\[{\\mathbb{E}}(Z(s + h) - Z(s)) = 0, \\qquad {\\mathbb{V}\\text{ar}}(Z(s + h) - Z(s)) = 2\\gamma(h).\\]\n\nLa stationnarité du second ordre implique la stationnarité des accroissements.\nLa classe des processus intrinsèques est donc plus large que celle des processus stationnaires.\n\nExemple\nQue dire du mouvement brownien sur \\({\\mathbb{R}}\\) ?\n\n\\({\\mathbb{V}\\text{ar}}(B(t)) = t\\) : il n’est pas stationnaire. Mais \\({\\mathbb{V}\\text{ar}}(B(t + h) - B(t)) = |h|\\) : il est intrinsèque, avec \\(\\gamma(h) = |h| / 2\\)."
   },
   {
-    "objectID": "02_krigeage.html#définition-1",
-    "href": "02_krigeage.html#définition-1",
+    "objectID": "02_krigeage.html#définition-2",
+    "href": "02_krigeage.html#définition-2",
     "title": "Prédiction spatiale : le krigeage",
     "section": "Définition",
     "text": "Définition\nLe semi-variogramme d’un processus intrinsèque est \\[\\gamma(h) = \\frac{1}{2} {\\mathbb{V}\\text{ar}}(Z(s + h) - Z(s)) = \\frac{1}{2} {\\mathbb{E}}\\left[(Z(s + h) - Z(s))^2\\right].\\]\nPropriétés\n\n\\(\\gamma(h) \\geq 0\\), \\(\\gamma(0) = 0\\), \\(\\gamma(-h) = \\gamma(h)\\).\nSi \\(Z\\) est stationnaire du second ordre : \\[\\gamma(h) = C(0) - C(h).\\]\nUn variogramme borné correspond (à une constante aléatoire près) à un processus stationnaire du second ordre, et sa limite vaut \\(C(0)\\).\n\n\nPourquoi le variogramme ? Il ne fait pas intervenir la moyenne\n\non peut l’estimer sans estimer \\(\\mu\\)."
@@ -851,7 +851,7 @@
     "href": "02_geostat.html#processus-stationnaire",
     "title": "Géostatistique",
     "section": "Processus stationnaire",
-    "text": "Processus stationnaire\nDéfinition\nUn processus de second ordre \\(Z\\) est stationnaire sur \\(D\\subset {\\mathbb{R}}^d\\) si\n\nMoyenne constante : \\(\\forall s\\in D, \\quad m(s) = \\mu\\).\nCovariance invariante par translation : \\[\\forall (s, t)\\in D^2\nc(s,t) = C(t - s) \\quad \\text{ou} \\forall h; s+h \\in D,  \\quad c(s,s+h) = C(h)\n\\]\n\nIsotropie\nUn processus est isotrope si \\(C(h)\\) dépend uniquement de \\(\\|h\\|\\) i.e \\[C(h) = C(\\|h\\|)\\]"
+    "text": "Processus stationnaire\nDéfinition\nUn processus de second ordre \\(Z\\) est stationnaire sur \\(D\\subset {\\mathbb{R}}^d\\) si\n\nMoyenne constante : \\(\\forall s\\in D, \\quad m(s) = \\mu\\).\nCovariance invariante par translation : \\[\\forall (s, t)\\in D^2\nc(s,t) = C(t - s) \\quad \\text{ou} \\forall h; s+h \\in D,  \\quad c(s,s+h) = C(h)\\]\n\nIsotropie\nUn processus est isotrope si \\(C(h)\\) dépend uniquement de \\(\\|h\\|\\) i.e \\[C(h) = C(\\|h\\|)\\]"
   },
   {
     "objectID": "02_geostat.html#stationarité-des-accroissements",
@@ -956,7 +956,7 @@
     "href": "02_geostat.html#krigeage-universel",
     "title": "Géostatistique",
     "section": "Krigeage universel",
-    "text": "Krigeage universel\nHypothèses : \\(Z(s) = X\\beta + \\epsilon(s)\\),\nOn cherche \\(\\widehat{Z}(s_0) = \\sum_{i=1}^n\\lambda_iZ(s_i)\\)} avec \\[E(\\widehat{Z}(s_0)) = E(Z(s_0)) \\mbox{ et }  E(\\widehat{Z}(s_0) - Z(s_0))^2 \\mbox{ minimum}\\]\nCovariance : \\(C(h) = Cov(Z(s+h),Z(s))\\), \\(\\boldsymbol{\\Sigma}\\) the covariance matrix (\\(\\Sigma_{ij}= C(s_j-s_i)\\)), \\(\\boldsymbol{c_0}\\) the covariance vector (\\(c_j =C(s_o-s_j)\\))\nProposition :\n\\[\\widehat{Z}(s_0) = \\left \\lbrace \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} + (X_0 - X^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})^T (X^T \\boldsymbol{\\Sigma}^{-1} X)^{-1} X^T  \\boldsymbol{\\Sigma}^{-1}  \\right\\rbrace Z\\] \\[\n\\tau^2(s_0) = \\sigma_0^2 -  \\mathbf{c_0}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0}\n+  \\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)^T\n\\left(  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{X} \\right)^{-1}\n\\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)\\] \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRemarques\n\nOn n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\)\nSi \\(s_0 \\in \\{ s_1,\\ldots s_n\\}\\) alors \\(\\lambda_i = 1\\), \\(\\lambda_j=0\\), \\(j\\neq i\\)}, et \\(\\sigma_K^2(s_i)=0\\)\nles poids de krigeage \\(\\lambda_i\\) dépendent de la disposition des sites de données, de la localisation du site de prédiction, du nombre de données et de la fonction variogramme."
+    "text": "Krigeage universel\nHypothèses : \\(Z(s) = X\\beta + \\epsilon(s)\\),\nOn cherche \\(\\widehat{Z}(s_0) = \\sum_{i=1}^n\\lambda_iZ(s_i)\\)} avec \\[E(\\widehat{Z}(s_0)) = E(Z(s_0)) \\mbox{ et }  E(\\widehat{Z}(s_0) - Z(s_0))^2 \\mbox{ minimum}\\]\nCovariance : \\(C(h) = Cov(Z(s+h),Z(s))\\), \\(\\boldsymbol{\\Sigma}\\) the covariance matrix (\\(\\Sigma_{ij}= C(s_j-s_i)\\)), \\(\\boldsymbol{c_0}\\) the covariance vector (\\(c_j =C(s_o-s_j)\\))\nProposition :\n\\[\\widehat{Z}(s_0) = \\left \\lbrace \\boldsymbol{c_0}^T \\boldsymbol{\\Sigma}^{-1} + (X_0 - X^T \\boldsymbol{\\Sigma}^{-1} \\boldsymbol{c_0})^T (X^T \\boldsymbol{\\Sigma}^{-1} X)^{-1} X^T  \\boldsymbol{\\Sigma}^{-1}  \\right\\rbrace Z\\] \\[\\tau^2(s_0) = \\sigma_0^2 -  \\mathbf{c_0}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0}\n+  \\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)^T\n\\left(  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{X} \\right)^{-1}\n\\left( X_0 -  \\mathbf{X}^T \\mathbf{\\Sigma}^{-1} \\mathbf{c_0} \\right)\\] \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRemarques\n\nOn n’a pas forcément \\(0 \\le \\lambda_i \\le 1\\)\nSi \\(s_0 \\in \\{ s_1,\\ldots s_n\\}\\) alors \\(\\lambda_i = 1\\), \\(\\lambda_j=0\\), \\(j\\neq i\\)}, et \\(\\sigma_K^2(s_i)=0\\)\nles poids de krigeage \\(\\lambda_i\\) dépendent de la disposition des sites de données, de la localisation du site de prédiction, du nombre de données et de la fonction variogramme."
   },
   {
     "objectID": "02_geostat.html#en-pratique",
