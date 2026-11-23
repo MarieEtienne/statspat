@@ -2,23 +2,32 @@
 title: "Géostatistique"
 author:
   - name: Marie-Pierre Etienne
-    affiliation: 
+    affiliation:
       - ENSAI - CREST
     email: marie-pierre.etienne@ensai.fr
 date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
 institute: https://marieetienne.github.io/statspat
-editor: 
-  markdown: 
+execute:
+  freeze: true
+editor:
+  markdown:
     wrap: 72
-css: mpe_pres_revealjs.css
+    canonical: true
 format:
-  revealjs: 
+  revealjs:
+    css: mpe_pres_revealjs.css
+    theme: [default]
+    width: 1050
+    margin: 0.05
     slide-number: true
+    slide-level: 2
     show-slide-number: print
     menu:
       useTextContentForMissingTitles: false
-    mathjax: true  # Active MathJax
-    self-contained: true
+    mathjax: true
+    embed-resources: true
+  mpe-beamer:
+    keep-tex: true
 bibliography: spatstat.bib
 ---
 
@@ -149,54 +158,52 @@ ggplot() +
   scale_color_viridis_c(name = "Z", option = "plasma")
 ```
 
--   Domaine continu : $D \subset \mathbb{R}^2$.
--   Processus stochastique : $Z = \{Z(s)\}_{s \in D}$
-    -   Collection de variables aléatoires indexées par $s \in D$.
-    -   Données $Z(s_1), Z(s_2), \ldots, Z(s_n)$ observés.
+- Domaine continu : $D \subset \mathbb{R}^2$.
+- Processus stochastique : $Z = \{Z(s)\}_{s \in D}$
+  - Collection de variables aléatoires indexées par $s \in D$.
+  - Données $Z(s_1), Z(s_2), \ldots, Z(s_n)$ observés.
 
 ### Objectifs :
 
--   Prédiction $\widehat{Z}(s_0)$ de $Z(s_0)$ ou intégrale
-    $\int_B Z(s)ds$.
--   Estimation de la loi de $Z(s)$ ou d'une fonctionnelle
-    $\varphi(Z(s))$.
--   Estimation des relations de dépendance entre $Z(s_i)$.
+- Prédiction $\widehat{Z}(s_0)$ de $Z(s_0)$ ou intégrale
+  $\int_B Z(s)ds$.
+- Estimation de la loi de $Z(s)$ ou d'une fonctionnelle $\varphi(Z(s))$.
+- Estimation des relations de dépendance entre $Z(s_i)$.
 
 ## Intuition
 
--   Que veut on prendre en compte ?
--   Quid des répétitions ?
--   Que peut-on espérer estimer, comprendre ?
+- Que veut on prendre en compte ?
+- Quid des répétitions ?
+- Que peut-on espérer estimer, comprendre ?
 
 ## Estimation de la moyenne
 
 ### Hypothèses
 
--   $E(Z(s)) = \mu \quad \forall s \in D$
--   $\text{cov}(Z(s_i), Z(s_j)) = c_{ij}$
+- $E(Z(s)) = \mu \quad \forall s \in D$
+- $\text{cov}(Z(s_i), Z(s_j)) = c_{ij}$
 
 ### Estimation
 
--   Observations : $Z(s_1), Z(s_2), \ldots, Z(s_n)$.
--   Estimation de $E(Z(s)) = \mu$ ?
+- Observations : $Z(s_1), Z(s_2), \ldots, Z(s_n)$.
+- Estimation de $E(Z(s)) = \mu$ ?
 
 ### Contraintes
 
--   Estimateur linéaire :
-    $\widehat{\mu} = \sum_{i=1}^n \lambda_i Z(s_i)$.
--   Sans biais : $\text{E}(\widehat{\mu}) = \mu$.
--   Variance minimale : $\text{Var}(\widehat{\mu} - \mu)$.
+- Estimateur linéaire : $\widehat{\mu} = \sum_{i=1}^n \lambda_i Z(s_i)$.
+- Sans biais : $\text{E}(\widehat{\mu}) = \mu$.
+- Variance minimale : $\text{Var}(\widehat{\mu} - \mu)$.
 
 ## Estimation de la moyenne
 
--   Si $\widehat{\mu}$ est sans biais alors
+- Si $\widehat{\mu}$ est sans biais alors
 
--   Quelle est la conséquence de l'hypothèse de variance minimale ?
+- Quelle est la conséquence de l'hypothèse de variance minimale ?
 
 ## Solution : Best Linear Unbiased Estimator (BLUE)
 
--   Minimisation :
-    $$\min \sum_{i,j=1}^n \lambda_i \lambda_j c_{ij} \quad ; \quad \sum_{i=1}^n \lambda_i = 1$$
+- Minimisation :
+  $$\min \sum_{i,j=1}^n \lambda_i \lambda_j c_{ij} \quad ; \quad \sum_{i=1}^n \lambda_i = 1$$
 
 Utiliser la méthode du multiplicateur de Lagrange et montrer qu'on
 cherche à résoudre le système linéaire
@@ -229,25 +236,25 @@ Encore faut il pouvoir estimer la covariance
 
 ## Spécificité des données spatiales
 
--   on a souvent une seule réalisation du processus spatial
+- on a souvent une seule réalisation du processus spatial
 
--   Il faut avoir des hypothèses de régularité spatial pour espérer dire
-    des choses à partir d'une réalisation
+- Il faut avoir des hypothèses de régularité spatial pour espérer dire
+  des choses à partir d'une réalisation
 
 # Processus du second ordre
 
 ## Définitions
 
--   $Z$ est un processus du second ordre si
-    $\forall s \in D, \text{E}(Z(s)^2) < \infty$.
--   La moyenne de $Z$ est la fonction \begin{align}
-      m : D & \to {\mathbb{R}}\\
-        s & \to m(s) = {\mathbb{E}}(Z(s)))
-     \end{align}
--   La covariance de $Z$ est la fonction \begin{align}
-      c : D\times D & \to {\mathbb{R}}\\
-        (s,t) & \to c(s,t) = {\mathbb{C}\text{ov}}(Z(s), Z(t))
-     \end{align}
+- $Z$ est un processus du second ordre si
+  $\forall s \in D, \text{E}(Z(s)^2) < \infty$.
+- La moyenne de $Z$ est la fonction \begin{align}
+    m : D & \to {\mathbb{R}}\\
+      s & \to m(s) = {\mathbb{E}}(Z(s)))
+   \end{align}
+- La covariance de $Z$ est la fonction \begin{align}
+    c : D\times D & \to {\mathbb{R}}\\
+      (s,t) & \to c(s,t) = {\mathbb{C}\text{ov}}(Z(s), Z(t))
+   \end{align}
 
 **Propriété** Une fonction de covariance est semi définie positive i.e.
 
@@ -255,9 +262,9 @@ $$\forall a\in {\mathbb{R}}^n, \sum_{i,j}^n a_i a_j C(s_i, s_j)\geq 0$$
 Idée de preuve : Regarder
 ${\mathbb{V}\text{ar}}(\sum_{i=1}^n a_i Z(s_i))$
 
--   $Z$ est un processus gaussien si pour toute partie finie
-    $S \subset D$ et toute suite réelle $a = (a_s , s\in S)$,
-    $\sum_{s\in S} a_s Z(s)$ est une variable gaussienne.
+- $Z$ est un processus gaussien si pour toute partie finie $S \subset D$
+  et toute suite réelle $a = (a_s , s\in S)$, $\sum_{s\in S} a_s Z(s)$
+  est une variable gaussienne.
 
 ## Processus stationnaire
 
@@ -268,8 +275,7 @@ $D\subset {\mathbb{R}}^d$ si
 
 1.  Moyenne constante : $\forall s\in D, \quad m(s) = \mu$.
 2.  Covariance invariante par translation : $$\forall (s, t)\in D^2
-    c(s,t) = C(t - s) \quad \text{ou} \forall h; s+h \in D,  \quad c(s,s+h) = C(h)
-    $$
+    c(s,t) = C(t - s) \quad \text{ou} \forall h; s+h \in D,  \quad c(s,s+h) = C(h)$$
 
 ### Isotropie
 
@@ -299,11 +305,10 @@ $$\gamma(h) = \frac{1}{2} {\mathbb{V}\text{ar}}(Z(s+h) - Z(s))$$
 
 ### Propriétés
 
--   $\gamma(h) \geq 0$, $\gamma(0) = 0$, $\gamma(-h) = \gamma(h)$.
--   Si $Z$ est stationnaire de second ordre :
-    $$\gamma(h) = C(0) - C(h)$$
--   si $lim_{|h|\to \infty} \gamma(h) = \ell < +\infty$ alors le
-    processus est stationnaire du second ordre et $\ell = C(0)$
+- $\gamma(h) \geq 0$, $\gamma(0) = 0$, $\gamma(-h) = \gamma(h)$.
+- Si $Z$ est stationnaire de second ordre : $$\gamma(h) = C(0) - C(h)$$
+- si $lim_{|h|\to \infty} \gamma(h) = \ell < +\infty$ alors le processus
+  est stationnaire du second ordre et $\ell = C(0)$
 
 ## Variogrammes classiques
 
@@ -329,16 +334,16 @@ $K_{\nu}$ fonction de Bessel modifiée de 3ème espèce, d’ordre $\nu$
 
 $\nu$ paramètre qui règle la régularité en 0.
 
--   $\nu$ = 1/2 : modèle exponentiel
--   $\nu\to \infty$
+- $\nu$ = 1/2 : modèle exponentiel
+- $\nu\to \infty$
 
 ## Effet des paramètres
 
--   palier $C = \lim_{h \to \infty} \gamma(h)$}
--   échelle $\rho$
--   portée
-    $\widetilde{\rho} \mbox{ t.q. } \|h\| \ge \widetilde{\rho} \rightarrow C - \gamma(h) \le \varepsilon$
--   pépite $\tau = \lim_{h \to 0} \gamma(h)$
+- palier $C = \lim_{h \to \infty} \gamma(h)$}
+- échelle $\rho$
+- portée
+  $\widetilde{\rho} \mbox{ t.q. } \|h\| \ge \widetilde{\rho} \rightarrow C - \gamma(h) \le \varepsilon$
+- pépite $\tau = \lim_{h \to 0} \gamma(h)$
 
 ```{r}
 
@@ -375,28 +380,28 @@ ggplot(data, aes(x = h, y = gamma)) +
 
 ## Effet des paramètres
 
--   Le palier : S'il est fini, le processus $Z$ est stationnaire du
-    second ordre et $$ C = \mbox{Var}(Z(s))$$
+- Le palier : S'il est fini, le processus $Z$ est stationnaire du second
+  ordre et $$ C = \mbox{Var}(Z(s))$$
 
--   L'échelle : Règle la vitesse à laquelle le variogramme rejoint le
-    palier. Donne une idée de l'horizon de dépendance du processus.
+- L'échelle : Règle la vitesse à laquelle le variogramme rejoint le
+  palier. Donne une idée de l'horizon de dépendance du processus.
 
--   La portée est la distance à partir de laquelle la corrélation est
-    nulle ou négligeable
+- La portée est la distance à partir de laquelle la corrélation est
+  nulle ou négligeable
 
--   La pépite donne la régularité du processus
+- La pépite donne la régularité du processus
 
-    -   si $\tau\neq 0$ le processus est très irrégulier (bruit blanc,
-        erreur de mesure)
-    -   si $\tau=0$, la régularité du variogramme en 0 (paramètre $\nu$
-        dans le variogramme de Matern)
+  - si $\tau\neq 0$ le processus est très irrégulier (bruit blanc,
+    erreur de mesure)
+  - si $\tau=0$, la régularité du variogramme en 0 (paramètre $\nu$ dans
+    le variogramme de Matern)
 
 # Estimation du variogramme
 
 ## Intuition
 
--   Quelles données pour le variogramme
--   Comment peut-on s'y prendre
+- Quelles données pour le variogramme
+- Comment peut-on s'y prendre
 
 ## Nuée Variographique
 
@@ -461,9 +466,9 @@ et on veut prédire $g(Z(s))$, $s\in D$
 
 Par exemple
 
--   $Z(s_0)$, $s_0$ non observé,
--   $\frac{1}{|B|}\int_B Z(s)ds \quad B \mbox{ région de } D$,
--   $P(Z(s_0)>\zeta)$
+- $Z(s_0)$, $s_0$ non observé,
+- $\frac{1}{|B|}\int_B Z(s)ds \quad B \mbox{ région de } D$,
+- $P(Z(s_0)>\zeta)$
 
 ## Prédicteur optimal
 
@@ -476,12 +481,11 @@ est
 
 $$p^{opt}_{s_0}(Z(s_1),\ldots,Z(s_n)) = \mbox{E}\big(Z(s_0)/Z(s_1),\ldots,Z(s_n)\big) $$
 puisqu'il minimise le risque quadratique
-$$\mbox{E}\big((Z(s_0)-\widehat{Z}(s_0))^2\big)$$ 
+$$\mbox{E}\big((Z(s_0)-\widehat{Z}(s_0))^2\big)$$
 
-
-[Prédicteur linéaire
-optimal (BLUP)]{.rouge} $$p^* = \alpha + \sum_{i=1}^n\lambda_i Z(s_i)$$
-Si $Z$ gaussien, $p^{opt}=p^*$
+[Prédicteur linéaire optimal (BLUP)]{.rouge}
+$$p^* = \alpha + \sum_{i=1}^n\lambda_i Z(s_i)$$ Si $Z$ gaussien,
+$p^{opt}=p^*$
 
 Solution
 
@@ -514,8 +518,7 @@ covariance vector ($c_j =C(s_o-s_j)$)
 Proposition :
 
 $$\widehat{Z}(s_0) = \left \lbrace \boldsymbol{c_0}^T \boldsymbol{\Sigma}^{-1} + (X_0 - X^T \boldsymbol{\Sigma}^{-1} \boldsymbol{c_0})^T (X^T \boldsymbol{\Sigma}^{-1} X)^{-1} X^T  \boldsymbol{\Sigma}^{-1}  \right\rbrace Z$$
-$$
-\tau^2(s_0) = \sigma_0^2 -  \mathbf{c_0}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} 
+$$\tau^2(s_0) = \sigma_0^2 -  \mathbf{c_0}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} 
 +  \left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)^T 
 \left(  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{X} \right)^{-1} 
 \left( X_0 -  \mathbf{X}^T \mathbf{\Sigma}^{-1} \mathbf{c_0} \right)$$

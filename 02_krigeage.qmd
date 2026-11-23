@@ -16,7 +16,7 @@ editor:
 format:
   revealjs:
     css: mpe_pres_revealjs.css
-    theme: [default, custom]
+    theme: [default]
     width: 1050
     margin: 0.05
     slide-number: true
